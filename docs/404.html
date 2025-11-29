@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> | suzume blog</title>
+    <title> | kaze-no-hako</title>
     <meta name="description" content="九州大学でものづくり活動を行っているサークルです。" />
+    <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/assets/css/tailwind-output.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -38,31 +39,40 @@
   class="sticky top-0 z-50 w-full border-b-2 border-[#624ba1ee] divide-gray-400 py-2 bg-white"
 >
   <div
-    class="flex flex-col md:flex-row md:items-center md:justify-between w-full max-w-screen-xl mx-auto"
+    class="flex items-center w-full max-w-screen-xl"
   >
-    <!-- ロゴ -->
+    <!-- タイトル -->
     <a
       href="/"
-      class="flex px-2 items-center justify-center md:justify-start mb-4 md:mb-0"
+      class="flex px-2 items-center justify-start"
     >
-      <!-- <div class="h-8 md:h-10 w-auto">やぱの航空・ものづくりブログ</div> -->
       <img
-        src="/assets/images/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-10-21%2020.27.02.png"
-        alt="やぱの航空・ものづくりブログ ロゴ"
+        src="/assets/images/logo_simple.png"
+        alt="ロゴ"
         class="h-8 md:h-10 w-auto ml-2"
       />
+      <div class="ml-2 flex flex-col leading-tight">
+        <!-- <span class="text-xs text-gray-500 -mt-1 tracking-wide">
+          KAZE NO HAKO
+        </span> -->
+        <span class="text-lg md:text-2xl font-bold text-gray-800">
+          風の匣
+        </span>
+      </div>
+      <div class="ml-2 text-sm md:text-base text-gray-600 font-medium">
+        Tech blog
+      </div>
     </a>
 
     <!-- ナビゲーション -->
-    <nav
-      class="flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
-    >
-      <a href="/" class="nav-link">Home</a>
-      <a href="/posts/" class="nav-link">Posts</a>
-    </nav>
+      <nav
+        class="ml-auto flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
+      >
+        <a href="/" class="nav-link">Home</a>
+        <a href="/posts/" class="nav-link">Posts</a>
+      </nav>
   </div>
 </header>
-
 
     <main class="mx-auto"><section>
   <!-- 本文 -->
