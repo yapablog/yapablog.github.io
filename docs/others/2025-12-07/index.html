@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Pages + Jekyll + Tailwind CSSで自作する技術ブログ | kaze-no-hako</title>
+    <meta name="description" content="航空工学・生物模倣など" />
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/assets/css/tailwind-output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=Zen+Kaku+Gothic+New&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=WDXL+Lubrifont+TC&family=Zen+Kaku+Gothic+New&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!--
+  開発用ブレイクポイント
+  all(mobile):
+  sm(min-width: 640px):スマホ横～
+  md(min-width: 768px):タブレット
+  lg(min-width: 1024px):ノートPC
+  xl(min-width: 1280px):大型ディスプレイ
+  2xl(min-width: 1536px):超ワイド画面
+-->
+
+<header
+  class=" top-0 z-50 w-full border-b-2 border-[#624ba1ee] divide-gray-400 py-2 bg-white"
+>
+  <div
+    class="flex items-center w-full"
+  >
+    <!-- タイトル -->
+    <a
+      href="/"
+      class="flex px-2 items-center"
+    >
+      <img
+        src="/assets/images/logo_4.png"
+        alt="ロゴ"
+        class="h-10 md:h-10 w-auto ml-2"
+      />
+      <div class="flex flex-col leading-tigh ">
+        <div class="ml-2 text-[1.4rem] text-center text-gray-800 font-bold">
+          羽っぽい何か
+        </div>
+        <div class="ml-2 text-[0.6rem] text-center text-gray-600 font-medium leading-none font-serif">
+         航空工学・生物模倣など
+        </div>
+      </div>
+      <!-- <div class="ml-2 flex flex-col leading-tight">
+        <div class="text-[1.2rem] md:text-[1.8rem] text-gray-600 font-medium leading-none">
+          
+        </div>
+      </div> -->
+    </a>
+
+    <!-- ナビゲーション -->
+      <nav
+        class="ml-auto flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
+      >
+        <a href="/" class="nav-link">Home</a>
+        <a href="/about/" class="nav-link">About</a>
+      </nav>
+  </div>
+</header>
+
+    <main class="mx-auto"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          // 数式の区切り文字を設定
+          delimiters: [
+              {left: '$$', right: '$$', display: true},  // ブロック数式
+              {left: '$', right: '$', display: false},   // インライン数式
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          // エラーが出ても無視してそのまま表示する設定
+          throwOnError : false
+        });
+    });
+</script>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <header class="mb-6 border-b border-gray-200 pb-2">
+    <div class="text-3xl font-bold text-gray-800 mb-1">GitHub Pages + Jekyll + Tailwind CSSで自作する技術ブログ</div>
+    <p class="text-sm text-gray-500">2025/12/07</p>
+  </header>
+  <div class="container mx-auto px-4">
+  
+    <div class="lg:grid lg:grid-cols-12 lg:gap-10">
+      
+      <main class="lg:col-span-9">  
+        <div class="note-toc-inline lg:hidden">
+          <p class="toc-title">目次</p>
+          <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#技術スタックの選定">技術スタックの選定</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#なぜ-wordpress-ではないのか">なぜ WordPress ではないのか？</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#立ち上げ方法">立ち上げ方法</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#1-jekyll-サイトの作成">1. Jekyll サイトの作成</a></li>
+<li class="toc-entry toc-h3"><a href="#2-tailwind-css-の導入">2. Tailwind CSS の導入</a></li>
+<li class="toc-entry toc-h3"><a href="#3-css-の設定">3. CSS の設定</a></li>
+<li class="toc-entry toc-h3"><a href="#4-ビルドプロセスの実行">4. ビルドプロセスの実行</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#github-pages-へのデプロイ">GitHub Pages へのデプロイ</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#1-ワークフローファイルの作成">1. ワークフローファイルの作成</a></li>
+<li class="toc-entry toc-h3"><a href="#2-github-側の設定">2. GitHub 側の設定</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#デザインの実装">デザインの実装</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#見出しのデザイン">見出しのデザイン</a></li>
+<li class="toc-entry toc-h3"><a href="#コードブロックの装飾">コードブロックの装飾</a></li>
+<li class="toc-entry toc-h3"><a href="#数式">数式</a></li>
+</ul>
+</li>
+</ul>
+        </div>
+  
+        <div class="article">
+          <p>技術ブログを自作しました。
+既存のプラットフォーム（Qiita や Zenn）も素晴らしいですが、<strong>「自分の好きなデザインで育てる庭」</strong>が欲しかったのが最大の理由です。
+広告表示の必要がないことやプラットフォーム消滅の心配が少ないことも理由に挙げられます．</p>
+
+<p>この記事では、採用した技術スタックと、デザインの実装について解説します。</p>
+
+<h2 id="技術スタックの選定">技術スタックの選定</h2>
+
+<p>今回は「運用コストゼロ」かつ「爆速」であることを条件に、以下の構成を採用しました。</p>
+
+<ul>
+  <li><strong>Jekyll</strong>: Ruby 製の静的サイトジェネレーター。GitHub Pages との親和性が良い。</li>
+  <li><strong>Tailwind CSS</strong>: ユーティリティファーストな CSS フレームワーク。</li>
+  <li><strong>GitHub Pages</strong>: 無料でホスティング可能。</li>
+</ul>
+
+<p>基本的に Markdown 方式で記事を作成できます．</p>
+
+<p>↓ こんな感じです．</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gu">## 技術スタックの選定</span>
+
+今回は「運用コストゼロ」かつ「爆速」であることを条件に、以下の構成を採用しました。
+<span class="p">
+-</span> <span class="gs">**Jekyll**</span>: Ruby 製の静的サイトジェネレーター。GitHub Pages との親和性が良い。
+<span class="p">-</span> <span class="gs">**Tailwind CSS**</span>: ユーティリティファーストな CSS フレームワーク。
+<span class="p">-</span> <span class="gs">**GitHub Pages**</span>: 無料でホスティング可能。
+</code></pre></div></div>
+
+<p>こだわりたいところは html を直書きしたり CSS を定義したりできるのでカスタマイズ性が非常に高いです．
+少しでも html に慣れている人なら扱いやすいかなと思います．</p>
+
+<p>最近は AI が優秀で，ずいぶん自作のハードルが下がったと思います．
+このブログも大いに AI の力を借りて作成しています．</p>
+
+<h3 id="なぜ-wordpress-ではないのか">なぜ WordPress ではないのか？</h3>
+
+<p>WordPress は動的生成のため、サーバー管理やセキュリティアップデートの手間が発生します。
+一方、Jekyll のような静的サイトジェネレーター（SSG）には以下のメリットがあります。</p>
+
+<ol>
+  <li><strong>セキュリティリスクが低い</strong>: データベースがないため攻撃されにくい。</li>
+  <li><strong>圧倒的に高速</strong>: 生成済みの HTML を配信するだけ。</li>
+  <li><strong>Git 管理できる</strong>: 記事の履歴をすべてバージョン管理できる。</li>
+</ol>
+
+<h2 id="立ち上げ方法">立ち上げ方法</h2>
+
+<p>まずは Jekyll の土台を作り、そこに Tailwind CSS を組み込むための環境構築を行います。
+Ruby と Node.js がインストールされている前提で進めます。</p>
+
+<h3 id="1-jekyll-サイトの作成">1. Jekyll サイトの作成</h3>
+
+<p>まずはひな形を作成します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># BundlerとJekyllのインストール</span>
+gem <span class="nb">install </span>jekyll bundler
+
+<span class="c"># 新規サイトの作成（my-blogというフォルダ名）</span>
+jekyll new my-blog
+<span class="nb">cd </span>my-blog
+
+<span class="c"># サーバー起動確認</span>
+bundle <span class="nb">exec </span>jekyll serve
+</code></pre></div></div>
+
+<p>これで http://localhost:4000 にアクセスしてデフォルトの画面が出れば OK です。</p>
+
+<h3 id="2-tailwind-css-の導入">2. Tailwind CSS の導入</h3>
+
+<p>Jekyll は Ruby 製ですが、Tailwind CSS のビルドには Node.js のエコシステムを使います。
+TailwindCSS の最新バージョンは v4 なのですが，AI に聞くと v3 バージョンとごっちゃになった情報が返ってくるので注意です．
+ここでは v4 を前提に進めます．</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># package.jsonの生成</span>
+npm init <span class="nt">-y</span>
+<span class="c"># tailwindcssの導入</span>
+npm <span class="nb">install </span>tailwindcss @tailwindcss/cli
+</code></pre></div></div>
+
+<h3 id="3-css-の設定">3. CSS の設定</h3>
+
+<p>v4 の最大の特徴は tailwind.config.js が不要な点です。 メインの CSS ファイル（例: assets/css/tailwind.css）に以下のように書くだけで設定完了です。</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">@layer</span> <span class="n">base</span> <span class="p">{</span>
+  <span class="c">/* ここでカスタムカラーやフォントを定義 */</span>
+  <span class="nd">:root</span> <span class="p">{</span>
+    <span class="py">--color-primary</span><span class="p">:</span> <span class="nx">#342b48</span><span class="p">;</span>
+    <span class="py">--font-body</span><span class="p">:</span> <span class="s2">'Noto Sans JP'</span><span class="p">,</span> <span class="nb">sans-serif</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">@import</span> <span class="s2">'tailwindcss'</span><span class="p">;</span>
+
+<span class="c">/* さらに必要なスタイルを追記する場合は、@layer components や utilities を使う */</span>
+<span class="k">@layer</span> <span class="n">components</span> <span class="p">{</span>
+  <span class="nc">.text-brand</span> <span class="p">{</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="nf">var</span><span class="p">(</span><span class="l">--color-brand</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nc">.nav-link</span> <span class="p">{</span>
+    <span class="err">@apply</span> <span class="err">flex-1</span> <span class="err">px-2</span> <span class="py">md</span><span class="p">:</span><span class="n">px-2</span> <span class="n">hover</span><span class="p">:</span><span class="n">text-gray-400</span> <span class="n">transition-colors</span> <span class="n">duration-200</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="4-ビルドプロセスの実行">4. ビルドプロセスの実行</h3>
+
+<p>Jekyll のビルドコマンドとは別に、Tailwind の監視コマンドを走らせておく必要があることに注意です．</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle <span class="nb">exec </span>jekyll serve
+</code></pre></div></div>
+
+<p>上のコマンドとは別のターミナルで CSS を監視・ビルド。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx tailwindcss <span class="nt">-i</span> ./assets/css/style.css <span class="nt">-o</span> ./_site/assets/css/style.css <span class="nt">--watch</span>
+</code></pre></div></div>
+
+<h2 id="github-pages-へのデプロイ">GitHub Pages へのデプロイ</h2>
+
+<p>GitHub Pages の標準機能（Jekyll ビルド）だけでは、Node.js 環境が必要な Tailwind CSS v4 をビルドできません。
+そのため、<strong>GitHub Actions</strong> を使って「CSS ビルド → Jekyll ビルド → デプロイ」を自動化します。</p>
+
+<h3 id="1-ワークフローファイルの作成">1. ワークフローファイルの作成</h3>
+
+<p>プロジェクトのルートディレクトリに <code class="language-plaintext highlighter-rouge">.github/workflows/pages.yml</code> というファイルを作成し、以下の内容を記述します。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">name</span><span class="pi">:</span> <span class="s">Deploy to GitHub Pages</span>
+
+<span class="na">on</span><span class="pi">:</span>
+  <span class="na">push</span><span class="pi">:</span>
+    <span class="na">branches</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">main'</span><span class="pi">]</span>
+
+<span class="na">permissions</span><span class="pi">:</span>
+  <span class="na">contents</span><span class="pi">:</span> <span class="s">read</span>
+  <span class="na">pages</span><span class="pi">:</span> <span class="s">write</span>
+  <span class="na">id-token</span><span class="pi">:</span> <span class="s">write</span>
+
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">build</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Checkout</span>
+        <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v4</span>
+
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Setup Ruby</span>
+        <span class="na">uses</span><span class="pi">:</span> <span class="s">ruby/setup-ruby@v1</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">ruby-version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">3.3'</span>
+          <span class="na">bundler-cache</span><span class="pi">:</span> <span class="kc">true</span>
+
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Setup Node</span>
+        <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/setup-node@v4</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">node-version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">20'</span>
+          <span class="na">cache</span><span class="pi">:</span> <span class="s1">'</span><span class="s">npm'</span>
+
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Install Dependencies</span>
+        <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+          <span class="s">bundle install</span>
+          <span class="s">npm ci</span>
+
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Build Tailwind CSS</span>
+        <span class="c1"># v4のCLIを使ってCSSを生成します</span>
+        <span class="na">run</span><span class="pi">:</span> <span class="s">npx @tailwindcss/cli -i ./assets/css/style.css -o ./assets/css/output.css</span>
+
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Build Jekyll</span>
+        <span class="na">run</span><span class="pi">:</span> <span class="s">bundle exec jekyll build</span>
+
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Upload artifact</span>
+        <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/upload-pages-artifact@v3</span>
+
+  <span class="na">deploy</span><span class="pi">:</span>
+    <span class="na">environment</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">github-pages</span>
+      <span class="na">url</span><span class="pi">:</span> <span class="s">$</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">needs</span><span class="pi">:</span> <span class="s">build</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Deploy to GitHub Pages</span>
+        <span class="na">id</span><span class="pi">:</span> <span class="s">deployment</span>
+        <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/deploy-pages@v4</span>
+</code></pre></div></div>
+
+<h3 id="2-github-側の設定">2. GitHub 側の設定</h3>
+
+<p>リポジトリの <strong>Settings &gt; Pages</strong> に移動し、Build and deployment の Source を <strong>“GitHub Actions”</strong> に変更します。</p>
+
+<p>これで、<code class="language-plaintext highlighter-rouge">main</code> ブランチにプッシュするたびに自動的に以下のフローが走ります。</p>
+
+<ol>
+  <li>GitHub Actions が起動</li>
+  <li><code class="language-plaintext highlighter-rouge">npm ci</code> で Tailwind 環境をセットアップ</li>
+  <li>CSS をビルドして生成</li>
+  <li>Jekyll で静的サイトをビルド</li>
+  <li>Web 上に公開</li>
+</ol>
+
+<p><strong>補足：レイアウトファイルでの CSS 読み込みについて</strong></p>
+
+<p>GitHub Actions 内で output.css という名前で CSS を吐き出す設定にした場合（上記 YAML 参照）、Jekyll のレイアウトファイル（_layouts/default.html や _includes/head.html）での読み込みパスもそれに合わせる必要があります。</p>
+
+<pre><code class="language-HTML">&lt;link rel="stylesheet" href="/assets/css/output.css"&gt;
+</code></pre>
+
+<p>ここがズレていると、ローカル（監視中）ではデザインが当たるのに、デプロイするとスタイルが崩れる（CSS が読み込めない）原因になりますのでご注意ください。</p>
+
+<h2 id="デザインの実装">デザインの実装</h2>
+
+<p><strong>Notion</strong> や<strong>note</strong>のような見やすさを意識して作りました．</p>
+
+<h3 id="見出しのデザイン">見出しのデザイン</h3>
+
+<p>Tailwind CSS の <code class="language-plaintext highlighter-rouge">@layer components</code> を使用して、Markdown の標準要素を拡張しています。</p>
+
+<ul>
+  <li><strong>H1</strong>: 記事の区切りを明確にするための二重線風ボーダー</li>
+  <li><strong>H2</strong>: すっきりとしたアンダーライン</li>
+  <li><strong>H3</strong>: 主張しすぎないグレーのライン</li>
+</ul>
+
+<h3 id="コードブロックの装飾">コードブロックの装飾</h3>
+
+<p>技術ブログに欠かせないコードブロックは、可読性を重視してダークテーマを採用しました。
+上で散々出てきたやつです．
+インラインコード（例：<code class="language-plaintext highlighter-rouge">git status</code>）は、Notion と同じく赤文字＋グレー背景にしています。</p>
+
+<h3 id="数式">数式</h3>
+
+<p>KaTeX を導入して数式を表示できるようにしました。</p>
+
+\[E = mc^2\]
+
+\[\int_{-\infty}^{\infty} e^{-x^2} \, dx = \sqrt{\pi}\]
+
+<p>この他にも色々カスタムできるので，興味がある人はぜひチャレンジしてみてください．</p>
+
+        </div>        
+      </main>
+  
+      <aside class="lg:col-span-3 relative">
+        
+        <div class="note-toc-sidebar">
+          <p class="toc-title">目次</p>
+          <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#技術スタックの選定">技術スタックの選定</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#なぜ-wordpress-ではないのか">なぜ WordPress ではないのか？</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#立ち上げ方法">立ち上げ方法</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#1-jekyll-サイトの作成">1. Jekyll サイトの作成</a></li>
+<li class="toc-entry toc-h3"><a href="#2-tailwind-css-の導入">2. Tailwind CSS の導入</a></li>
+<li class="toc-entry toc-h3"><a href="#3-css-の設定">3. CSS の設定</a></li>
+<li class="toc-entry toc-h3"><a href="#4-ビルドプロセスの実行">4. ビルドプロセスの実行</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#github-pages-へのデプロイ">GitHub Pages へのデプロイ</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#1-ワークフローファイルの作成">1. ワークフローファイルの作成</a></li>
+<li class="toc-entry toc-h3"><a href="#2-github-側の設定">2. GitHub 側の設定</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#デザインの実装">デザインの実装</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#見出しのデザイン">見出しのデザイン</a></li>
+<li class="toc-entry toc-h3"><a href="#コードブロックの装飾">コードブロックの装飾</a></li>
+<li class="toc-entry toc-h3"><a href="#数式">数式</a></li>
+</ul>
+</li>
+</ul>
+        </div>
+  
+      </aside>
+  
+    </div>
+  </div>
+</div>
+
+
+</main>
+
+    <!-- <footer>
+  <div class="footer">
+    <div class="copy">&copy;2024 九大ロボ技</div>
+  </div>
+</footer> -->
+
+<footer class="bg-[#9191a7] mt-4">
+  <div class="mx-auto p-2 text-center" style="font-family: var(--font-lubri)">
+    <p>© 2025 羽のカタチ</p>
+  </div>
+</footer>
+
+  </body>
+</html>

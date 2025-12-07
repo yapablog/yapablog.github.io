@@ -1,0 +1,248 @@
+---
+layout: article
+title: 'GitHub Pages + Jekyll + Tailwind CSSで自作する技術ブログ'
+date: 2025-12-07
+categories: others
+math: true
+toc: true
+---
+
+技術ブログを自作しました。
+既存のプラットフォーム（Qiita や Zenn）も素晴らしいですが、**「自分の好きなデザインで育てる庭」**が欲しかったのが最大の理由です。
+広告表示の必要がないことやプラットフォーム消滅の心配が少ないことも理由に挙げられます．
+
+この記事では、採用した技術スタックと、デザインの実装について解説します。
+
+## 技術スタックの選定
+
+今回は「運用コストゼロ」かつ「爆速」であることを条件に、以下の構成を採用しました。
+
+- **Jekyll**: Ruby 製の静的サイトジェネレーター。GitHub Pages との親和性が良い。
+- **Tailwind CSS**: ユーティリティファーストな CSS フレームワーク。
+- **GitHub Pages**: 無料でホスティング可能。
+
+基本的に Markdown 方式で記事を作成できます．
+
+↓ こんな感じです．
+
+```markdown
+## 技術スタックの選定
+
+今回は「運用コストゼロ」かつ「爆速」であることを条件に、以下の構成を採用しました。
+
+- **Jekyll**: Ruby 製の静的サイトジェネレーター。GitHub Pages との親和性が良い。
+- **Tailwind CSS**: ユーティリティファーストな CSS フレームワーク。
+- **GitHub Pages**: 無料でホスティング可能。
+```
+
+こだわりたいところは html を直書きしたり CSS を定義したりできるのでカスタマイズ性が非常に高いです．
+少しでも html に慣れている人なら扱いやすいかなと思います．
+
+最近は AI が優秀で，ずいぶん自作のハードルが下がったと思います．
+このブログも大いに AI の力を借りて作成しています．
+
+### なぜ WordPress ではないのか？
+
+WordPress は動的生成のため、サーバー管理やセキュリティアップデートの手間が発生します。
+一方、Jekyll のような静的サイトジェネレーター（SSG）には以下のメリットがあります。
+
+1.  **セキュリティリスクが低い**: データベースがないため攻撃されにくい。
+2.  **圧倒的に高速**: 生成済みの HTML を配信するだけ。
+3.  **Git 管理できる**: 記事の履歴をすべてバージョン管理できる。
+
+## 立ち上げ方法
+
+まずは Jekyll の土台を作り、そこに Tailwind CSS を組み込むための環境構築を行います。
+Ruby と Node.js がインストールされている前提で進めます。
+
+### 1. Jekyll サイトの作成
+
+まずはひな形を作成します。
+
+```bash
+# BundlerとJekyllのインストール
+gem install jekyll bundler
+
+# 新規サイトの作成（my-blogというフォルダ名）
+jekyll new my-blog
+cd my-blog
+
+# サーバー起動確認
+bundle exec jekyll serve
+```
+
+これで http://localhost:4000 にアクセスしてデフォルトの画面が出れば OK です。
+
+### 2. Tailwind CSS の導入
+
+Jekyll は Ruby 製ですが、Tailwind CSS のビルドには Node.js のエコシステムを使います。
+TailwindCSS の最新バージョンは v4 なのですが，AI に聞くと v3 バージョンとごっちゃになった情報が返ってくるので注意です．
+ここでは v4 を前提に進めます．
+
+```bash
+# package.jsonの生成
+npm init -y
+# tailwindcssの導入
+npm install tailwindcss @tailwindcss/cli
+```
+
+### 3. CSS の設定
+
+v4 の最大の特徴は tailwind.config.js が不要な点です。 メインの CSS ファイル（例: assets/css/tailwind.css）に以下のように書くだけで設定完了です。
+
+```css
+@layer base {
+  /* ここでカスタムカラーやフォントを定義 */
+  :root {
+    --color-primary: #342b48;
+    --font-body: 'Noto Sans JP', sans-serif;
+  }
+}
+
+@import 'tailwindcss';
+
+/* さらに必要なスタイルを追記する場合は、@layer components や utilities を使う */
+@layer components {
+  .text-brand {
+    color: var(--color-brand);
+  }
+  .nav-link {
+    @apply flex-1 px-2 md:px-2 hover:text-gray-400 transition-colors duration-200;
+  }
+}
+```
+
+### 4. ビルドプロセスの実行
+
+Jekyll のビルドコマンドとは別に、Tailwind の監視コマンドを走らせておく必要があることに注意です．
+
+```bash
+bundle exec jekyll serve
+```
+
+上のコマンドとは別のターミナルで CSS を監視・ビルド。
+
+```bash
+npx tailwindcss -i ./assets/css/style.css -o ./_site/assets/css/style.css --watch
+```
+
+## GitHub Pages へのデプロイ
+
+GitHub Pages の標準機能（Jekyll ビルド）だけでは、Node.js 環境が必要な Tailwind CSS v4 をビルドできません。
+そのため、**GitHub Actions** を使って「CSS ビルド → Jekyll ビルド → デプロイ」を自動化します。
+
+### 1. ワークフローファイルの作成
+
+プロジェクトのルートディレクトリに `.github/workflows/pages.yml` というファイルを作成し、以下の内容を記述します。
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: ['main']
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          bundle install
+          npm ci
+
+      - name: Build Tailwind CSS
+        # v4のCLIを使ってCSSを生成します
+        run: npx @tailwindcss/cli -i ./assets/css/style.css -o ./assets/css/output.css
+
+      - name: Build Jekyll
+        run: bundle exec jekyll build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+### 2. GitHub 側の設定
+
+リポジトリの **Settings > Pages** に移動し、Build and deployment の Source を **"GitHub Actions"** に変更します。
+
+これで、`main` ブランチにプッシュするたびに自動的に以下のフローが走ります。
+
+1.  GitHub Actions が起動
+2.  `npm ci` で Tailwind 環境をセットアップ
+3.  CSS をビルドして生成
+4.  Jekyll で静的サイトをビルド
+5.  Web 上に公開
+
+**補足：レイアウトファイルでの CSS 読み込みについて**
+
+GitHub Actions 内で output.css という名前で CSS を吐き出す設定にした場合（上記 YAML 参照）、Jekyll のレイアウトファイル（\_layouts/default.html や \_includes/head.html）での読み込みパスもそれに合わせる必要があります。
+
+```HTML
+<link rel="stylesheet" href="{{ '/assets/css/output.css' | relative_url }}">
+```
+
+ここがズレていると、ローカル（監視中）ではデザインが当たるのに、デプロイするとスタイルが崩れる（CSS が読み込めない）原因になりますのでご注意ください。
+
+## デザインの実装
+
+**Notion** や**note**のような見やすさを意識して作りました．
+
+### 見出しのデザイン
+
+Tailwind CSS の `@layer components` を使用して、Markdown の標準要素を拡張しています。
+
+- **H1**: 記事の区切りを明確にするための二重線風ボーダー
+- **H2**: すっきりとしたアンダーライン
+- **H3**: 主張しすぎないグレーのライン
+
+### コードブロックの装飾
+
+技術ブログに欠かせないコードブロックは、可読性を重視してダークテーマを採用しました。
+上で散々出てきたやつです．
+インラインコード（例：`git status`）は、Notion と同じく赤文字＋グレー背景にしています。
+
+### 数式
+
+KaTeX を導入して数式を表示できるようにしました。
+
+$$
+  E = mc^2
+$$
+
+$$
+\int_{-\infty}^{\infty} e^{-x^2} \, dx = \sqrt{\pi}
+$$
+
+この他にも色々カスタムできるので，興味がある人はぜひチャレンジしてみてください．
