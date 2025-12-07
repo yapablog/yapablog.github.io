@@ -1,7 +1,9 @@
 @layer base {
   :root {
-    --color-primary: #000000;
+    --color-primary: #342b48;
     --color-brand: #08206b;
+    --color-secondary: #343434;
+    --color-bg-callout: #f3f4f6;
     --font-body: 'Noto Sans JP', sans-serif;
     --font-serif: 'Noto Serif JP', serif;
     --font-sans: 'Zen Kaku Gothic New', sans-serif;
@@ -22,16 +24,18 @@
   }
 
   .h1 {
-    font-family: var(--font-lubri);
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: var(--color-primary);
-    margin-top: 3rem;
-    margin-bottom: 0.5rem;
-    margin-right: 0.5rem;
-    margin-left: 0.5rem;
-    text-align: center;
-    text-decoration: underline;
+    color: var(--color-secondary);
+    /* 余白の整理 */
+    margin: 1rem 1rem 1rem 1rem;
+    padding-left: 1rem; /* 文字と線の間隔 */
+
+    /* デザイン部分 */
+    text-align: left;
+    text-decoration: none; /* 下線を消す */
+    border-left: 6px solid var(--color-secondary); /* 左側のアクセント */
+    line-height: 1.3;
   }
   .project-title {
     font-family: var(--font-lubri);
@@ -83,9 +87,87 @@
     max-width: 860px;
     margin: 2rem auto;
     padding: 1.5rem;
-    background-color: #ffffff;
-    line-height: 1.8;
+    color: var(--color-primary);
+    font-family: var(--font-body);
+    @apply text-base leading-8; /* 読みやすい行間 */
   }
+
+  /* H1: 上下に太めのボーダー（二重線風にアレンジも可能） */
+  .article h1 {
+    font-family: var(--font-sans);
+    border-color: var(--color-brand);
+    border-style: double;
+    border-width: 6px 0;
+    @apply text-3xl font-bold mt-10 mb-8 py-3;
+  }
+
+  /* H2: アンダーラインのみ */
+  .article h2 {
+    font-family: var(--font-sans);
+    border-color: var(--color-bland);
+    @apply text-2xl font-bold mt-10 mb-6 pb-2 border-b-2;
+  }
+
+  /* H3: 薄いアンダーライン */
+  .article h3 {
+    font-family: var(--font-sans);
+    @apply text-xl font-bold mt-8 mb-4 pb-1 border-b border-gray-300;
+  }
+
+  /* --- 本文テキスト --- */
+  .article p {
+    @apply mb-6;
+  }
+
+  .article strong {
+    @apply font-bold text-gray-800; /* 強調は少し濃く */
+  }
+
+  /* 箇条書き */
+  .article ul {
+    @apply list-disc list-outside ml-6 mb-6 text-gray-700;
+  }
+  .article ul li {
+    @apply pl-1 mb-1;
+  }
+
+  /* 番号付きリスト */
+  .article ol {
+    @apply list-decimal list-outside ml-6 mb-6 text-gray-700;
+  }
+  .article ol li {
+    @apply pl-1 mb-1;
+  }
+
+  /* --- 引用 --- */
+  .article blockquote {
+    border-left-color: var(--color-primary);
+    @apply border-l-4 pl-4 py-1 my-6 italic text-gray-600 bg-transparent;
+  }
+
+  /* --- コールアウト（Notion風の囲み枠） --- */
+  /* Jekyll側で <div class="callout">...</div> のように使う想定 */
+  .article .callout {
+    background-color: var(--color-bg-callout);
+    @apply p-4 rounded-md my-6 flex items-start gap-3 text-gray-700 border border-gray-200;
+  }
+
+  /* コールアウト内のアイコン装飾（絵文字などを想定） */
+  .article .callout .icon {
+    @apply text-xl select-none;
+  }
+
+  /* --- リンク --- */
+  .article a {
+    color: var(--color-brand);
+    @apply underline underline-offset-4 decoration-1 hover:decoration-2 transition-all;
+  }
+
+  /* --- 画像 --- */
+  .article img {
+    @apply rounded-lg shadow-sm my-8 h-auto w-full object-cover;
+  }
+
   .article p {
     @apply text-gray-700 my-3;
   }
@@ -100,5 +182,105 @@
   }
   .article figcaption {
     @apply text-sm text-gray-500 mt-2;
+  }
+
+  /* --- インラインコード (Notion風: 赤文字 + 薄いグレー背景) --- */
+  /* :not(pre) > code とすることで、コードブロック内のcodeには適用しないようにします */
+  .article :not(pre) > code {
+    color: #eb5757; /* Notion特有の赤色 */
+    background-color: rgba(135, 131, 120, 0.15); /* 薄いグレー背景 */
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    @apply px-1.5 py-0.5 rounded text-sm mx-0.5 align-middle;
+  }
+
+  /* --- コードブロック (全体枠) --- */
+  /* Jekyllのシンタックスハイライター(Rouge)が出力する pre タグ */
+  .article pre {
+    /* 背景色はダークモード風（Notionのダークモードや一般的なDevブログ風） */
+    /* 明るい背景が良い場合は #F7F6F3 に変更してください */
+    @apply bg-slate-800 text-gray-100;
+
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+    /* スクロールと余白の設定 */
+    @apply p-4 rounded-lg overflow-x-auto my-6 text-sm leading-relaxed border border-gray-700 shadow-md;
+  }
+
+  /* コードブロック内の文字色（シンタックスハイライトがない場合のデフォルト） */
+  .article pre code {
+    @apply bg-transparent p-0 text-inherit;
+    color: inherit; /* 親のpreの色を引き継ぐ */
+  }
+  /* KaTeXのフォントサイズ調整 */
+  .katex {
+    font-size: 1.1em; /* 少しだけ大きくして読みやすく */
+  }
+
+  /* ブロック数式の上下余白 */
+  .katex-display {
+    @apply my-6 overflow-x-auto overflow-y-hidden; /* スマホで横スクロール可能に */
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  /* =========================================
+    パターンA: 記事の直前に入れる (Note風インライン目次)
+    ========================================= */
+  .note-toc-inline {
+    @apply bg-gray-50 rounded-lg p-6 my-10 border border-gray-100;
+  }
+
+  /* タイトル ("目次" という文字用) */
+  .note-toc-inline .toc-title {
+    @apply text-gray-800 font-bold text-lg mb-4 flex items-center gap-2;
+  }
+
+  /* リスト全体 */
+  .note-toc-inline ul {
+    @apply list-none p-0 m-0 space-y-2;
+  }
+
+  /* 各リンク */
+  .note-toc-inline a {
+    @apply text-gray-600 no-underline hover:text-[var(--color-brand)] hover:bg-gray-100 block px-3 py-1.5 rounded transition-colors text-sm;
+  }
+
+  /* 第2階層 (h3) 以降のインデントと装飾 */
+  .note-toc-inline ul ul {
+    @apply mt-1 ml-2 border-l-2 border-gray-200 pl-2 space-y-1;
+  }
+
+  /* h3の文字は少し小さく */
+  .note-toc-inline ul ul a {
+    @apply text-xs text-gray-500;
+  }
+
+  /* =========================================
+      パターンB: 右側に追従する (Note風サイドバー目次)
+      ========================================= */
+  .note-toc-sidebar {
+    /* 画面の高さに収まるようにし、スクロール可能に */
+    @apply sticky top-24 max-h-[80vh] overflow-y-auto pr-4 hidden lg:block;
+  }
+
+  .note-toc-sidebar .toc-title {
+    @apply text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 pl-3;
+  }
+
+  .note-toc-sidebar ul {
+    @apply list-none p-0 m-0 space-y-1;
+  }
+
+  .note-toc-sidebar a {
+    /* 左側に透明なボーダーを持ち、ホバー時に色をつける */
+    @apply block text-sm text-gray-500 no-underline py-1.5 pl-3 border-l-2 border-transparent transition-all;
+  }
+
+  .note-toc-sidebar a:hover {
+    @apply text-[var(--color-brand)] border-[var(--color-brand)];
+  }
+
+  /* h3以下はインデント */
+  .note-toc-sidebar ul ul {
+    @apply ml-3 mt-1;
   }
 }

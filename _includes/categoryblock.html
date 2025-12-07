@@ -1,0 +1,7 @@
+<div>
+<div class="h1">{{ include.title }}</div>
+{% assign collection=include.collection %}
+{% assign href = '/' | append: collection | append: '/' %}
+{% include post_list.html collection=collection limit=3 %}
+{% include button.html href=href label="More Posts" %}
+</div>

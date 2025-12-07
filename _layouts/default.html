@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{page.title}} | {{site.title}}</title>
-    <meta name="description" content="九州大学でものづくり活動を行っているサークルです。" />
+    <meta name="description" content="航空工学・生物模倣など" />
     <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="{{ '/assets/css/tailwind-output.css' | relative_url }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -21,24 +21,6 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=WDXL+Lubrifont+TC&family=Zen+Kaku+Gothic+New&display=swap"
       rel="stylesheet"
     />
-    {% if page.math or site.math %}
-    <!-- MathJax v3 推奨 -->
-    <script>
-      window.MathJax = {
-        tex: {
-          inlineMath: [['\\(', '\\)']],
-          displayMath: [['$$', '$$']],
-          processEscapes: true,
-        },
-        svg: { fontCache: 'global' },
-      };
-    </script>
-    <script
-      async
-      id="MathJax-script"
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
-    ></script>
-    {% endif %}
   </head>
 
   <body>

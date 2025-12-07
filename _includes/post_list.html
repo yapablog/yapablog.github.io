@@ -1,19 +1,44 @@
-<ul class="space-y-6 py-4 px-8 max-w-[860px] mx-auto">
-  {% assign sorted_news = site.posts | sort: "date" | reverse %} {% for post in sorted_news limit:
-  include.limit %}
-  <li class="mx-1 border-l-4 border-gray-500 bg-gray-50 shadow p-4 rounded-md">
-    <div class="text-sm text-gray-500 mb-1">{{ post.date | date: "%Y/%m/%d" }}</div>
-    <div class="font-semibold text-gray-800">
-      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-    </div>
-    <div class="mt-2">
-      <a
-        href="{{ post.url | relative_url }}"
-        class="inline-block text-gray-600 border border-gray-500 text-sm px-3 py-1 rounded hover:bg-pink-50 transition-colors duration-200"
+<div class="max-w-screen-xl mx-auto py-6 px-4">
+  <ul>
+    {% assign sorted_posts = site[include.collection]  | sort: "date" | reverse %}
+    {% for post in sorted_posts limit: include.limit %}
+    <li class="border-b border-gray-200">
+      <a 
+        href="{{ post.url | relative_url }}" 
+        class="flex py-3 group hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-sm"
       >
-        記事を読む
+        <div class="w-24 h-20 sm:w-28 sm:h-24 shrink-0 overflow-hidden rounded bg-gray-100 mr-3">
+          {% if post.image %}
+            <img 
+              src="{{ post.image | relative_url }}" 
+              alt="{{ post.title }}" 
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            >
+          {% else %}
+            <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 text-xs">
+              No Img
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="flex-1 min-w-0 flex flex-col justify-center">
+          <div class="flex items-center text-xs text-gray-400 mb-1 space-x-2">
+            <time>{{ post.date | date: "%Y.%m.%d" }}</time>
+            {% if post.categories.size > 0 %}
+              <span class="text-[#624ba1ee] font-medium">{{ post.categories | first }}</span>
+            {% endif %}
+          </div>
+
+          <h3 class="text-sm sm:text-base font-bold text-gray-800 leading-snug line-clamp-2 group-hover:text-[#624ba1ee] transition-colors mb-1">
+            {{ post.title }}
+          </h3>
+
+          <p class="text-xs text-gray-500 line-clamp-1">
+            {{ post.excerpt | strip_html | strip_newlines }}
+          </p>
+        </div>
       </a>
-    </div>
-  </li>
-  {% endfor %}
-</ul>
+    </li>
+    {% endfor %}
+  </ul>
+</div>

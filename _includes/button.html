@@ -1,9 +1,21 @@
-<div class="flex justify-center my-2">
+<div class="flex justify-center mt-6 mb-8 ml-5 px-2">
+  <ul>
   <a
     href="{{ include.href }}"
-    class="px-18 py-4 rounded-full bg-gray-400 text-white text-center text-lg hover:bg-gray-500 transition"
+    class="group w-full md:w-auto flex items-center justify-center px-6 py-2 rounded-lg font-semibold text-lg bg-gray-100 hover:bg-gray-200 text-[#624ba1ee] hover:text-[#503a85]"
     style="font-family: var(--font-lubri)"
   >
-    <div class="arrow">{{ include.label | default: "More" }}</div>
+    <span class="font-bold text-lg">
+      {{ include.label | default: "More Posts" }}
+    </span>
+    <svg 
+      class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform duration-300" 
+      fill="none" 
+      stroke="currentColor" 
+      viewBox="0 0 24 24"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+    </svg>
   </a>
+</ul>
 </div>

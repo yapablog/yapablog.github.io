@@ -33,17 +33,19 @@ github_username: jekyll
 # theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-toc
 
 collections:
   posts:
     output: true
     permalink: /posts/:name/
-  ronbun:
+  others:
     output: true
-    permalink: /ronbun/:name/
+    permalink: /others/:name/
 
 markdown: kramdown
 kramdown:
+  toc_levels: 1..2 # h2までを目次に含める
   input: GFM
   math_engine: mathjax # or 'katex'
   parse_block_html: true

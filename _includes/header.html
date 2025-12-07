@@ -9,32 +9,34 @@
 -->
 
 <header
-  class="sticky top-0 z-50 w-full border-b-2 border-[#624ba1ee] divide-gray-400 py-2 bg-white"
+  class=" top-0 z-50 w-full border-b-2 border-[#624ba1ee] divide-gray-400 py-2 bg-white"
 >
   <div
-    class="flex items-center w-full max-w-screen-xl"
+    class="flex items-center w-full"
   >
     <!-- タイトル -->
     <a
       href="{{ '/' | relative_url }}"
-      class="flex px-2 items-center justify-start"
+      class="flex px-2 items-center"
     >
       <img
-        src="{{ '/assets/images/logo_simple.png' | relative_url }}"
+        src="{{ '/assets/images/logo_4.png' | relative_url }}"
         alt="ロゴ"
-        class="h-8 md:h-10 w-auto ml-2"
+        class="h-10 md:h-10 w-auto ml-2"
       />
-      <div class="ml-2 flex flex-col leading-tight">
-        <!-- <span class="text-xs text-gray-500 -mt-1 tracking-wide">
-          KAZE NO HAKO
-        </span> -->
-        <span class="text-lg md:text-2xl font-bold text-gray-800">
-          風の匣
-        </span>
+      <div class="flex flex-col leading-tigh ">
+        <div class="ml-2 text-[1.4rem] text-center text-gray-800 font-bold">
+          羽っぽい何か
+        </div>
+        <div class="ml-2 text-[0.6rem] text-center text-gray-600 font-medium leading-none font-serif">
+         航空工学・生物模倣など
+        </div>
       </div>
-      <div class="ml-2 text-sm md:text-base text-gray-600 font-medium">
-        Tech blog
-      </div>
+      <!-- <div class="ml-2 flex flex-col leading-tight">
+        <div class="text-[1.2rem] md:text-[1.8rem] text-gray-600 font-medium leading-none">
+          
+        </div>
+      </div> -->
     </a>
 
     <!-- ナビゲーション -->
@@ -42,7 +44,7 @@
         class="ml-auto flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
       >
         <a href="{{ '/' | relative_url }}" class="nav-link">Home</a>
-        <a href="{{ '/posts/' | relative_url }}" class="nav-link">Posts</a>
+        <a href="{{ '/about/' | relative_url }}" class="nav-link">About</a>
       </nav>
   </div>
 </header>

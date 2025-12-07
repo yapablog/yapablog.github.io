@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>トップ | kaze-no-hako</title>
-    <meta name="description" content="九州大学でものづくり活動を行っているサークルです。" />
+    <meta name="description" content="航空工学・生物模倣など" />
     <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/assets/css/tailwind-output.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -21,7 +21,6 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=WDXL+Lubrifont+TC&family=Zen+Kaku+Gothic+New&display=swap"
       rel="stylesheet"
     />
-    
   </head>
 
   <body>
@@ -36,32 +35,34 @@
 -->
 
 <header
-  class="sticky top-0 z-50 w-full border-b-2 border-[#624ba1ee] divide-gray-400 py-2 bg-white"
+  class=" top-0 z-50 w-full border-b-2 border-[#624ba1ee] divide-gray-400 py-2 bg-white"
 >
   <div
-    class="flex items-center w-full max-w-screen-xl"
+    class="flex items-center w-full"
   >
     <!-- タイトル -->
     <a
       href="/"
-      class="flex px-2 items-center justify-start"
+      class="flex px-2 items-center"
     >
       <img
-        src="/assets/images/logo_simple.png"
+        src="/assets/images/logo_4.png"
         alt="ロゴ"
-        class="h-8 md:h-10 w-auto ml-2"
+        class="h-10 md:h-10 w-auto ml-2"
       />
-      <div class="ml-2 flex flex-col leading-tight">
-        <!-- <span class="text-xs text-gray-500 -mt-1 tracking-wide">
-          KAZE NO HAKO
-        </span> -->
-        <span class="text-lg md:text-2xl font-bold text-gray-800">
-          風の匣
-        </span>
+      <div class="flex flex-col leading-tigh ">
+        <div class="ml-2 text-[1.4rem] text-center text-gray-800 font-bold">
+          羽っぽい何か
+        </div>
+        <div class="ml-2 text-[0.6rem] text-center text-gray-600 font-medium leading-none font-serif">
+         航空工学・生物模倣など
+        </div>
       </div>
-      <div class="ml-2 text-sm md:text-base text-gray-600 font-medium">
-        Tech blog
-      </div>
+      <!-- <div class="ml-2 flex flex-col leading-tight">
+        <div class="text-[1.2rem] md:text-[1.8rem] text-gray-600 font-medium leading-none">
+          
+        </div>
+      </div> -->
     </a>
 
     <!-- ナビゲーション -->
@@ -69,41 +70,121 @@
         class="ml-auto flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
       >
         <a href="/" class="nav-link">Home</a>
-        <a href="/posts/" class="nav-link">Posts</a>
+        <a href="/about/" class="nav-link">About</a>
       </nav>
   </div>
 </header>
 
-    <main class="mx-auto"><p class="h1"><a href="/posts">All Posts</a></p>
+    <main class="mx-auto"><ul class="grid grid-cols-1 md:grid-cols-2 gap-x-10">
 
-<ul class="space-y-6 py-4 px-8 max-w-[860px] mx-auto">
-   
-  <li class="mx-1 border-l-4 border-gray-500 bg-gray-50 shadow p-4 rounded-md">
-    <div class="text-sm text-gray-500 mb-1">2025/10/21</div>
-    <div class="font-semibold text-gray-800">
-      <a href="/posts/2025-10-08-welcome-to-jekyll/">javascriptを用いた無動力滑空機の計算</a>
-    </div>
-    <div class="mt-2">
-      <a href="/posts/2025-10-08-welcome-to-jekyll/" class="inline-block text-gray-600 border border-gray-500 text-sm px-3 py-1 rounded hover:bg-pink-50 transition-colors duration-200">
-        記事を読む
+<div>
+<div class="h1">最近の投稿</div>
+
+
+<div class="max-w-screen-xl mx-auto py-6 px-4">
+  <ul>
+    
+    
+    <li class="border-b border-gray-200">
+      <a href="/posts/2025-10-08-welcome-to-jekyll/" class="flex py-3 group hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-sm">
+        <div class="w-24 h-20 sm:w-28 sm:h-24 shrink-0 overflow-hidden rounded bg-gray-100 mr-3">
+          
+            <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 text-xs">
+              No Img
+            </div>
+          
+        </div>
+
+        <div class="flex-1 min-w-0 flex flex-col justify-center">
+          <div class="flex items-center text-xs text-gray-400 mb-1 space-x-2">
+            <time>2025.10.21</time>
+            
+              <span class="text-[#624ba1ee] font-medium">aerodynamics</span>
+            
+          </div>
+
+          <h3 class="text-sm sm:text-base font-bold text-gray-800 leading-snug line-clamp-2 group-hover:text-[#624ba1ee] transition-colors mb-1">
+            javascriptを用いた無動力滑空機の計算
+          </h3>
+
+          <p class="text-xs text-gray-500 line-clamp-1">
+            javascript を用いてフリーフライト機（無動力滑空機）の運動を数値積分で解き、姿勢と位置の時間変化を求めます。MathJax を有効にしているので、式は TeX で記します。
+          </p>
+        </div>
       </a>
-    </div>
-  </li>
-  
-</ul>
-
-<!-- <div class="flex justify-center my-2">
-  <a
-    href="/posts/"
-    class="px-18 py-4 rounded-full bg-gray-400 text-white text-center text-lg hover:bg-gray-500 transition"
-    style="font-family: var(--font-lubri)"
-  >
-    <div class="arrow">More Posts</div>
-  </a>
+    </li>
+    
+  </ul>
 </div>
- -->
+<div class="flex justify-center mt-6 mb-8 ml-5 px-2">
+  <ul>
+  <a href="/posts/" class="group w-full md:w-auto flex items-center justify-center px-6 py-2 rounded-lg font-semibold text-lg bg-gray-100 hover:bg-gray-200 text-[#624ba1ee] hover:text-[#503a85]" style="font-family: var(--font-lubri)">
+    <span class="font-bold text-lg">
+      More Posts
+    </span>
+    <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+    </svg>
+  </a>
+</ul>
+</div>
 
-<p class="h1"><a href="/contact">Contact</a></p>
+</div>
+<div>
+<div class="h1">その他</div>
+
+
+<div class="max-w-screen-xl mx-auto py-6 px-4">
+  <ul>
+    
+    
+    <li class="border-b border-gray-200">
+      <a href="/others/2025-12-07/" class="flex py-3 group hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-sm">
+        <div class="w-24 h-20 sm:w-28 sm:h-24 shrink-0 overflow-hidden rounded bg-gray-100 mr-3">
+          
+            <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 text-xs">
+              No Img
+            </div>
+          
+        </div>
+
+        <div class="flex-1 min-w-0 flex flex-col justify-center">
+          <div class="flex items-center text-xs text-gray-400 mb-1 space-x-2">
+            <time>2025.12.07</time>
+            
+              <span class="text-[#624ba1ee] font-medium">others</span>
+            
+          </div>
+
+          <h3 class="text-sm sm:text-base font-bold text-gray-800 leading-snug line-clamp-2 group-hover:text-[#624ba1ee] transition-colors mb-1">
+            GitHub Pages + Jekyll + Tailwind CSSで自作する技術ブログ
+          </h3>
+
+          <p class="text-xs text-gray-500 line-clamp-1">
+            技術ブログを自作しました。既存のプラットフォーム（Qiita や Zenn）も素晴らしいですが、「自分の好きなデザインで育てる庭」が欲しかったのが最大の理由です。広告表示の必要がないことやプラットフォーム消滅の心配が少ないことも理由に挙げられます．
+          </p>
+        </div>
+      </a>
+    </li>
+    
+  </ul>
+</div>
+<div class="flex justify-center mt-6 mb-8 ml-5 px-2">
+  <ul>
+  <a href="/others/" class="group w-full md:w-auto flex items-center justify-center px-6 py-2 rounded-lg font-semibold text-lg bg-gray-100 hover:bg-gray-200 text-[#624ba1ee] hover:text-[#503a85]" style="font-family: var(--font-lubri)">
+    <span class="font-bold text-lg">
+      More Posts
+    </span>
+    <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+    </svg>
+  </a>
+</ul>
+</div>
+
+</div>
+
+</ul>
 </main>
 
     <!-- <footer>
@@ -114,7 +195,7 @@
 
 <footer class="bg-[#9191a7] mt-4">
   <div class="mx-auto p-2 text-center" style="font-family: var(--font-lubri)">
-    <p>© 2025 やぱの航空・ものづくりブログ</p>
+    <p>© 2025 羽のカタチ</p>
   </div>
 </footer>
 

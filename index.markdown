@@ -3,12 +3,9 @@ layout: default
 title: トップ
 ---
 
-{: .h1}
-[All Posts](/posts)
+<ul class="grid grid-cols-1 md:grid-cols-2 gap-x-10">
 
-{% include post_list.html limit=3 %}
+{% include categoryblock.html title="最近の投稿" collection="posts" %}
+{% include categoryblock.html title="その他" collection="others" %}
 
-<!-- {% include button.html href="/posts/" label="More Posts" %} -->
-
-{: .h1}
-[Contact](/contact)
+</ul>

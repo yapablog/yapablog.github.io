@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>javascriptを用いた無動力滑空機の計算 | kaze-no-hako</title>
-    <meta name="description" content="九州大学でものづくり活動を行っているサークルです。" />
+    <meta name="description" content="航空工学・生物模倣など" />
     <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/assets/css/tailwind-output.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -21,24 +21,6 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=WDXL+Lubrifont+TC&family=Zen+Kaku+Gothic+New&display=swap"
       rel="stylesheet"
     />
-    
-    <!-- MathJax v3 推奨 -->
-    <script>
-      window.MathJax = {
-        tex: {
-          inlineMath: [['\\(', '\\)']],
-          displayMath: [['$$', '$$']],
-          processEscapes: true,
-        },
-        svg: { fontCache: 'global' },
-      };
-    </script>
-    <script
-      async
-      id="MathJax-script"
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
-    ></script>
-    
   </head>
 
   <body>
@@ -53,32 +35,34 @@
 -->
 
 <header
-  class="sticky top-0 z-50 w-full border-b-2 border-[#624ba1ee] divide-gray-400 py-2 bg-white"
+  class=" top-0 z-50 w-full border-b-2 border-[#624ba1ee] divide-gray-400 py-2 bg-white"
 >
   <div
-    class="flex items-center w-full max-w-screen-xl"
+    class="flex items-center w-full"
   >
     <!-- タイトル -->
     <a
       href="/"
-      class="flex px-2 items-center justify-start"
+      class="flex px-2 items-center"
     >
       <img
-        src="/assets/images/logo_simple.png"
+        src="/assets/images/logo_4.png"
         alt="ロゴ"
-        class="h-8 md:h-10 w-auto ml-2"
+        class="h-10 md:h-10 w-auto ml-2"
       />
-      <div class="ml-2 flex flex-col leading-tight">
-        <!-- <span class="text-xs text-gray-500 -mt-1 tracking-wide">
-          KAZE NO HAKO
-        </span> -->
-        <span class="text-lg md:text-2xl font-bold text-gray-800">
-          風の匣
-        </span>
+      <div class="flex flex-col leading-tigh ">
+        <div class="ml-2 text-[1.4rem] text-center text-gray-800 font-bold">
+          羽っぽい何か
+        </div>
+        <div class="ml-2 text-[0.6rem] text-center text-gray-600 font-medium leading-none font-serif">
+         航空工学・生物模倣など
+        </div>
       </div>
-      <div class="ml-2 text-sm md:text-base text-gray-600 font-medium">
-        Tech blog
-      </div>
+      <!-- <div class="ml-2 flex flex-col leading-tight">
+        <div class="text-[1.2rem] md:text-[1.8rem] text-gray-600 font-medium leading-none">
+          
+        </div>
+      </div> -->
     </a>
 
     <!-- ナビゲーション -->
@@ -86,18 +70,62 @@
         class="ml-auto flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
       >
         <a href="/" class="nav-link">Home</a>
-        <a href="/posts/" class="nav-link">Posts</a>
+        <a href="/about/" class="nav-link">About</a>
       </nav>
   </div>
 </header>
 
-    <main class="mx-auto"><article class="article">
+    <main class="mx-auto"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          // 数式の区切り文字を設定
+          delimiters: [
+              {left: '$$', right: '$$', display: true},  // ブロック数式
+              {left: '$', right: '$', display: false},   // インライン数式
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          // エラーが出ても無視してそのまま表示する設定
+          throwOnError : false
+        });
+    });
+</script>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
   <header class="mb-6 border-b border-gray-200 pb-2">
-    <h1 class="text-3xl font-bold text-gray-800 mb-1">javascriptを用いた無動力滑空機の計算</h1>
+    <div class="text-3xl font-bold text-gray-800 mb-1">javascriptを用いた無動力滑空機の計算</div>
     <p class="text-sm text-gray-500">2025/10/21</p>
   </header>
-
-  <div class="prose prose-pink max-w-none"><p>javascript を用いてフリーフライト機（無動力滑空機）の運動を数値積分で解き、姿勢と位置の時間変化を求めます。MathJax を有効にしているので、式は TeX で記します。</p>
+  <div class="container mx-auto px-4">
+  
+    <div class="lg:grid lg:grid-cols-12 lg:gap-10">
+      
+      <main class="lg:col-span-9">  
+        <div class="note-toc-inline lg:hidden">
+          <p class="toc-title">目次</p>
+          <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#想定読者">想定読者</a></li>
+<li class="toc-entry toc-h2"><a href="#何をするか">何をするか</a></li>
+<li class="toc-entry toc-h1"><a href="#前提と記号">前提と記号</a></li>
+<li class="toc-entry toc-h1"><a href="#非線形-6dof-運動方程式">非線形 6DoF 運動方程式</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#並進機体軸">並進（機体軸）</a></li>
+<li class="toc-entry toc-h2"><a href="#回転機体軸">回転（機体軸）</a></li>
+<li class="toc-entry toc-h2"><a href="#キネマティクスオイラー角">キネマティクス（オイラー角）</a></li>
+<li class="toc-entry toc-h2"><a href="#位置">位置</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#縦の運動方程式longitudinal">縦の運動方程式（longitudinal）</a></li>
+<li class="toc-entry toc-h1"><a href="#横の運動方程式lateraldirectional">横の運動方程式（lateral–directional）</a></li>
+<li class="toc-entry toc-h1"><a href="#javascript-による数値積分最小実装">JavaScript による数値積分（最小実装）</a></li>
+</ul>
+        </div>
+  
+        <div class="article">
+          <p>javascript を用いてフリーフライト機（無動力滑空機）の運動を数値積分で解き、姿勢と位置の時間変化を求めます。MathJax を有効にしているので、式は TeX で記します。</p>
 
 <h2 id="想定読者">想定読者</h2>
 
@@ -408,8 +436,39 @@ M_{\delta_e}/J_y<br />
   <span class="k">return</span> <span class="p">[</span><span class="nx">du</span><span class="p">,</span> <span class="nx">dv</span><span class="p">,</span> <span class="nx">dw</span><span class="p">,</span> <span class="nx">pdot</span><span class="p">,</span> <span class="nx">qdot</span><span class="p">,</span> <span class="nx">rdot</span><span class="p">,</span> <span class="nx">phidot</span><span class="p">,</span> <span class="nx">thetadot</span><span class="p">,</span> <span class="nx">psidot</span><span class="p">,</span> <span class="nx">Vn</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">Vn</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">Vn</span><span class="p">[</span><span class="mi">2</span><span class="p">]];</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+        </div>        
+      </main>
+  
+      <aside class="lg:col-span-3 relative">
+        
+        <div class="note-toc-sidebar">
+          <p class="toc-title">目次</p>
+          <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#想定読者">想定読者</a></li>
+<li class="toc-entry toc-h2"><a href="#何をするか">何をするか</a></li>
+<li class="toc-entry toc-h1"><a href="#前提と記号">前提と記号</a></li>
+<li class="toc-entry toc-h1"><a href="#非線形-6dof-運動方程式">非線形 6DoF 運動方程式</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#並進機体軸">並進（機体軸）</a></li>
+<li class="toc-entry toc-h2"><a href="#回転機体軸">回転（機体軸）</a></li>
+<li class="toc-entry toc-h2"><a href="#キネマティクスオイラー角">キネマティクス（オイラー角）</a></li>
+<li class="toc-entry toc-h2"><a href="#位置">位置</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#縦の運動方程式longitudinal">縦の運動方程式（longitudinal）</a></li>
+<li class="toc-entry toc-h1"><a href="#横の運動方程式lateraldirectional">横の運動方程式（lateral–directional）</a></li>
+<li class="toc-entry toc-h1"><a href="#javascript-による数値積分最小実装">JavaScript による数値積分（最小実装）</a></li>
+</ul>
+        </div>
+  
+      </aside>
+  
+    </div>
+  </div>
 </div>
-</article>
+
+
 </main>
 
     <!-- <footer>
@@ -420,7 +479,7 @@ M_{\delta_e}/J_y<br />
 
 <footer class="bg-[#9191a7] mt-4">
   <div class="mx-auto p-2 text-center" style="font-family: var(--font-lubri)">
-    <p>© 2025 やぱの航空・ものづくりブログ</p>
+    <p>© 2025 羽のカタチ</p>
   </div>
 </footer>
 

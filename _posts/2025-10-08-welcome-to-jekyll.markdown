@@ -2,8 +2,9 @@
 layout: article
 title: 'javascriptを用いた無動力滑空機の計算'
 date: 2025-10-21
-categories: darehiko
+categories: aerodynamics
 math: true
+toc: true
 ---
 
 javascript を用いてフリーフライト機（無動力滑空機）の運動を数値積分で解き、姿勢と位置の時間変化を求めます。MathJax を有効にしているので、式は TeX で記します。
