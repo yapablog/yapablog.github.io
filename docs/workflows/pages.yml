@@ -35,7 +35,7 @@ jobs:
 
       - name: Build Tailwind CSS
         # inputとoutputのパスは自身の環境に合わせてください
-        run: npx @tailwindcss/cli -i ./assets/css/style.css -o ./assets/css/output.css
+        run: npx @tailwindcss/cli -i ./assets/css/tailwind.css -o ./assets/css/tailwind-output.css
 
       - name: Build Jekyll
         run: bundle exec jekyll build
