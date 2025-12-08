@@ -23,7 +23,7 @@
     />
   </head>
 
-  <body>
+  <body class="flex flex-col min-h-screen">
     <!--
   開発用ブレイクポイント
   all(mobile):
@@ -76,7 +76,8 @@
   </div>
 </header>
 
-    <main class="mx-auto"><script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <main class="mx-auto flex-grow w-full">
+        <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
 <div class="article w-full max-w-7xl mx-auto px-4 py-8">
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
     <div class="lg:col-span-5 space-y-6">
@@ -410,7 +411,8 @@ let rV = realVal.toLocaleString('en-US', { maximumFractionDigits: 2 });
 }
 </script>
 
-</main>
+
+    </main>
 
     <!-- <footer>
   <div class="footer">
