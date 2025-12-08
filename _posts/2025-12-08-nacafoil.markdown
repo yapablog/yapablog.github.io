@@ -4,6 +4,7 @@ title: 'JavaScriptでNACA4桁翼型を生成するアルゴリズム'
 date: 2025-12-08
 categories: airfoil
 toc: true
+image: /assets/images/articles/2025-12-08_naca_thumb.png
 references:
   - author: 'Airfoil Tools'
     title: 'NACA 4 digit airfoil generator'

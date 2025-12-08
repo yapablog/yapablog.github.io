@@ -81,8 +81,7 @@
           <main class="min-h-screen pb-20">
     
     <div class="relative z-10">
-      <div class="max-w-7xl mx-auto px-4 py-10 md:px-6 lg:px-8">
-        <div class="max-w-4xl">
+      <div class="max-w-7xl mx-auto px-4 pt-10 pb-3 md:px-6 lg:px-8">
           
           <nav class="flex text-xs font-medium text-gray-500 mb-4 uppercase tracking-wider">
             <a href="/" class="hover:text-[var(--color-brand)] transition-colors">Home</a>
@@ -95,32 +94,11 @@
           </h1>
 
           
-          <p class="text-sm text-gray-600">
-            コード長と点群データから、面積や重心、断面二次モーメントなどの幾何パラメータを計算するWebツールです。インストール不要でブラウザ上で動作します。
+          <p class="text-sm text-gray-500">
+            コード長と点群データから、面積や重心、断面二次モーメントなどの幾何パラメータを計算するWebツールです。
           </p>
           
-
           
-          <div class="mt-8">
-            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">
-              How to Use
-            </h3>
-            
-            <div class="rounded-lg bg-[var(--color-bg-callout)] p-5 border border-gray-200">
-              <div class="text-sm text-gray-600 prose prose-sm max-w-none [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:marker:text-[var(--color-brand)] [&_li]:pl-1">
-                <ol>
-  <li>まず <strong>コード長</strong> と <strong>点群データ</strong> を入力してください。</li>
-  <li>NACA4桁翼型であれば、コードを入力して「生成」ボタンから自動生成することが可能です。</li>
-  <li>もし正規化されていない場合は、正規化ボタンを押してください。</li>
-  <li>「計算・描画実行」ボタンを押すと、右側（スマホの場合は下側）に形状と解析結果が表示されます。</li>
-</ol>
-
-              </div>
-            </div>
-          </div>
-          
-          
-        </div>
       </div>
     </div>
 
@@ -139,7 +117,7 @@
         <div class="p-5">
 
           <div class="mb-6">
-            <label for="chordLength" class="block text-2xl font-bold text-gray-700 mb-1">コード長 (実寸換算用)</label>
+            <label for="chordLength" class="block text-2xl font-bold text-gray-700 mb-1">コード長</label>
             <div class="flex items-center">
               <input type="number" id="chordLength" value="1000" min="0" step="any" class="flex-1 p-2 border border-gray-300 rounded-l focus:ring-2 focus:ring-[var(--color-brand)] focus:outline-none">
               <span class="px-3 py-2 rounded-r text-sm">mm</span>
@@ -244,8 +222,8 @@
               <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
                 <tr>
                   <th class="px-4 py-3 border border-gray-200">項目</th>
-                  <th class="px-4 py-3 border border-gray-200">無次元値</th>
-                  <th class="px-4 py-3 border border-gray-200">実寸値</th>
+                  <th class="px-4 py-3 border border-gray-200">単位長さ</th>
+                  <th class="px-4 py-3 border border-gray-200">コード長</th>
                 </tr>
               </thead>
               <tbody id="resultBody" class="text-gray-700">
@@ -482,6 +460,29 @@ function createRow(label, nV, rV, unit) {
 }
 </script>
 
+    </div>
+
+    
+    <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+        
+        <div class="mt-8">
+        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">
+            How to Use
+        </h3>
+        
+        <div class="rounded-lg bg-[var(--color-bg-callout)] p-5 border border-gray-200">
+            <div class="text-sm text-gray-600 prose prose-sm max-w-none [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:marker:text-[var(--color-brand)] [&_li]:pl-1">
+            <ol>
+  <li>まず <strong>コード長</strong> と <strong>点群データ</strong> を入力してください。</li>
+  <li>NACA4桁翼型であれば、コードを入力して「生成」ボタンから自動生成することが可能です。</li>
+  <li>もし正規化されていない場合は、正規化ボタンを押してください。</li>
+  <li>「計算・描画実行」ボタンを押すと、右側（スマホの場合は下側）に形状と解析結果が表示されます。</li>
+</ol>
+
+            </div>
+        </div>
+        </div>
+        
     </div>
 
   </main>
