@@ -1,0 +1,24 @@
+{% if page.references %}
+<div class="bibliography mt-12 pt-8 border-t border-gray-200">
+  <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+    参考文献
+  </h3>
+  <ul class="list-none m-0 p-0 space-y-3">
+    {% for ref in page.references %}
+    <li class="text-sm text-gray-600 pl-3 border-l-2 border-gray-300">
+      <span class="font-bold text-gray-800">{{ ref.author }}</span>
+      {% if ref.year %}({{ ref.year }}).{% endif %}
+      <span class="italic">{{ ref.title }}</span>.
+      {% if ref.publisher %}{{ ref.publisher }}.{% endif %}
+      {% if ref.note %}
+        <br><span class="text-xs text-gray-500">{{ ref.note }}</span>
+      {% endif %}
+      {% if ref.url %}
+        <br><a href="{{ ref.url }}" target="_blank" rel="noopener noreferrer" class="text-[var(--color-brand)] hover:underline break-all">{{ ref.url }}</a>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}

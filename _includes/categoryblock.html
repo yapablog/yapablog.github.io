@@ -2,11 +2,11 @@
     <div class="h1">
         {{ include.title }}
     </div>
-    {% assign collection = include.collection %}
-    {% include post_list.html collection=collection limit=include.limit %}
+    {% assign collections = include.collections %}
+    {% include post_list.html collections=collections limit=include.limit %}
   
     {% if include.limit %}
-      {% assign href = '/' | append: collection | append: '/' %}
+      {% assign href = '/' | append: collections | append: '/' %}
       {% include button.html href=href label="View All" %}
     {% endif %}
   </ul>

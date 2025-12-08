@@ -283,4 +283,14 @@
   .note-toc-sidebar ul ul {
     @apply ml-3 mt-1;
   }
+  .note-toc-sidebar a {
+    @apply block text-sm text-gray-500 no-underline py-1.5 pl-3 border-l-2 border-transparent transition-all;
+  }
+
+  /* ホバー時 または アクティブ時(.active) のスタイルを共有 */
+  .note-toc-sidebar a:hover,
+  .note-toc-sidebar a.active {
+    /* ← ここに .active を追加 */
+    @apply text-[var(--color-brand)] border-[var(--color-brand)] font-bold bg-gray-50;
+  }
 }

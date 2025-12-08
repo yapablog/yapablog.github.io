@@ -1,88 +1,117 @@
 <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
-<div class="article w-full max-w-7xl mx-auto px-4 py-8">
+
+<div class="w-full max-w-7xl mx-auto px-4 py-8">
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
     <div class="lg:col-span-5 space-y-6">
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div class="bg-[var(--color-primary)] text-white px-5 py-3 border-b border-gray-100">
           <h2 class="text-lg font-bold m-0 text-white" style="border:none; margin:0; padding:0;">パラメータ入力</h2>
         </div>
+        
         <div class="p-5">
+
           <div class="mb-4">
             <label for="pointCloud" class="block text-sm font-bold text-gray-700 mb-2">
               点群データ (x y)
             </label>
             <div class="bg-[var(--color-bg-callout)] text-gray-600 text-xs p-3 rounded mb-3 border border-gray-200">
-              <p class="font-bold my-1">フォーマット順序:</p>
-              後縁 (TE) → 上面 (Upper) → 前縁 (LE) → 下面 (Lower) → 後縁 (TE)<br>
-              ※スペース、タブ、カンマ区切りに対応
+              <p class="font-bold mb-1">点の順序:</p>
+              後縁(x=1) → 上面 → 前縁(x=0) → 下面 → 後縁(x=1)<br>
+              後縁の隙間はあっても可<br>
             </div>
-            <textarea
-              id="pointCloud"
-              rows="12"
-              class="w-full font-mono text-sm p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[var(--color-brand)] focus:outline-none transition-shadow"
-              placeholder="1.0000 0.0000&#10;0.9500 0.0123&#10;..."
+            <textarea 
+              id="pointCloud" 
+              rows="8" 
+              class="w-full font-mono text-sm p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[var(--color-brand)] focus:outline-none"
+              placeholder="生成ボタンを押すか、データを貼り付けてください &#10;例&#10;1.0000 0.0000&#10;0.9500 0.0123&#10;..."
             ></textarea>
           </div>
+
+          <div class="mb-5 bg-gray-50 p-4 rounded border border-gray-200">
+            <label class="block text-sm font-bold text-gray-700 mb-2">NACA 4桁生成</label>
+            <div class="flex gap-2 mb-2">
+              <div class="relative w-1/3">
+                 <input type="text" id="nacaCode" maxlength="4" class="w-full p-2 border border-gray-300 rounded text-center font-mono focus:ring-2 focus:ring-[var(--color-brand)] focus:outline-none" placeholder="XXXX">
+                 <span class="absolute top-0 right-0 text-[10px] text-gray-400 p-1">Code</span>
+              </div>
+              <div class="relative w-1/3">
+                 <input type="number" id="numPoints" value="100" min="20" max="500" class="w-full p-2 border border-gray-300 rounded text-center font-mono focus:ring-2 focus:ring-[var(--color-brand)] focus:outline-none">
+                 <span class="absolute top-0 right-0 text-[10px] text-gray-400 p-1">Points</span>
+              </div>
+              <button onclick="generateNACA()" class="w-1/3 bg-gray-700 text-white text-sm font-bold rounded hover:bg-gray-800 transition-colors">
+                生成
+              </button>
+            </div>
+            <div class="flex items-center gap-3 my-3">
+                <label class="relative inline-block w-11 h-6">
+                  <input 
+                    type="checkbox" 
+                    id="closeTE" 
+                    class="peer sr-only" 
+                    checked 
+                  >
+                  <span class="block w-11 h-6 bg-gray-300 rounded-full cursor-pointer transition-colors duration-300 peer-checked:bg-[var(--color-brand)] peer-focus:outline-none "></span>
+                  <span class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 cursor-pointer shadow-sm toggle-knob"></span>
+                </label>
+                
+                <label for="closeTE" class="text-xs text-gray-700 cursor-pointer select-none">
+                  後縁を閉じる (Close Trailing Edge)
+                </label>
+              </div>
+              
+              <style>
+                /* チェックされたらつまみを右に移動 */
+                input:checked + span + .toggle-knob {
+                  transform: translateX(20px);
+                }
+              </style>
+            <p class="text-xs text-gray-500">例: 0012 (対称), 2412, 4412 (非対称)</p>
+            <p class="text-xs text-gray-500">詳しくは<a href="/posts/2025-12-08-nacafoil/"><strong class="underline">こちら</strong></a></p>
+          </div>
+
+
           <div class="grid grid-cols-2 gap-3 mb-4">
-            <button
-              onclick="loadSample()"
-              class="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
-            >
-              サンプル読込
-            </button>
-            <button
-              onclick="normalizeAndUpdate()"
-              class="px-4 py-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded hover:bg-amber-100 transition-colors"
-            >
-              正規化 (0-1化)
+            <button onclick="normalizeAndUpdate()" class="col-span-2 px-4 py-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded hover:bg-amber-100 transition-colors">
+              正規化 (LE=0, TE=1, 後縁の中点=X軸上)
             </button>
           </div>
+
           <div class="mb-6">
              <label for="chordLength" class="block text-sm font-bold text-gray-700 mb-1">コード長 (実寸換算用)</label>
              <div class="flex items-center">
-               <input
-                 type="number"
-                 id="chordLength"
-                 value="1000"
-                 min="0"
-                 step="any"
-                 class="flex-1 p-2 border border-gray-300 rounded-l focus:ring-2 focus:ring-[var(--color-brand)] focus:outline-none"
-               >
-               <span class="text-gray-600 px-3 py-2 rounded-r text-sm">mm</span>
+               <input type="number" id="chordLength" value="1000" min="0" step="any" class="flex-1 p-2 border border-gray-300 rounded-l focus:ring-2 focus:ring-[var(--color-brand)] focus:outline-none">
+               <span class="bg-gray-100 text-gray-600 border border-l-0 border-gray-300 px-3 py-2 rounded-r text-sm">mm</span>
              </div>
           </div>
-          <button
-            onclick="calculateProperties()"
-            class="w-full py-3 bg-[var(--color-brand)] text-white font-bold rounded shadow hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-          >
-            <span>計算・描画実行</span>
+
+          <button onclick="calculateProperties()" class="w-full py-3 bg-[var(--color-brand)] text-white font-bold rounded shadow hover:opacity-90 transition-opacity">
+            計算・描画実行
           </button>
         </div>
       </div>
     </div>
+
     <div class="lg:col-span-7">
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 h-full flex flex-col">
-        <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex justify-between items-center">
-          <h5 class="font-bold text-gray-700 m-0 text-base">形状プレビュー & 解析結果</h5>
+        <div class="bg-gray-50 px-5 py-3 border-b border-gray-200">
+          <h5 class="font-bold text-gray-700 m-0 text-base">解析結果 & 形状</h5>
         </div>
         <div class="p-5 flex-1">
           <div id="airfoilPlot" class="w-full h-80 lg:h-96 border border-gray-100 rounded mb-8"></div>
+          
           <h3 class="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2 mb-4">幾何特性</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-sm text-left border-collapse">
               <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
                 <tr>
                   <th class="px-4 py-3 border border-gray-200">項目</th>
-                  <th class="px-4 py-3 border border-gray-200">無次元値 (Normalized)</th>
-                  <th class="px-4 py-3 border border-gray-200">実寸値 (Real)</th>
+                  <th class="px-4 py-3 border border-gray-200">無次元値</th>
+                  <th class="px-4 py-3 border border-gray-200">実寸値</th>
                 </tr>
               </thead>
               <tbody id="resultBody" class="text-gray-700">
-                <tr>
-                  <td colspan="3" class="px-4 py-8 text-center text-gray-400 italic bg-gray-50/50">
-                    データを入力して「計算・描画実行」を押してください
-                  </td>
-                </tr>
+                <tr><td colspan="3" class="px-4 py-8 text-center text-gray-400 italic">計算実行待ち...</td></tr>
               </tbody>
             </table>
           </div>
@@ -93,241 +122,224 @@
 </div>
 
 <script>
+// --- 初期化 ---
 document.addEventListener('DOMContentLoaded', () => {
-    // 初期の空グラフ描画
-    const layout = {
-        title: { text: 'Airfoil Shape', font: { size: 14 } },
-        xaxis: { title: 'x/c', range: [-0.1, 1.1], zeroline: true, showgrid: true, gridcolor: '#eee' },
-        yaxis: { title: 'y/c', scaleanchor: "x", scaleratio: 1, zeroline: true, showgrid: true, gridcolor: '#eee' },
-        margin: { t: 40, r: 20, b: 40, l: 50 },
-        paper_bgcolor: 'rgba(0,0,0,0)', // 背景透明
-        plot_bgcolor: 'rgba(0,0,0,0)'
-    };
-    
-    // レスポンシブ対応のためのconfig
-    const config = { responsive: true, displayModeBar: false };
-    
-    Plotly.newPlot('airfoilPlot', [], layout, config);
+    // 初回はNACA2412を自動生成して表示
+    // generateNACA();
 });
 
-// サンプルデータ (NACA 2412)
-function loadSample() {
-const sampleData = `1.00000 0.00126
-0.95006 0.01136
-0.90013 0.02075
-0.80025 0.03787
-0.70038 0.05294
-0.60049 0.06543
-0.50060 0.07470
-0.40069 0.07996
-0.30075 0.07997
-0.25076 0.07739
-0.20077 0.07254
-0.15076 0.06486
-0.10073 0.05362
-0.07570 0.04618
-0.05066 0.03706
-0.02560 0.02534
-0.01256 0.01766
-0.00000 0.00000
-0.01244 -0.01566
-0.02540 -0.02266
-0.05034 -0.03194
-0.07529 -0.03818
-0.10027 -0.04238
-0.15024 -0.04714
-0.20023 -0.04846
-0.25024 -0.04761
-0.30025 -0.04547
-0.40029 -0.03904
-0.50036 -0.03080
-0.60045 -0.02197
-0.70054 -0.01356
-0.80063 -0.00633
-0.90071 -0.00125
-0.95075 -0.00010
-1.00000 -0.00126`;
-document.getElementById('pointCloud').value = sampleData;
-calculateProperties();
-}
+// --- NACA 4-Digit Generator ---
+function generateNACA(isSilent = false) {
+    const codeInput = document.getElementById('nacaCode');
+    // 要素がない場合や値が取れない場合のガード
+    const code = codeInput ? codeInput.value : "";
+    
+    const numPoints = parseInt(document.getElementById('numPoints').value) || 100;
+    
+    const isClosed = document.getElementById('closeTE').checked;
+    const coeff4 = isClosed ? 0.1036 : 0.1015;
 
-// データパース処理の強化 (カンマやタブにも対応)
-function parsePoints(text) {
-const lines = text.trim().split(/\n+/);
-const points = [];
-for (let line of lines) {
-// カンマ、タブ、複数のスペースを区切り文字として扱う
-const parts = line.trim().split(/[\s,]+/);
-if (parts.length >= 2) {
-const x = parseFloat(parts[0]);
-const y = parseFloat(parts[1]);
-if (!isNaN(x) && !isNaN(y)) {
-points.push({ x, y });
-}
-}
-}
-return points;
-}
-
-// 正規化処理
-function normalizeAndUpdate() {
-let points = parsePoints(document.getElementById('pointCloud').value);
-if (points.length < 3) {
-alert("データが不足しています。");
-return;
-}
-
-    // 最小Xを前縁(LE)、最大Xを後縁(TE)と仮定してシフト・回転・スケーリング
-    let minX = Infinity, maxX = -Infinity;
-    let leIdx = -1, teIdx = -1;
-
-    points.forEach((p, i) => {
-        if (p.x < minX) { minX = p.x; leIdx = i; }
-        if (p.x > maxX) { maxX = p.x; teIdx = i; }
-    });
-
-    // 1. シフト (LE -> 原点)
-    const leP = { ...points[leIdx] };
-    points = points.map(p => ({ x: p.x - leP.x, y: p.y - leP.y }));
-
-    // 2. 回転 (TEをX軸上へ)
-    const currentTE = points[teIdx];
-    const angle = Math.atan2(currentTE.y, currentTE.x);
-    const cosA = Math.cos(-angle);
-    const sinA = Math.sin(-angle);
-
-    points = points.map(p => ({
-        x: p.x * cosA - p.y * sinA,
-        y: p.x * sinA + p.y * cosA
-    }));
-
-    // 3. スケーリング (Chord = 1.0へ)
-    const newChord = points[teIdx].x;
-    if (newChord !== 0) {
-        points = points.map(p => ({ x: p.x / newChord, y: p.y / newChord }));
-    }
-
-    // 表示更新
-    const newText = points.map(p => `${p.x.toFixed(6)}\t${p.y.toFixed(6)}`).join("\n");
-    document.getElementById('pointCloud').value = newText;
-    calculateProperties();
-
-}
-
-// 計算実行
-function calculateProperties() {
-const text = document.getElementById('pointCloud').value;
-const chordLen = parseFloat(document.getElementById('chordLength').value) || 1000;
-let points = parsePoints(text);
-
-    if (points.length < 3) {
-        alert("有効な点群データを入力してください（3点以上）。");
+    // バリデーションチェック
+    if (!/^\d{4}$/.test(code)) {
+        // サイレントモードでなければアラートを出す
+        if (!isSilent) {
+            alert("NACAコードは4桁の数字で入力してください (例: 2412)");
+        }
+        // 入力が不正なら、トグル操作時でもここで処理を中断する
         return;
     }
 
-    // 閉合処理
+    // パラメータ解析
+    const m = parseInt(code[0]) / 100.0;
+    const p = parseInt(code[1]) / 10.0;
+    const t = parseInt(code.slice(2)) / 100.0;
+
+    const upper = [];
+    const lower = [];
+
+    for (let i = 0; i <= numPoints; i++) {
+        const beta = (i / numPoints) * Math.PI;
+        const x = 0.5 * (1.0 - Math.cos(beta));
+
+        // 厚み分布 yt
+        const yt = 5 * t * (
+            0.2969 * Math.sqrt(x) -
+            0.1260 * x -
+            0.3516 * x**2 +
+            0.2843 * x**3 -
+            coeff4 * x**4  // ★変更: 変数 coeff4 を使用
+        );
+
+        // キャンバーライン yc と 勾配 dyc/dx
+        let yc = 0;
+        let dyc_dx = 0;
+
+        if (m === 0) {
+            yc = 0;
+            dyc_dx = 0;
+        } else {
+            if (x < p) {
+                yc = (m / (p * p)) * (2 * p * x - x * x);
+                dyc_dx = (2 * m / (p * p)) * (p - x);
+            } else {
+                yc = (m / ((1 - p) ** 2)) * ((1 - 2 * p) + 2 * p * x - x * x);
+                dyc_dx = (2 * m / ((1 - p) ** 2)) * (p - x);
+            }
+        }
+
+        const theta = Math.atan(dyc_dx);
+
+        const xu = x - yt * Math.sin(theta);
+        const yu = yc + yt * Math.cos(theta);
+        
+        const xl = x + yt * Math.sin(theta);
+        const yl = yc - yt * Math.cos(theta);
+
+        upper.push({x: xu, y: yu});
+        lower.push({x: xl, y: yl});
+    }
+
+    let points = [];
+    // 上面: TE -> LE
+    for(let i = upper.length - 1; i >= 0; i--) {
+        points.push(upper[i]);
+    }
+    // 下面: LE -> TE
+    for(let i = 1; i < lower.length; i++) {
+        points.push(lower[i]);
+    }
+
+    const text = points.map(pt => `${pt.x.toFixed(6)} ${pt.y.toFixed(6)}`).join('\n');
+    document.getElementById('pointCloud').value = text;
+    
+    calculateProperties();
+}
+
+// --- 共通処理 (前回と同じロジック) ---
+
+function parsePoints(text) {
+    const lines = text.trim().split(/\n+/);
+    const points = [];
+    for (let line of lines) {
+        const parts = line.trim().split(/[\s,]+/);
+        if (parts.length >= 2) {
+            const x = parseFloat(parts[0]);
+            const y = parseFloat(parts[1]);
+            if (!isNaN(x) && !isNaN(y)) points.push({ x, y });
+        }
+    }
+    return points;
+}
+
+function normalizeAndUpdate() {
+    let points = parsePoints(document.getElementById('pointCloud').value);
+    if (points.length < 3) { alert("データ不足"); return; }
+
+    // 1. 最も左にある点(min x)を探して前縁(LE)とする
+    let minX = Infinity;
+    let leIdx = -1;
+    points.forEach((p, i) => {
+        if (p.x < minX) { minX = p.x; leIdx = i; }
+    });
+
+    // 2. シフト (LEを原点 0,0 へ)
+    const leP = { ...points[leIdx] };
+    points = points.map(p => ({ x: p.x - leP.x, y: p.y - leP.y }));
+
     const first = points[0];
     const last = points[points.length - 1];
-    const dist = Math.sqrt((first.x - last.x)**2 + (first.y - last.y)**2);
-    if (dist > 1e-4) {
-        points.push({ x: first.x, y: first.y });
+
+    let targetX, targetY;
+
+    //始点と終点の中点をターゲットにする
+    targetX = (first.x + last.x) / 2;
+    targetY = (first.y + last.y) / 2;
+
+    // ターゲット（中点）がX軸上に来るように角度を計算
+    const angle = Math.atan2(targetY, targetX);
+    const cosA = Math.cos(-angle), sinA = Math.sin(-angle);
+
+    // 回転実行
+    points = points.map(p => ({ 
+        x: p.x * cosA - p.y * sinA, 
+        y: p.x * sinA + p.y * cosA 
+    }));
+
+    // --- スケーリングロジックの変更 ---
+    
+    // 回転後の「新しい最大X」をコード長として正規化する
+    // (中点基準で回すと、角の部分がX=1.0を超える可能性があるため再計測する)
+    let newMaxX = -Infinity;
+    points.forEach(p => { if (p.x > newMaxX) newMaxX = p.x; });
+
+    if (newMaxX !== 0) {
+        points = points.map(p => ({ x: p.x / newMaxX, y: p.y / newMaxX }));
     }
 
-    // 断面特性計算 (Shoelace Formula)
-    let area = 0, Sx = 0, Sy = 0;
-    let Ixx_raw = 0, Iyy_raw = 0;
-    let perimeter = 0;
+    document.getElementById('pointCloud').value = points.map(p => `${p.x.toFixed(6)}\t${p.y.toFixed(6)}`).join("\n");
+    calculateProperties();
+}
 
+function calculateProperties() {
+    const text = document.getElementById('pointCloud').value;
+    const chordLen = parseFloat(document.getElementById('chordLength').value) || 1000;
+    let points = parsePoints(text);
+    if (points.length < 3) return;
+
+    // 閉合
+    const first = points[0], last = points[points.length - 1];
+    if (Math.sqrt((first.x - last.x)**2 + (first.y - last.y)**2) > 1e-4) points.push({ x: first.x, y: first.y });
+
+    let area = 0, Sx = 0, Sy = 0, Ixx_raw = 0, Iyy_raw = 0, perimeter = 0;
     for (let i = 0; i < points.length - 1; i++) {
-        const p1 = points[i];
-        const p2 = points[i+1];
-
+        const p1 = points[i], p2 = points[i+1];
         const cross = (p1.x * p2.y - p2.x * p1.y);
         area += cross;
-
         Sy += (p1.x + p2.x) * cross;
         Sx += (p1.y + p2.y) * cross;
-
         Ixx_raw += (p1.y**2 + p1.y * p2.y + p2.y**2) * cross;
         Iyy_raw += (p1.x**2 + p1.x * p2.x + p2.x**2) * cross;
-
         perimeter += Math.sqrt((p2.x - p1.x)**2 + (p2.y - p1.y)**2);
     }
-
-    area = area * 0.5;
-    const sign = Math.sign(area); // 入力順序による符号
-    area = Math.abs(area);
-
-    // 重心
-    const cx = (Sy / 6) / (area * sign);
-    const cy = (Sx / 6) / (area * sign);
-
-    // 断面二次モーメント (重心周り)
-    let Ixx = Math.abs(Ixx_raw / 12) - area * cy * cy;
-    let Iyy = Math.abs(Iyy_raw / 12) - area * cx * cx;
-
+    area = Math.abs(area * 0.5);
+    const cx = (Sy / 6) / (area * Math.sign(area) || 1); 
+    const cy = (Sx / 6) / (area * Math.sign(area) || 1);
+    const Ixx = Math.abs(Ixx_raw / 12) - area * cy * cy;
+    
     // 簡易最大翼厚
     let minY = Infinity, maxY = -Infinity;
-    points.forEach(p => {
-        if (p.y < minY) minY = p.y;
-        if (p.y > maxY) maxY = p.y;
-    });
+    points.forEach(p => { if (p.y < minY) minY = p.y; if (p.y > maxY) maxY = p.y; });
     const maxThick = maxY - minY;
 
-    // テーブル更新
-    const resultBody = document.getElementById('resultBody');
-    resultBody.innerHTML = `
-        ${createRow("断面積 (Area)", area, area * (chordLen**2), "mm²")}
-        ${createRow("周長 (Perimeter)", perimeter, perimeter * chordLen, "mm")}
-        ${createRow("重心 X (x_cg)", cx, cx * chordLen, "mm")}
-        ${createRow("重心 Y (y_cg)", cy, cy * chordLen, "mm")}
-        ${createRow("最大翼厚 (Thickness)", maxThick, maxThick * chordLen, "mm")}
+    document.getElementById('resultBody').innerHTML = `
+        ${createRow("断面積", area, area * (chordLen**2), "mm²")}
+        ${createRow("周長", perimeter, perimeter * chordLen, "mm")}
+        ${createRow("重心 X", cx, cx * chordLen, "mm")}
+        ${createRow("重心 Y", cy, cy * chordLen, "mm")}
+        ${createRow("最大翼厚", maxThick, maxThick * chordLen, "mm")}
         ${createRow("断面二次モーメント Ixx", Ixx, Ixx * (chordLen**4), "mm⁴")}
     `;
 
     // グラフ更新
-    const xVals = points.map(p => p.x);
-    const yVals = points.map(p => p.y);
-
     const trace = {
-        x: xVals,
-        y: yVals,
-        mode: 'lines', // マーカーを消して線のみにする（点が多いと重いため）
-        name: 'Airfoil',
-        line: {color: '#08206b', width: 2}, // ブランドカラーに合わせる
-        fill: 'toself', // 塗りつぶし追加
-        fillcolor: 'rgba(8, 32, 107, 0.1)'
+        x: points.map(p => p.x), y: points.map(p => p.y),
+        mode: 'lines', name: 'Airfoil',
+        line: {color: '#08206b', width: 2}, fill: 'toself', fillcolor: 'rgba(8, 32, 107, 0.1)'
     };
-
-    const layout = {
+    const pLayout = {
         title: { text: `Airfoil Shape (Chord: ${chordLen}mm)`, font: { size: 14 } },
         xaxis: { title: 'x/c', zeroline: true },
-        yaxis: { title: 'y/c', scaleanchor: "x", scaleratio: 1, zeroline: true },
+        yaxis: { title: 'y/c', scaleanchor: "x", scaleratio: 1 },
         margin: { t: 40, r: 20, b: 40, l: 50 },
-        showlegend: false
+        showlegend: false,
+        paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)'
     };
-
-    Plotly.react('airfoilPlot', [trace], layout, { responsive: true, displayModeBar: false });
-
+    Plotly.react('airfoilPlot', [trace], pLayout, { responsive: true, displayModeBar: false });
 }
 
-function createRow(label, normVal, realVal, unit) {
-// 精度調整
-const nV = normVal.toExponential(4);
-let rV = realVal.toLocaleString('en-US', { maximumFractionDigits: 2 });
-
-    // 値が極端に大きい/小さい場合は指数表記
-    if (Math.abs(realVal) > 100000 || (Math.abs(realVal) < 0.01 && realVal !== 0)) {
-        rV = realVal.toExponential(3);
-    }
-
-    return `
-        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-            <td class="px-4 py-2 font-medium">${label}</td>
-            <td class="px-4 py-2 font-mono text-gray-600">${nV}</td>
-            <td class="px-4 py-2 font-mono font-bold text-[var(--color-brand)]">${rV} <span class="text-xs text-gray-400 font-normal ml-1">${unit}</span></td>
-        </tr>
-    `;
-
+function createRow(label, nV, rV, unit) {
+    let dV = rV.toLocaleString('en-US', { maximumFractionDigits: 2 });
+    if (Math.abs(rV) > 100000 || (Math.abs(rV) < 0.01 && rV !== 0)) dV = rV.toExponential(3);
+    return `<tr class="border-b border-gray-100 hover:bg-gray-50"><td class="px-4 py-2 font-medium">${label}</td><td class="px-4 py-2 font-mono text-gray-600">${nV.toExponential(4)}</td><td class="px-4 py-2 font-mono font-bold text-[var(--color-brand)]">${dV} <span class="text-xs text-gray-400 font-normal ml-1">${unit}</span></td></tr>`;
 }
 </script>

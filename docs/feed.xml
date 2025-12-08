@@ -1,4 +1,151 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-12-08T19:28:00+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">kaze-no-hako</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">javascriptを用いた無動力滑空機の計算</title><link href="http://localhost:4000/posts/2025-10-08-welcome-to-jekyll/" rel="alternate" type="text/html" title="javascriptを用いた無動力滑空機の計算" /><published>2025-10-21T00:00:00+09:00</published><updated>2025-10-21T00:00:00+09:00</updated><id>http://localhost:4000/posts/welcome-to-jekyll</id><content type="html" xml:base="http://localhost:4000/posts/2025-10-08-welcome-to-jekyll/"><![CDATA[<p>javascript を用いてフリーフライト機（無動力滑空機）の運動を数値積分で解き、姿勢と位置の時間変化を求めます。MathJax を有効にしているので、式は TeX で記します。</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-12-08T21:42:01+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">kaze-no-hako</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">JavaScriptでNACA4桁翼型を生成するアルゴリズム</title><link href="http://localhost:4000/posts/2025-12-08-nacafoil/" rel="alternate" type="text/html" title="JavaScriptでNACA4桁翼型を生成するアルゴリズム" /><published>2025-12-08T00:00:00+09:00</published><updated>2025-12-08T00:00:00+09:00</updated><id>http://localhost:4000/posts/nacafoil</id><content type="html" xml:base="http://localhost:4000/posts/2025-12-08-nacafoil/"><![CDATA[<p>先日公開した<a href="/airfoilapp/"><strong>AirfoilApp</strong></a>に、NACA 4 桁系列（例: NACA 2412）を自動生成する機能を追加しました。
+固定のデータファイルを読み込むのではなく、数学的な定義に基づいて動的に点群を生成しています。</p>
+
+<p>この記事では、その生成ロジックと数学的背景、そして JavaScript での実装方法について解説します。</p>
+
+<h2 id="naca-4-桁系列とは">NACA 4 桁系列とは？</h2>
+
+<p>NACA 4 桁系列（NACA 4-digit series）は、航空機の翼型として最もポピュラーな形状定義の一つです。
+「NACA 2412」のような 4 つの数字には、以下の幾何学的パラメータが込められています。</p>
+
+<ol>
+  <li><strong>第 1 桁 ($m$)</strong>: 最大キャンバー（反り）の大きさ [弦長に対する%]</li>
+  <li><strong>第 2 桁 ($p$)</strong>: 最大キャンバーの位置 [弦長に対する 1/10]</li>
+  <li><strong>第 3-4 桁 ($t$)</strong>: 最大翼厚 [弦長に対する%]</li>
+</ol>
+
+<p>例えば <strong>NACA 2412</strong> なら以下のようになります。</p>
+
+<ul>
+  <li>最大キャンバー: 弦長の <strong>2%</strong> ($m=0.02$)</li>
+  <li>最大キャンバー位置: 前縁から <strong>40%</strong> の位置 ($p=0.4$)</li>
+  <li>最大翼厚: 弦長の <strong>12%</strong> ($t=0.12$)</li>
+</ul>
+
+<h2 id="生成アルゴリズム">生成アルゴリズム</h2>
+
+<p>翼型の座標 $(x, y)$ を求めるには、<strong>「厚み分布」</strong>と<strong>「キャンバーライン（中心線）」</strong>を計算し、それらを重ね合わせる必要があります。</p>
+
+<h3 id="1-座標の離散化cosine-spacing">1. 座標の離散化（Cosine Spacing）</h3>
+
+<p>単純に $x = 0.0, 0.01, \dots, 1.0$ と等間隔に点を取ると、曲率の激しい「前縁（Leading Edge）」部分のカクつきが目立ってしまいます。
+そこで、<strong>Cosine Spacing（余弦分布）</strong> を用いて、前縁と後縁付近に点を集中させます。</p>
+
+\[x = \frac{1}{2} (1 - \cos\beta), \quad (0 \le \beta \le \pi)\]
+
+<h3 id="2-翼厚分布-y_t">2. 翼厚分布 ($y_t$)</h3>
+
+<p>NACA 4 桁系列の翼厚分布は、以下の多項式で定義されています。この式は「対称翼（00xx）」の片側の形状を表します。</p>
+
+\[y_t = 5t \left( 0.2969\sqrt{x} - 0.1260x - 0.3516x^2 + 0.2843x^3 - 0.1036x^4 \right)\]
+
+<ul>
+  <li>$t$: 最大翼厚（例: 0.12）</li>
+  <li>最後の係数 $-0.1036$ は、後縁を完全に閉じる（厚み 0 にする）ためのものです（厳密な定義では $-0.1015$ ですが、閉合させるために調整されることが多いです）。</li>
+</ul>
+
+<h3 id="3-キャンバーライン-y_c">3. キャンバーライン ($y_c$)</h3>
+
+<p>キャンバー（反り）がある場合、中心線 $y_c$ は最大キャンバー位置 $p$ を境に 2 つの放物線で表されます。</p>
+
+<p><strong>前半 ($0 \le x &lt; p$):</strong></p>
+
+\[y_c = \frac{m}{p^2} (2px - x^2)\]
+
+<p><strong>後半 ($p \le x \le 1$):</strong></p>
+
+\[y_c = \frac{m}{(1-p)^2} ((1-2p) + 2px - x^2)\]
+
+<h3 id="4-座標変換重ね合わせ">4. 座標変換（重ね合わせ）</h3>
+
+<p>最後に、キャンバーラインに対して垂直方向に厚み $y_t$ を加算します。
+そのためには、キャンバーラインの角度 $\theta$ が必要です。</p>
+
+\[\theta = \arctan\left(\frac{dy_c}{dx}\right)\]
+
+<p>この $\theta$ を使って、上面 $(x_u, y_u)$ と下面 $(x_l, y_l)$ を算出します。</p>
+
+\[\begin{aligned}
+x_u &amp;= x - y_t \sin\theta \\
+y_u &amp;= y_c + y_t \cos\theta \\
+x_l &amp;= x + y_t \sin\theta \\
+y_l &amp;= y_c - y_t \cos\theta
+\end{aligned}\]
+
+<h2 id="javascript-による実装">JavaScript による実装</h2>
+
+<p>以下は、このロジックを JavaScript 関数に落とし込んだものです。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nf">generateNACA</span><span class="p">(</span><span class="nx">code</span><span class="p">,</span> <span class="nx">numPoints</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// 1. パラメータのパース (例: "2412")</span>
+  <span class="kd">const</span> <span class="nx">m</span> <span class="o">=</span> <span class="nf">parseInt</span><span class="p">(</span><span class="nx">code</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span> <span class="c1">// キャンバー 0.02</span>
+  <span class="kd">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="nf">parseInt</span><span class="p">(</span><span class="nx">code</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mf">10.0</span><span class="p">;</span> <span class="c1">// 位置 0.4</span>
+  <span class="kd">const</span> <span class="nx">t</span> <span class="o">=</span> <span class="nf">parseInt</span><span class="p">(</span><span class="nx">code</span><span class="p">.</span><span class="nf">slice</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span> <span class="c1">// 厚み 0.12</span>
+
+  <span class="kd">const</span> <span class="nx">upper</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="kd">const</span> <span class="nx">lower</span> <span class="o">=</span> <span class="p">[];</span>
+
+  <span class="k">for </span><span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nx">numPoints</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 2. Cosine Spacingによるx座標の生成</span>
+    <span class="kd">const</span> <span class="nx">beta</span> <span class="o">=</span> <span class="p">(</span><span class="nx">i</span> <span class="o">/</span> <span class="nx">numPoints</span><span class="p">)</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">x</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">beta</span><span class="p">));</span>
+
+    <span class="c1">// 3. 厚み分布 yt の計算</span>
+    <span class="kd">const</span> <span class="nx">yt</span> <span class="o">=</span>
+      <span class="mi">5</span> <span class="o">*</span>
+      <span class="nx">t</span> <span class="o">*</span>
+      <span class="p">(</span><span class="mf">0.2969</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.126</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">-</span> <span class="mf">0.3516</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.2843</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">-</span> <span class="mf">0.1015</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">**</span> <span class="mi">4</span><span class="p">);</span>
+
+    <span class="c1">// 4. キャンバーライン yc と勾配 dyc/dx の計算</span>
+    <span class="kd">let</span> <span class="nx">yc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">dyc_dx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">if </span><span class="p">(</span><span class="nx">m</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// 対称翼の場合</span>
+      <span class="nx">yc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="nx">dyc_dx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if </span><span class="p">(</span><span class="nx">x</span> <span class="o">&lt;</span> <span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// 前半部分</span>
+        <span class="nx">yc</span> <span class="o">=</span> <span class="p">(</span><span class="nx">m</span> <span class="o">/</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span> <span class="nx">p</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">p</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">-</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span><span class="p">);</span>
+        <span class="nx">dyc_dx</span> <span class="o">=</span> <span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">m</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span> <span class="nx">p</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="nx">p</span> <span class="o">-</span> <span class="nx">x</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// 後半部分</span>
+        <span class="nx">yc</span> <span class="o">=</span> <span class="p">(</span><span class="nx">m</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="nx">p</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="nx">p</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="nx">p</span> <span class="o">*</span> <span class="nx">x</span> <span class="o">-</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span><span class="p">);</span>
+        <span class="nx">dyc_dx</span> <span class="o">=</span> <span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">m</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="nx">p</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="nx">p</span> <span class="o">-</span> <span class="nx">x</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 5. 角度 theta の計算</span>
+    <span class="kd">const</span> <span class="nx">theta</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">atan</span><span class="p">(</span><span class="nx">dyc_dx</span><span class="p">);</span>
+
+    <span class="c1">// 6. 最終座標の計算</span>
+    <span class="kd">const</span> <span class="nx">xu</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">-</span> <span class="nx">yt</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="nx">theta</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">yu</span> <span class="o">=</span> <span class="nx">yc</span> <span class="o">+</span> <span class="nx">yt</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">theta</span><span class="p">);</span>
+
+    <span class="kd">const</span> <span class="nx">xl</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">yt</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="nx">theta</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">yl</span> <span class="o">=</span> <span class="nx">yc</span> <span class="o">-</span> <span class="nx">yt</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">theta</span><span class="p">);</span>
+
+    <span class="nx">upper</span><span class="p">.</span><span class="nf">push</span><span class="p">({</span> <span class="na">x</span><span class="p">:</span> <span class="nx">xu</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="nx">yu</span> <span class="p">});</span>
+    <span class="nx">lower</span><span class="p">.</span><span class="nf">push</span><span class="p">({</span> <span class="na">x</span><span class="p">:</span> <span class="nx">xl</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="nx">yl</span> <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="c1">// 点群を 後縁 -&gt; 上面 -&gt; 前縁 -&gt; 下面 -&gt; 後縁 の順に結合して返す</span>
+  <span class="c1">// (実装省略: reverseやconcatを使用)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="注意点">注意点</h2>
+
+<ul>
+  <li><strong>後縁の閉合</strong>: NACA の公式通りに計算すると、後縁（Trailing Edge）の厚みは完全なゼロにはなりません。CFD（流体解析）などでメッシュを切る場合、後縁が開いていると問題になることがあるため、最後の点を強制的に $(1.0, 0.0)$ に閉じる処理を入れるか、係数を微調整することが一般的です。</li>
+  <li><strong>前縁半径</strong>: NACA 4 桁系列は前縁が丸みを帯びていますが、超音速翼など鋭利な前縁が必要な場合は別の定義式（6 桁系列やバイコンベックスなど）が必要になります。</li>
+</ul>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>NACA 翼型は NASA の前身組織であるアメリカ航空諮問委員会(National Advisory Committee for Aeronautics)が開発した一連の翼型のことをいいます。
+航空宇宙分野でよく使われる標準的な翼型ですので、馴染みのない人はこの際に覚えておきましょう。</p>]]></content><author><name></name></author><category term="airfoil" /><summary type="html"><![CDATA[先日公開したAirfoilAppに、NACA 4 桁系列（例: NACA 2412）を自動生成する機能を追加しました。 固定のデータファイルを読み込むのではなく、数学的な定義に基づいて動的に点群を生成しています。]]></summary></entry><entry><title type="html">javascriptを用いた無動力滑空機の計算</title><link href="http://localhost:4000/posts/2025-10-08-plane-simu-javascript/" rel="alternate" type="text/html" title="javascriptを用いた無動力滑空機の計算" /><published>2025-10-21T00:00:00+09:00</published><updated>2025-10-21T00:00:00+09:00</updated><id>http://localhost:4000/posts/plane_simu_javascript</id><content type="html" xml:base="http://localhost:4000/posts/2025-10-08-plane-simu-javascript/"><![CDATA[<p>javascript を用いてフリーフライト機（無動力滑空機）の運動を数値積分で解き、姿勢と位置の時間変化を求めます。MathJax を有効にしているので、式は TeX で記します。</p>
 
 <h2 id="想定読者">想定読者</h2>
 

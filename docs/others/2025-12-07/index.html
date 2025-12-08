@@ -106,7 +106,7 @@
     <div class="lg:grid lg:grid-cols-12 lg:gap-10">
       
       <main class="lg:col-span-9">  
-        <div class="note-toc-inline lg:hidden">
+        <div class="note-toc-inline">
           <p class="toc-title">目次</p>
           <ul id="toc" class="section-nav">
 <li class="toc-entry toc-h2"><a href="#技術スタックの選定">技術スタックの選定</a>
@@ -375,7 +375,8 @@ npm <span class="nb">install </span>tailwindcss @tailwindcss/cli
 
 <p>この他にも色々カスタムできるので，興味がある人はぜひチャレンジしてみてください．</p>
 
-        </div>        
+        
+        </div>   
       </main>
   
       <aside class="lg:col-span-3 relative">
@@ -418,7 +419,45 @@ npm <span class="nb">install </span>tailwindcss @tailwindcss/cli
   </div>
 </div>
 
-
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. 監視する見出し要素を取得 (記事内の h1, h2, h3)
+    const headers = document.querySelectorAll('.article h1, .article h2, .article h3');
+    // 2. サイドバーのリンクを取得
+    const tocLinks = document.querySelectorAll('.note-toc-sidebar a');
+  
+    // IntersectionObserver の設定
+    const observerOptions = {
+      root: null, // ビューポートを基準
+      // rootMargin: 上端から-100pxの位置〜画面の残り60%までを「アクティブ判定エリア」とする
+      // これにより、見出しが画面上部に来たタイミングでハイライトが切り替わります
+      rootMargin: '-100px 0px -60% 0px', 
+      threshold: 0
+    };
+  
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        // 画面内に入った（または出た）場合
+        if (entry.isIntersecting) {
+          // 現在のアクティブクラスを全削除
+          tocLinks.forEach(link => link.classList.remove('active'));
+          
+          // 対応するIDを持つリンクを探してアクティブ化
+          const id = entry.target.getAttribute('id');
+          if (id) {
+            const activeLink = document.querySelector(`.note-toc-sidebar a[href="#${id}"]`);
+            if (activeLink) {
+              activeLink.classList.add('active');
+            }
+          }
+        }
+      });
+    }, observerOptions);
+  
+    // 各見出しを監視対象に登録
+    headers.forEach(header => observer.observe(header));
+  });
+  </script>
 
     </main>
 

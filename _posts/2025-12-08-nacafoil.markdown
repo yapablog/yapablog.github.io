@@ -1,0 +1,175 @@
+---
+layout: article
+title: 'JavaScriptでNACA4桁翼型を生成するアルゴリズム'
+date: 2025-12-08
+categories: airfoil
+toc: true
+references:
+  - author: 'Airfoil Tools'
+    title: 'NACA 4 digit airfoil generator'
+    url: 'http://airfoiltools.com/airfoil/naca4digit'
+
+  - author: 'NASA Technical Memorandum 4741'
+    note: 'Computer Program To Obtain Ordinates for NACA Airfoils'
+    url: 'https://www.pdas.com/refs/tm4741.pdf'
+#   - author: 'Abbott, I. H., & von Doenhoff, A. E.'
+#     year: '1959'
+#     title: 'Theory of Wing Sections'
+#     publisher: 'Dover Publications'
+#     note: '翼型理論のバイブル'
+#     url: 'http://airfoiltools.com/airfoil/naca4digit'
+---
+
+先日公開した[**AirfoilApp**](/airfoilapp/)に、NACA 4 桁系列（例: NACA 2412）を自動生成する機能を追加しました。
+固定のデータファイルを読み込むのではなく、数学的な定義に基づいて動的に点群を生成しています。
+
+この記事では、その生成ロジックと数学的背景、そして JavaScript での実装方法について解説します。
+
+## NACA 4 桁系列とは？
+
+NACA 4 桁系列（NACA 4-digit series）は、航空機の翼型として最もポピュラーな形状定義の一つです。
+「NACA 2412」のような 4 つの数字には、以下の幾何学的パラメータが込められています。
+
+1.  **第 1 桁 ($m$)**: 最大キャンバー（反り）の大きさ [弦長に対する%]
+2.  **第 2 桁 ($p$)**: 最大キャンバーの位置 [弦長に対する 1/10]
+3.  **第 3-4 桁 ($t$)**: 最大翼厚 [弦長に対する%]
+
+例えば **NACA 2412** なら以下のようになります。
+
+- 最大キャンバー: 弦長の **2%** ($m=0.02$)
+- 最大キャンバー位置: 前縁から **40%** の位置 ($p=0.4$)
+- 最大翼厚: 弦長の **12%** ($t=0.12$)
+
+## 生成アルゴリズム
+
+翼型の座標 $(x, y)$ を求めるには、**「厚み分布」**と**「キャンバーライン（中心線）」**を計算し、それらを重ね合わせる必要があります。
+
+### 1. 座標の離散化（Cosine Spacing）
+
+単純に $x = 0.0, 0.01, \dots, 1.0$ と等間隔に点を取ると、曲率の激しい「前縁（Leading Edge）」部分のカクつきが目立ってしまいます。
+そこで、**Cosine Spacing（余弦分布）** を用いて、前縁と後縁付近に点を集中させます。
+
+$$
+x = \frac{1}{2} (1 - \cos\beta), \quad (0 \le \beta \le \pi)
+$$
+
+### 2. 翼厚分布 ($y_t$)
+
+NACA 4 桁系列の翼厚分布は、以下の多項式で定義されています。この式は「対称翼（00xx）」の片側の形状を表します。
+
+$$
+y_t = 5t \left( 0.2969\sqrt{x} - 0.1260x - 0.3516x^2 + 0.2843x^3 - 0.1036x^4 \right)
+$$
+
+- $t$: 最大翼厚（例: 0.12）
+- 最後の係数 $-0.1036$ は、後縁を完全に閉じる（厚み 0 にする）ためのものです（厳密な定義では $-0.1015$ ですが、閉合させるために調整されることが多いです）。
+
+### 3. キャンバーライン ($y_c$)
+
+キャンバー（反り）がある場合、中心線 $y_c$ は最大キャンバー位置 $p$ を境に 2 つの放物線で表されます。
+
+**前半 ($0 \le x < p$):**
+
+$$
+y_c = \frac{m}{p^2} (2px - x^2)
+$$
+
+**後半 ($p \le x \le 1$):**
+
+$$
+y_c = \frac{m}{(1-p)^2} ((1-2p) + 2px - x^2)
+$$
+
+### 4. 座標変換（重ね合わせ）
+
+最後に、キャンバーラインに対して垂直方向に厚み $y_t$ を加算します。
+そのためには、キャンバーラインの角度 $\theta$ が必要です。
+
+$$
+\theta = \arctan\left(\frac{dy_c}{dx}\right)
+$$
+
+この $\theta$ を使って、上面 $(x_u, y_u)$ と下面 $(x_l, y_l)$ を算出します。
+
+$$
+\begin{aligned}
+x_u &= x - y_t \sin\theta \\
+y_u &= y_c + y_t \cos\theta \\
+x_l &= x + y_t \sin\theta \\
+y_l &= y_c - y_t \cos\theta
+\end{aligned}
+$$
+
+## JavaScript による実装
+
+以下は、このロジックを JavaScript 関数に落とし込んだものです。
+
+```javascript
+function generateNACA(code, numPoints = 100) {
+  // 1. パラメータのパース (例: "2412")
+  const m = parseInt(code[0]) / 100.0; // キャンバー 0.02
+  const p = parseInt(code[1]) / 10.0; // 位置 0.4
+  const t = parseInt(code.slice(2)) / 100.0; // 厚み 0.12
+
+  const upper = [];
+  const lower = [];
+
+  for (let i = 0; i <= numPoints; i++) {
+    // 2. Cosine Spacingによるx座標の生成
+    const beta = (i / numPoints) * Math.PI;
+    const x = 0.5 * (1.0 - Math.cos(beta));
+
+    // 3. 厚み分布 yt の計算
+    const yt =
+      5 *
+      t *
+      (0.2969 * Math.sqrt(x) - 0.126 * x - 0.3516 * x ** 2 + 0.2843 * x ** 3 - 0.1015 * x ** 4);
+
+    // 4. キャンバーライン yc と勾配 dyc/dx の計算
+    let yc = 0;
+    let dyc_dx = 0;
+
+    if (m === 0) {
+      // 対称翼の場合
+      yc = 0;
+      dyc_dx = 0;
+    } else {
+      if (x < p) {
+        // 前半部分
+        yc = (m / (p * p)) * (2 * p * x - x * x);
+        dyc_dx = ((2 * m) / (p * p)) * (p - x);
+      } else {
+        // 後半部分
+        yc = (m / (1 - p) ** 2) * (1 - 2 * p + 2 * p * x - x * x);
+        dyc_dx = ((2 * m) / (1 - p) ** 2) * (p - x);
+      }
+    }
+
+    // 5. 角度 theta の計算
+    const theta = Math.atan(dyc_dx);
+
+    // 6. 最終座標の計算
+    const xu = x - yt * Math.sin(theta);
+    const yu = yc + yt * Math.cos(theta);
+
+    const xl = x + yt * Math.sin(theta);
+    const yl = yc - yt * Math.cos(theta);
+
+    upper.push({ x: xu, y: yu });
+    lower.push({ x: xl, y: yl });
+  }
+
+  // 点群を 後縁 -> 上面 -> 前縁 -> 下面 -> 後縁 の順に結合して返す
+  // (実装省略: reverseやconcatを使用)
+}
+```
+
+## 注意点
+
+- **後縁の閉合**: NACA の公式通りに計算すると、後縁（Trailing Edge）の厚みは完全なゼロにはなりません。CFD（流体解析）などでメッシュを切る場合、後縁が開いていると問題になることがあるため、最後の点を強制的に $(1.0, 0.0)$ に閉じる処理を入れるか、係数を微調整することが一般的です。
+- **前縁半径**: NACA 4 桁系列は前縁が丸みを帯びていますが、超音速翼など鋭利な前縁が必要な場合は別の定義式（6 桁系列やバイコンベックスなど）が必要になります。
+
+## まとめ
+
+NACA 翼型は NASA の前身組織であるアメリカ航空諮問委員会(National Advisory Committee for Aeronautics)が開発した一連の翼型のことをいいます。
+航空宇宙分野でよく使われる標準的な翼型ですので、馴染みのない人はこの際に覚えておきましょう。
