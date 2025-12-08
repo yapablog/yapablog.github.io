@@ -86,7 +86,7 @@
   .article {
     max-width: 860px;
     margin: 2rem auto;
-    padding: 1.5rem;
+    padding: 0rem;
     color: var(--color-primary);
     font-family: var(--font-body);
     @apply text-base leading-8; /* 読みやすい行間 */
