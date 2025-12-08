@@ -116,12 +116,8 @@ bundle exec jekyll build
 
 - **post のテンプレ**
   $$
-  E = mc^2
+  \int_{-\infty}^{\infty} e^{-x^2} \, dx = \sqrt{\pi}
   $$
-
-$$
-\int_{-\infty}^{\infty} e^{-x^2} \, dx = \sqrt{\pi}
-$$
 
 {% include callout.html title="💡ポイント" content="ここは注意点です。HTMLを書かずに済みます。ここで、$a^2 + b^2 = c^2$ という式が成り立ちます。" %}
 

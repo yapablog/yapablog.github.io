@@ -1,0 +1,333 @@
+<script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+<div class="article w-full max-w-7xl mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-5 space-y-6">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="bg-[var(--color-primary)] text-white px-5 py-3 border-b border-gray-100">
+          <h2 class="text-lg font-bold m-0 text-white" style="border:none; margin:0; padding:0;">パラメータ入力</h2>
+        </div>
+        <div class="p-5">
+          <div class="mb-4">
+            <label for="pointCloud" class="block text-sm font-bold text-gray-700 mb-2">
+              点群データ (x y)
+            </label>
+            <div class="bg-[var(--color-bg-callout)] text-gray-600 text-xs p-3 rounded mb-3 border border-gray-200">
+              <p class="font-bold mb-1">フォーマット順序:</p>
+              後縁 (TE) → 上面 (Upper) → 前縁 (LE) → 下面 (Lower) → 後縁 (TE)<br>
+              ※スペース、タブ、カンマ区切りに対応
+            </div>
+            <textarea
+              id="pointCloud"
+              rows="12"
+              class="w-full font-mono text-sm p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[var(--color-brand)] focus:outline-none transition-shadow"
+              placeholder="1.0000 0.0000&#10;0.9500 0.0123&#10;..."
+            ></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <button
+              onclick="loadSample()"
+              class="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+            >
+              サンプル読込
+            </button>
+            <button
+              onclick="normalizeAndUpdate()"
+              class="px-4 py-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded hover:bg-amber-100 transition-colors"
+            >
+              正規化 (0-1化)
+            </button>
+          </div>
+          <div class="mb-6">
+             <label for="chordLength" class="block text-sm font-bold text-gray-700 mb-1">コード長 (実寸換算用)</label>
+             <div class="flex items-center">
+               <input
+                 type="number"
+                 id="chordLength"
+                 value="1000"
+                 min="0"
+                 step="any"
+                 class="flex-1 p-2 border border-gray-300 rounded-l focus:ring-2 focus:ring-[var(--color-brand)] focus:outline-none"
+               >
+               <span class="bg-gray-100 text-gray-600 border border-l-0 border-gray-300 px-3 py-2 rounded-r text-sm">mm</span>
+             </div>
+          </div>
+          <button
+            onclick="calculateProperties()"
+            class="w-full py-3 bg-[var(--color-brand)] text-white font-bold rounded shadow hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+          >
+            <span>計算・描画実行</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="lg:col-span-7">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 h-full flex flex-col">
+        <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex justify-between items-center">
+          <h5 class="font-bold text-gray-700 m-0 text-base">形状プレビュー & 解析結果</h5>
+        </div>
+        <div class="p-5 flex-1">
+          <div id="airfoilPlot" class="w-full h-80 lg:h-96 border border-gray-100 rounded mb-8"></div>
+          <h3 class="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2 mb-4">幾何特性</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+              <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+                <tr>
+                  <th class="px-4 py-3 border border-gray-200">項目</th>
+                  <th class="px-4 py-3 border border-gray-200">無次元値 (Normalized)</th>
+                  <th class="px-4 py-3 border border-gray-200">実寸値 (Real)</th>
+                </tr>
+              </thead>
+              <tbody id="resultBody" class="text-gray-700">
+                <tr>
+                  <td colspan="3" class="px-4 py-8 text-center text-gray-400 italic bg-gray-50/50">
+                    データを入力して「計算・描画実行」を押してください
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // 初期の空グラフ描画
+    const layout = {
+        title: { text: 'Airfoil Shape', font: { size: 14 } },
+        xaxis: { title: 'x/c', range: [-0.1, 1.1], zeroline: true, showgrid: true, gridcolor: '#eee' },
+        yaxis: { title: 'y/c', scaleanchor: "x", scaleratio: 1, zeroline: true, showgrid: true, gridcolor: '#eee' },
+        margin: { t: 40, r: 20, b: 40, l: 50 },
+        paper_bgcolor: 'rgba(0,0,0,0)', // 背景透明
+        plot_bgcolor: 'rgba(0,0,0,0)'
+    };
+    
+    // レスポンシブ対応のためのconfig
+    const config = { responsive: true, displayModeBar: false };
+    
+    Plotly.newPlot('airfoilPlot', [], layout, config);
+});
+
+// サンプルデータ (NACA 2412)
+function loadSample() {
+const sampleData = `1.00000 0.00126
+0.95006 0.01136
+0.90013 0.02075
+0.80025 0.03787
+0.70038 0.05294
+0.60049 0.06543
+0.50060 0.07470
+0.40069 0.07996
+0.30075 0.07997
+0.25076 0.07739
+0.20077 0.07254
+0.15076 0.06486
+0.10073 0.05362
+0.07570 0.04618
+0.05066 0.03706
+0.02560 0.02534
+0.01256 0.01766
+0.00000 0.00000
+0.01244 -0.01566
+0.02540 -0.02266
+0.05034 -0.03194
+0.07529 -0.03818
+0.10027 -0.04238
+0.15024 -0.04714
+0.20023 -0.04846
+0.25024 -0.04761
+0.30025 -0.04547
+0.40029 -0.03904
+0.50036 -0.03080
+0.60045 -0.02197
+0.70054 -0.01356
+0.80063 -0.00633
+0.90071 -0.00125
+0.95075 -0.00010
+1.00000 -0.00126`;
+document.getElementById('pointCloud').value = sampleData;
+calculateProperties();
+}
+
+// データパース処理の強化 (カンマやタブにも対応)
+function parsePoints(text) {
+const lines = text.trim().split(/\n+/);
+const points = [];
+for (let line of lines) {
+// カンマ、タブ、複数のスペースを区切り文字として扱う
+const parts = line.trim().split(/[\s,]+/);
+if (parts.length >= 2) {
+const x = parseFloat(parts[0]);
+const y = parseFloat(parts[1]);
+if (!isNaN(x) && !isNaN(y)) {
+points.push({ x, y });
+}
+}
+}
+return points;
+}
+
+// 正規化処理
+function normalizeAndUpdate() {
+let points = parsePoints(document.getElementById('pointCloud').value);
+if (points.length < 3) {
+alert("データが不足しています。");
+return;
+}
+
+    // 最小Xを前縁(LE)、最大Xを後縁(TE)と仮定してシフト・回転・スケーリング
+    let minX = Infinity, maxX = -Infinity;
+    let leIdx = -1, teIdx = -1;
+
+    points.forEach((p, i) => {
+        if (p.x < minX) { minX = p.x; leIdx = i; }
+        if (p.x > maxX) { maxX = p.x; teIdx = i; }
+    });
+
+    // 1. シフト (LE -> 原点)
+    const leP = { ...points[leIdx] };
+    points = points.map(p => ({ x: p.x - leP.x, y: p.y - leP.y }));
+
+    // 2. 回転 (TEをX軸上へ)
+    const currentTE = points[teIdx];
+    const angle = Math.atan2(currentTE.y, currentTE.x);
+    const cosA = Math.cos(-angle);
+    const sinA = Math.sin(-angle);
+
+    points = points.map(p => ({
+        x: p.x * cosA - p.y * sinA,
+        y: p.x * sinA + p.y * cosA
+    }));
+
+    // 3. スケーリング (Chord = 1.0へ)
+    const newChord = points[teIdx].x;
+    if (newChord !== 0) {
+        points = points.map(p => ({ x: p.x / newChord, y: p.y / newChord }));
+    }
+
+    // 表示更新
+    const newText = points.map(p => `${p.x.toFixed(6)}\t${p.y.toFixed(6)}`).join("\n");
+    document.getElementById('pointCloud').value = newText;
+    calculateProperties();
+
+}
+
+// 計算実行
+function calculateProperties() {
+const text = document.getElementById('pointCloud').value;
+const chordLen = parseFloat(document.getElementById('chordLength').value) || 1000;
+let points = parsePoints(text);
+
+    if (points.length < 3) {
+        alert("有効な点群データを入力してください（3点以上）。");
+        return;
+    }
+
+    // 閉合処理
+    const first = points[0];
+    const last = points[points.length - 1];
+    const dist = Math.sqrt((first.x - last.x)**2 + (first.y - last.y)**2);
+    if (dist > 1e-4) {
+        points.push({ x: first.x, y: first.y });
+    }
+
+    // 断面特性計算 (Shoelace Formula)
+    let area = 0, Sx = 0, Sy = 0;
+    let Ixx_raw = 0, Iyy_raw = 0;
+    let perimeter = 0;
+
+    for (let i = 0; i < points.length - 1; i++) {
+        const p1 = points[i];
+        const p2 = points[i+1];
+
+        const cross = (p1.x * p2.y - p2.x * p1.y);
+        area += cross;
+
+        Sy += (p1.x + p2.x) * cross;
+        Sx += (p1.y + p2.y) * cross;
+
+        Ixx_raw += (p1.y**2 + p1.y * p2.y + p2.y**2) * cross;
+        Iyy_raw += (p1.x**2 + p1.x * p2.x + p2.x**2) * cross;
+
+        perimeter += Math.sqrt((p2.x - p1.x)**2 + (p2.y - p1.y)**2);
+    }
+
+    area = area * 0.5;
+    const sign = Math.sign(area); // 入力順序による符号
+    area = Math.abs(area);
+
+    // 重心
+    const cx = (Sy / 6) / (area * sign);
+    const cy = (Sx / 6) / (area * sign);
+
+    // 断面二次モーメント (重心周り)
+    let Ixx = Math.abs(Ixx_raw / 12) - area * cy * cy;
+    let Iyy = Math.abs(Iyy_raw / 12) - area * cx * cx;
+
+    // 簡易最大翼厚
+    let minY = Infinity, maxY = -Infinity;
+    points.forEach(p => {
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
+    });
+    const maxThick = maxY - minY;
+
+    // テーブル更新
+    const resultBody = document.getElementById('resultBody');
+    resultBody.innerHTML = `
+        ${createRow("断面積 (Area)", area, area * (chordLen**2), "mm²")}
+        ${createRow("周長 (Perimeter)", perimeter, perimeter * chordLen, "mm")}
+        ${createRow("重心 X (x_cg)", cx, cx * chordLen, "mm")}
+        ${createRow("重心 Y (y_cg)", cy, cy * chordLen, "mm")}
+        ${createRow("最大翼厚 (Thickness)", maxThick, maxThick * chordLen, "mm")}
+        ${createRow("断面二次モーメント Ixx", Ixx, Ixx * (chordLen**4), "mm⁴")}
+    `;
+
+    // グラフ更新
+    const xVals = points.map(p => p.x);
+    const yVals = points.map(p => p.y);
+
+    const trace = {
+        x: xVals,
+        y: yVals,
+        mode: 'lines', // マーカーを消して線のみにする（点が多いと重いため）
+        name: 'Airfoil',
+        line: {color: '#08206b', width: 2}, // ブランドカラーに合わせる
+        fill: 'toself', // 塗りつぶし追加
+        fillcolor: 'rgba(8, 32, 107, 0.1)'
+    };
+
+    const layout = {
+        title: { text: `Airfoil Shape (Chord: ${chordLen}mm)`, font: { size: 14 } },
+        xaxis: { title: 'x/c', zeroline: true },
+        yaxis: { title: 'y/c', scaleanchor: "x", scaleratio: 1, zeroline: true },
+        margin: { t: 40, r: 20, b: 40, l: 50 },
+        showlegend: false
+    };
+
+    Plotly.react('airfoilPlot', [trace], layout, { responsive: true, displayModeBar: false });
+
+}
+
+function createRow(label, normVal, realVal, unit) {
+// 精度調整
+const nV = normVal.toExponential(4);
+let rV = realVal.toLocaleString('en-US', { maximumFractionDigits: 2 });
+
+    // 値が極端に大きい/小さい場合は指数表記
+    if (Math.abs(realVal) > 100000 || (Math.abs(realVal) < 0.01 && realVal !== 0)) {
+        rV = realVal.toExponential(3);
+    }
+
+    return `
+        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+            <td class="px-4 py-2 font-medium">${label}</td>
+            <td class="px-4 py-2 font-mono text-gray-600">${nV}</td>
+            <td class="px-4 py-2 font-mono font-bold text-[var(--color-brand)]">${rV} <span class="text-xs text-gray-400 font-normal ml-1">${unit}</span></td>
+        </tr>
+    `;
+
+}
+</script>

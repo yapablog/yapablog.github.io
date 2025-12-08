@@ -1,8 +1,7 @@
 ---
-layout: page
+layout: default
 title: Posts
 permalink: /posts/
 ---
 
-{: .h1}
-Posts
+{% include categoryblock.html title="最近の投稿" collection="posts" limit=nil %}
