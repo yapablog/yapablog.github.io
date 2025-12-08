@@ -49,42 +49,35 @@
   class=" top-0 z-50 w-full border-b-2 border-[#624ba1ee] divide-gray-400 py-2 bg-white"
 >
   <div
-    class="flex items-center w-full"
+  class="flex flex-col md:flex-row md:items-center md:justify-between w-full"
+>
+  <a
+    href="/"
+    class="flex px-2 items-center justify-center md:justify-start mb-2 md:mb-0"
   >
-    <!-- タイトル -->
-    <a
-      href="/"
-      class="flex px-2 items-center"
-    >
-      <img
-        src="/assets/images/logo.png"
-        alt="ロゴ"
-        class="h-10 md:h-10 w-auto ml-2"
-      />
-      <div class="flex flex-col leading-tigh ">
-        <div class="ml-2 text-[1.4rem] text-center text-gray-800 font-black">
-          やぱのブログ
-        </div>
-        <div class="ml-2 text-[0.6rem] text-center text-gray-600 font-medium leading-none ">
-          航空工学・生物模倣など
-        </div>
+    <img
+      class="h-6 md:h-10 w-auto ml-2"
+      src="/assets/images/logo.png"
+      alt="ロゴ"
+    />
+    <div class="flex flex-col leading-tigh ">
+      <div class="ml-2 text-[1.0rem] md:text-[1.4rem] text-center text-gray-800 font-black">
+        やぱのブログ
       </div>
-      <!-- <div class="ml-2 flex flex-col leading-tight">
-        <div class="text-[1.2rem] md:text-[1.8rem] text-gray-600 font-medium leading-none">
-          
-        </div>
-      </div> -->
-    </a>
-
-    <!-- ナビゲーション -->
-      <nav
-        class="ml-auto flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
-      >
-        <a href="/" class="nav-link">Home</a>
-        <a href="/tools/" class="nav-link">Tools</a>
-        <a href="/articles/" class="nav-link">Articles</a>
-      </nav>
-  </div>
+      <div class="ml-2 text-[0rem] md:text-[0.6rem] text-center text-gray-600 font-medium leading-none ">
+        航空工学・生物模倣など
+      </div>
+    </div>
+  </a>
+  <nav
+    class="flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
+  >
+    <a href="/" class="nav-link">Home</a>
+    <a href="/tools/" class="nav-link">Tools</a>
+    <a href="/articles/" class="nav-link">Articles</a>
+    <a href="/contact/" class="nav-link">Contact</a>
+  </nav>
+</div>
 </header>
 
     <main class="mx-auto flex-grow w-full">
