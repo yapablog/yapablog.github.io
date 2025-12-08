@@ -1,5 +1,6 @@
 ---
 layout: tools
+title: 翼型計算
 permalink: /airfoilapp/
 ToolName: 翼型プロパティ計算ツール
 Description: コード長と点群データから、面積や重心、断面二次モーメントなどの幾何パラメータを計算するWebツールです。
