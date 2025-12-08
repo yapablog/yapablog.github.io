@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JavaScriptでNACA4桁翼型を生成するアルゴリズム | kaze-no-hako</title>
+    <title>JavaScriptでNACA4桁翼型を生成するアルゴリズム | やぱのブログ</title>
     <meta name="description" content="航空工学・生物模倣など" />
     <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/assets/css/tailwind-output.css" />
@@ -21,6 +21,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=WDXL+Lubrifont+TC&family=Zen+Kaku+Gothic+New&display=swap"
       rel="stylesheet"
     />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
   </head>
 
   <body class="flex flex-col min-h-screen">
@@ -46,15 +47,15 @@
       class="flex px-2 items-center"
     >
       <img
-        src="/assets/images/logo_4.png"
+        src="/assets/images/logo.png"
         alt="ロゴ"
         class="h-10 md:h-10 w-auto ml-2"
       />
       <div class="flex flex-col leading-tigh ">
-        <div class="ml-2 text-[1.4rem] text-center text-gray-800 font-bold">
+        <div class="ml-2 text-[1.4rem] text-center text-gray-800 font-black">
           やぱのブログ
         </div>
-        <div class="ml-2 text-[0.6rem] text-center text-gray-600 font-medium leading-none font-serif">
+        <div class="ml-2 text-[0.6rem] text-center text-gray-600 font-medium leading-none ">
           航空工学・生物模倣など
         </div>
       </div>
@@ -70,8 +71,8 @@
         class="ml-auto flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
       >
         <a href="/" class="nav-link">Home</a>
-        <!-- <a href="/about/" class="nav-link">About</a> -->
-        <a href="/airfoilapp/" class="nav-link">Tools</a>
+        <a href="/tools/" class="nav-link">Tools</a>
+        <a href="/articles/" class="nav-link">Articles</a>
       </nav>
   </div>
 </header>
@@ -162,13 +163,16 @@
 
 <h3 id="2-翼厚分布-y_t">2. 翼厚分布 ($y_t$)</h3>
 
-<p>NACA 4 桁系列の翼厚分布は、以下の多項式で定義されています。この式は「対称翼（00xx）」の片側の形状を表します。</p>
+<p>NACA 4 桁系列の翼厚分布は、以下の多項式で定義されています。この式は「対称翼（00xx）」の片側の厚さを表します。</p>
 
 \[y_t = 5t \left( 0.2969\sqrt{x} - 0.1260x - 0.3516x^2 + 0.2843x^3 - 0.1036x^4 \right)\]
 
 <ul>
   <li>$t$: 最大翼厚（例: 0.12）</li>
-  <li>最後の係数 $-0.1036$ は、後縁を完全に閉じる（厚み 0 にする）ためのものです（厳密な定義では $-0.1015$ ですが、閉合させるために調整されることが多いです）。</li>
+  <li>最後の係数 $-0.1036$ は、後縁を完全に閉じる（厚み 0 にする）ためのものです。
+厳密な定義では $-0.1015$ であり、後縁に少し隙間ができます。
+これは製作の都合上、後縁の薄さを 0 にできないことを考慮してのものです。
+解析上では、閉合させるために調整されることが多いようです。</li>
 </ul>
 
 <h3 id="3-キャンバーライン-y_c">3. キャンバーライン ($y_c$)</h3>
@@ -181,7 +185,7 @@
 
 <p><strong>後半 ($p \le x \le 1$):</strong></p>
 
-\[y_c = \frac{m}{(1-p)^2} ((1-2p) + 2px - x^2)\]
+\[y_c = \frac{m}{(1-p)^2} (1-2p + 2px - x^2)\]
 
 <h3 id="4-座標変換重ね合わせ">4. 座標変換（重ね合わせ）</h3>
 
@@ -189,6 +193,8 @@
 そのためには、キャンバーラインの角度 $\theta$ が必要です。</p>
 
 \[\theta = \arctan\left(\frac{dy_c}{dx}\right)\]
+
+<p>$dy_c/dx$は前節で定義された$y_c$を$x$で微分すれば求めることができます。</p>
 
 <p>この $\theta$ を使って、上面 $(x_u, y_u)$ と下面 $(x_l, y_l)$ を算出します。</p>
 

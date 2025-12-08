@@ -1,0 +1,40 @@
+---
+layout: default
+title: Tools
+permalink: /tools/
+---
+
+<div class="bg-gray-50 border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold tracking-tight text-[var(--color-primary)] sm:text-4xl mb-4 font-[family-name:var(--font-sans)]">
+      Developed Tools
+    </h1>
+    <p class="text-lg text-gray-600 max-w-2xl font-bold">
+      自作したツールを公開しています。<br>
+      ブラウザ上で動作するため、インストール不要ですぐに使えます。
+    </p>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+    {% capture desc_airfoil %}
+    <ul>
+      <li>翼型の幾何プロパティ(面積、重心、Ixx等)を計算</li>
+      <li>NACA 4桁系列の翼型を自動生成</li>
+      <li>CSV/点群データのインポート対応</li>
+      <li>正規化・回転機能付き</li>
+    </ul>
+    {% endcapture %}
+
+    {% include tool_card.html
+      title="Airfoil Calculator"
+      url="/airfoilapp/"
+      image="/assets/images/tools/airfoilapp_thumb.png"
+      description=desc_airfoil
+    %}
+
+  </div>
+</div>

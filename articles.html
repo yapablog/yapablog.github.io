@@ -1,0 +1,38 @@
+---
+layout: default
+title: Articles
+permalink: /articles/
+---
+
+<div class="bg-gray-50 border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold tracking-tight text-[var(--color-primary)] sm:text-4xl mb-4 font-[family-name:var(--font-sans)]">
+      Articles
+    </h1>
+    <p class="text-lg text-gray-600 max-w-2xl font-bold">
+      技術系の記事を公開しています。<br>
+      航空工学、プログラミング、論文紹介など。
+    </p>
+  </div>
+</div>
+<div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+  
+  <div class="grid grid-cols-1 lg:grid-cols-8 gap-10">
+    
+    <div class="lg:col-span-4">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-2">
+        最近の投稿
+      </h2>
+      {% include categoryblock.html collections="posts, others" limit=nil %}
+    </div>
+
+    <!-- <div class="lg:col-span-4">
+      <h2 class="text-xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-2">
+        その他
+      </h2>
+      {% include categoryblock.html collections="others" limit=3 %}
+    </div> -->
+
+  </div>
+
+</div>

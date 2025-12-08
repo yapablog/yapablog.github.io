@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>トップ | kaze-no-hako</title>
+    <title>トップ | やぱのブログ</title>
     <meta name="description" content="航空工学・生物模倣など" />
     <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/assets/css/tailwind-output.css" />
@@ -21,6 +21,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=WDXL+Lubrifont+TC&family=Zen+Kaku+Gothic+New&display=swap"
       rel="stylesheet"
     />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
   </head>
 
   <body class="flex flex-col min-h-screen">
@@ -46,15 +47,15 @@
       class="flex px-2 items-center"
     >
       <img
-        src="/assets/images/logo_4.png"
+        src="/assets/images/logo.png"
         alt="ロゴ"
         class="h-10 md:h-10 w-auto ml-2"
       />
       <div class="flex flex-col leading-tigh ">
-        <div class="ml-2 text-[1.4rem] text-center text-gray-800 font-bold">
+        <div class="ml-2 text-[1.4rem] text-center text-gray-800 font-black">
           やぱのブログ
         </div>
-        <div class="ml-2 text-[0.6rem] text-center text-gray-600 font-medium leading-none font-serif">
+        <div class="ml-2 text-[0.6rem] text-center text-gray-600 font-medium leading-none ">
           航空工学・生物模倣など
         </div>
       </div>
@@ -70,21 +71,164 @@
         class="ml-auto flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
       >
         <a href="/" class="nav-link">Home</a>
-        <!-- <a href="/about/" class="nav-link">About</a> -->
-        <a href="/airfoilapp/" class="nav-link">Tools</a>
+        <a href="/tools/" class="nav-link">Tools</a>
+        <a href="/articles/" class="nav-link">Articles</a>
       </nav>
   </div>
 </header>
 
     <main class="mx-auto flex-grow w-full">
-        <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-10">
+        <!-- <div class="bg-gray-50 border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold tracking-tight text-[var(--color-primary)] sm:text-4xl mb-4 font-[family-name:var(--font-sans)]">
+      ようこそ やぱのブログ へ
+    </h1>
+    <p class="text-lg text-gray-600 max-w-2xl font-bold leading-relaxed">
+      技術系の記事や自作ツールを公開しています。<br>
+      興味のある記事があれば、ぜひご覧ください。
+    </p>
+  </div> -->
+</div>
 
-<ul>
-    <div class="h1">
-        最近の投稿
+<div class="relative bg-cover bg-center border-b border-gray-200 h-46" style="background-image: url('/assets/images/background.png');">
+  <div class="absolute inset-0 bg-black/70"></div>
+  <div class="relative z-10 max-w-7xl px-4 pt-8 pb-20 sm:px-6 lg:px-8 text-left ">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-200 sm:text-4xl mb-4 font-[family-name:var(--font-sans)] drop-shadow-sm">
+      ようこそ やぱのブログ へ
+    </h1>
+    <p class="text-sm sm:text-lg text-gray-300 max-w-2xl font-bold leading-relaxed drop-shadow-sm">
+      技術系の記事や自作ツールを公開しています。<br>
+      興味のある記事があれば、ぜひご覧ください。
+    </p>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+  <div class="mb-16">
+    <div class="flex items-end justify-between mb-6">
+      <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+        Tools
+      </h2>
+      <a href="/tools/" class="text-sm font-bold text-[var(--color-brand)] hover:underline hidden sm:block">
+        すべて見る &rarr;
+      </a>
     </div>
+
+    <div class="flex overflow-x-auto gap-6 pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-thin">
+      
+      <div class="flex-none w-[300px] md:w-[350px] snap-start">
+        
+
+        <a href="/airfoilapp/" class="group flex flex-col h-full bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 overflow-hidden relative">
+  
+  <div class="relative w-full aspect-video bg-gray-200 border-b border-gray-200 overflow-hidden z-0">
     
-    <div class="max-w-screen-xl mx-auto py-6 px-4">
+      <img 
+        src="/assets/images/tools/airfoilapp_thumb.png" 
+        alt="Airfoil Calculator" 
+        class="w-full h-full object-cover relative z-0 grayscale-[10%] contrast-[105%] group-hover:grayscale-0 group-hover:contrast-100 group-hover:scale-105 transition-all duration-500"
+      >
+
+      <div class="absolute inset-0 bg-black/10 z-10 pointer-events-none transition-colors duration-300 group-hover:bg-transparent"></div>
+
+    
+    
+    <div class="absolute bottom-3 right-3 z-20 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-[var(--color-brand)] opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-sm ring-1 ring-gray-900/5">
+      Open Tool &rarr;
+    </div>
+  </div>
+
+  <div class="p-5 flex-1 flex flex-col z-10 bg-white relative">
+    <h3 class="text-base font-bold text-gray-800 mb-3 group-hover:text-[var(--color-brand)] transition-colors flex items-center gap-2">
+      Airfoil Calculator
+    </h3>
+    
+    <div class="text-sm text-gray-600 leading-relaxed flex-1 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_p]:mb-2">
+      
+        <ul>
+          <li>翼型の幾何プロパティ(面積、重心、Ixx等)を計算</li>
+          <li>NACA 4桁系列の翼型を自動生成</li>
+          <li>CSV/点群データのインポート対応</li>
+          <li>正規化・回転機能付き</li>
+        </ul>
+        
+    </div>
+  </div>
+</a>
+      </div>
+
+      <div class="flex-none w-[300px] md:w-[350px] snap-start">
+         
+         <a href="#" class="group flex flex-col h-full bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 overflow-hidden relative">
+  
+  <div class="relative w-full aspect-video bg-gray-200 border-b border-gray-200 overflow-hidden z-0">
+    
+      <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-200/50 z-0">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+      </div>
+    
+    
+    <div class="absolute bottom-3 right-3 z-20 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-[var(--color-brand)] opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-sm ring-1 ring-gray-900/5">
+      Open Tool &rarr;
+    </div>
+  </div>
+
+  <div class="p-5 flex-1 flex flex-col z-10 bg-white relative">
+    <h3 class="text-base font-bold text-gray-800 mb-3 group-hover:text-[var(--color-brand)] transition-colors flex items-center gap-2">
+      Coming Soon
+    </h3>
+    
+    <div class="text-sm text-gray-600 leading-relaxed flex-1 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_p]:mb-2">
+      
+         <p>開発中のツールプレースホルダーです。</p>
+         
+    </div>
+  </div>
+</a>
+      </div>
+      
+    </div>
+
+    <div class="mt-2 text-center sm:hidden">
+      <div class="flex justify-center mt-6 mb-8 ml-5 px-2">
+  <ul>
+  <a
+    href="/tools/"
+    class="group w-full md:w-auto flex items-center justify-center px-6 py-2 rounded-lg font-semibold text-lg bg-gray-100 hover:bg-gray-200 text-[#624ba1ee] hover:text-[#503a85]"
+    style="font-family: var(--font-lubri)"
+  >
+    <span class="font-bold text-lg">
+      View All Tools
+    </span>
+    <svg 
+      class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform duration-300" 
+      fill="none" 
+      stroke="currentColor" 
+      viewBox="0 0 24 24"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+    </svg>
+  </a>
+</ul>
+</div>
+
+    </div>
+  </div>
+
+
+  <div class="grid grid-cols-1 lg:grid-cols-8 gap-10">
+    
+    <div class="lg:col-span-4">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-2">
+        最近の投稿
+      </h2>
+      <div>
+<div class="h1">
+    
+</div>
+
+<div class="max-w-screen-xl mx-auto py-6 px-4">
   <ul>
     
     
@@ -99,7 +243,10 @@
 
     
     <li class="border-b border-gray-200">
-      <a href="/posts/2025-12-08-nacafoil/" class="flex py-3 group hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-sm">
+      <a 
+        href="/posts/2025-12-08-nacafoil/" 
+        class="flex py-3 group hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-sm"
+      >
         <div class="w-24 h-20 sm:w-28 sm:h-24 shrink-0 overflow-hidden rounded bg-gray-100 mr-3">
           
             <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 text-xs">
@@ -129,7 +276,10 @@
     </li>
     
     <li class="border-b border-gray-200">
-      <a href="/others/2025-12-07/" class="flex py-3 group hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-sm">
+      <a 
+        href="/others/2025-12-07/" 
+        class="flex py-3 group hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-sm"
+      >
         <div class="w-24 h-20 sm:w-28 sm:h-24 shrink-0 overflow-hidden rounded bg-gray-100 mr-3">
           
             <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 text-xs">
@@ -152,37 +302,7 @@
           </h3>
 
           <p class="text-xs text-gray-500 line-clamp-1">
-            技術ブログを自作しました。既存のプラットフォーム（Qiita や Zenn）も素晴らしいですが、「自分の好きなデザインで育てる庭」が欲しかったのが最大の理由です。広告表示の必要がないことやプラットフォーム消滅の心配が少ないことも理由に挙げられます．
-          </p>
-        </div>
-      </a>
-    </li>
-    
-    <li class="border-b border-gray-200">
-      <a href="/posts/2025-10-08-plane-simu-javascript/" class="flex py-3 group hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-sm">
-        <div class="w-24 h-20 sm:w-28 sm:h-24 shrink-0 overflow-hidden rounded bg-gray-100 mr-3">
-          
-            <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 text-xs">
-              No Img
-            </div>
-          
-        </div>
-
-        <div class="flex-1 min-w-0 flex flex-col justify-center">
-          <div class="flex items-center text-xs text-gray-400 mb-1 space-x-2">
-            <time>2025.10.21</time>
-            
-              <span class="text-[#624ba1ee] font-medium">aerodynamics</span>
-            
-            
-            </div>
-
-          <h3 class="text-sm sm:text-base font-bold text-gray-800 leading-snug line-clamp-2 group-hover:text-[#624ba1ee] transition-colors mb-1">
-            javascriptを用いた無動力滑空機の計算
-          </h3>
-
-          <p class="text-xs text-gray-500 line-clamp-1">
-            javascript を用いてフリーフライト機（無動力滑空機）の運動を数値積分で解き、姿勢と位置の時間変化を求めます。MathJax を有効にしているので、式は TeX で記します。
+            技術ブログを自作しました。既存のプラットフォーム（Qiita や Zenn）も素晴らしいですが、「html や javascript を直接いじれる自由さ」が欲しかったのが最大の理由です。そのおかげで、自作した便利ツールを気軽に公開することができるようになりました。他には、広告表示の必要がないことやプラットフォーム消滅の心配が少ないことも理由に挙げられます。収益目的ではないので、アフィリエイトリンク等は設置しない方針です。
           </p>
         </div>
       </a>
@@ -190,30 +310,45 @@
     
   </ul>
 </div>
-  
+
+
     
-      
-      <div class="flex justify-center mt-6 mb-8 ml-5 px-2">
+    <div class="flex justify-center mt-6 mb-8 ml-5 px-2">
   <ul>
-  <a href="/posts, others/" class="group w-full md:w-auto flex items-center justify-center px-6 py-2 rounded-lg font-semibold text-lg bg-gray-100 hover:bg-gray-200 text-[#624ba1ee] hover:text-[#503a85]" style="font-family: var(--font-lubri)">
+  <a
+    href="/posts, others/"
+    class="group w-full md:w-auto flex items-center justify-center px-6 py-2 rounded-lg font-semibold text-lg bg-gray-100 hover:bg-gray-200 text-[#624ba1ee] hover:text-[#503a85]"
+    style="font-family: var(--font-lubri)"
+  >
     <span class="font-bold text-lg">
       View All
     </span>
-    <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg 
+      class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform duration-300" 
+      fill="none" 
+      stroke="currentColor" 
+      viewBox="0 0 24 24"
+    >
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
     </svg>
   </a>
 </ul>
 </div>
 
-    
-  </ul>
-<ul>
-    <div class="h1">
-        その他
+
+</div>
     </div>
+
+    <!-- <div class="lg:col-span-4">
+      <h2 class="text-xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-2">
+        その他
+      </h2>
+      <div>
+<div class="h1">
     
-    <div class="max-w-screen-xl mx-auto py-6 px-4">
+</div>
+
+<div class="max-w-screen-xl mx-auto py-6 px-4">
   <ul>
     
     
@@ -228,7 +363,10 @@
 
     
     <li class="border-b border-gray-200">
-      <a href="/others/2025-12-07/" class="flex py-3 group hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-sm">
+      <a 
+        href="/others/2025-12-07/" 
+        class="flex py-3 group hover:bg-gray-50 transition-colors -mx-2 px-2 rounded-sm"
+      >
         <div class="w-24 h-20 sm:w-28 sm:h-24 shrink-0 overflow-hidden rounded bg-gray-100 mr-3">
           
             <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 text-xs">
@@ -251,7 +389,7 @@
           </h3>
 
           <p class="text-xs text-gray-500 line-clamp-1">
-            技術ブログを自作しました。既存のプラットフォーム（Qiita や Zenn）も素晴らしいですが、「自分の好きなデザインで育てる庭」が欲しかったのが最大の理由です。広告表示の必要がないことやプラットフォーム消滅の心配が少ないことも理由に挙げられます．
+            技術ブログを自作しました。既存のプラットフォーム（Qiita や Zenn）も素晴らしいですが、「html や javascript を直接いじれる自由さ」が欲しかったのが最大の理由です。そのおかげで、自作した便利ツールを気軽に公開することができるようになりました。他には、広告表示の必要がないことやプラットフォーム消滅の心配が少ないことも理由に挙げられます。収益目的ではないので、アフィリエイトリンク等は設置しない方針です。
           </p>
         </div>
       </a>
@@ -259,27 +397,57 @@
     
   </ul>
 </div>
-  
+
+
     
-      
-      <div class="flex justify-center mt-6 mb-8 ml-5 px-2">
+    <div class="flex justify-center mt-6 mb-8 ml-5 px-2">
   <ul>
-  <a href="/others/" class="group w-full md:w-auto flex items-center justify-center px-6 py-2 rounded-lg font-semibold text-lg bg-gray-100 hover:bg-gray-200 text-[#624ba1ee] hover:text-[#503a85]" style="font-family: var(--font-lubri)">
+  <a
+    href="/others/"
+    class="group w-full md:w-auto flex items-center justify-center px-6 py-2 rounded-lg font-semibold text-lg bg-gray-100 hover:bg-gray-200 text-[#624ba1ee] hover:text-[#503a85]"
+    style="font-family: var(--font-lubri)"
+  >
     <span class="font-bold text-lg">
       View All
     </span>
-    <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg 
+      class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform duration-300" 
+      fill="none" 
+      stroke="currentColor" 
+      viewBox="0 0 24 24"
+    >
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
     </svg>
   </a>
 </ul>
 </div>
 
-    
-  </ul>
 
-</ul>
+</div>
+    </div> -->
 
+  </div>
+
+</div>
+
+<style>
+  /* Chrome, Safari, Edge */
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent; 
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #e5e7eb; /* gray-200 */
+    border-radius: 20px;
+  }
+  /* Firefox */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #e5e7eb transparent;
+  }
+</style>
     </main>
 
     <!-- <footer>

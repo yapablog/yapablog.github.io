@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-12-08T21:42:01+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">kaze-no-hako</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">JavaScriptでNACA4桁翼型を生成するアルゴリズム</title><link href="http://localhost:4000/posts/2025-12-08-nacafoil/" rel="alternate" type="text/html" title="JavaScriptでNACA4桁翼型を生成するアルゴリズム" /><published>2025-12-08T00:00:00+09:00</published><updated>2025-12-08T00:00:00+09:00</updated><id>http://localhost:4000/posts/nacafoil</id><content type="html" xml:base="http://localhost:4000/posts/2025-12-08-nacafoil/"><![CDATA[<p>先日公開した<a href="/airfoilapp/"><strong>AirfoilApp</strong></a>に、NACA 4 桁系列（例: NACA 2412）を自動生成する機能を追加しました。
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-12-09T01:33:58+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">やぱのブログ</title><subtitle>航空工学や生物模倣に関する技術系の記事や、自作ツールを公開しています。</subtitle><entry><title type="html">JavaScriptでNACA4桁翼型を生成するアルゴリズム</title><link href="http://localhost:4000/posts/2025-12-08-nacafoil/" rel="alternate" type="text/html" title="JavaScriptでNACA4桁翼型を生成するアルゴリズム" /><published>2025-12-08T00:00:00+09:00</published><updated>2025-12-08T00:00:00+09:00</updated><id>http://localhost:4000/posts/nacafoil</id><content type="html" xml:base="http://localhost:4000/posts/2025-12-08-nacafoil/"><![CDATA[<p>先日公開した<a href="/airfoilapp/"><strong>AirfoilApp</strong></a>に、NACA 4 桁系列（例: NACA 2412）を自動生成する機能を追加しました。
 固定のデータファイルを読み込むのではなく、数学的な定義に基づいて動的に点群を生成しています。</p>
 
 <p>この記事では、その生成ロジックと数学的背景、そして JavaScript での実装方法について解説します。</p>
@@ -35,13 +35,16 @@
 
 <h3 id="2-翼厚分布-y_t">2. 翼厚分布 ($y_t$)</h3>
 
-<p>NACA 4 桁系列の翼厚分布は、以下の多項式で定義されています。この式は「対称翼（00xx）」の片側の形状を表します。</p>
+<p>NACA 4 桁系列の翼厚分布は、以下の多項式で定義されています。この式は「対称翼（00xx）」の片側の厚さを表します。</p>
 
 \[y_t = 5t \left( 0.2969\sqrt{x} - 0.1260x - 0.3516x^2 + 0.2843x^3 - 0.1036x^4 \right)\]
 
 <ul>
   <li>$t$: 最大翼厚（例: 0.12）</li>
-  <li>最後の係数 $-0.1036$ は、後縁を完全に閉じる（厚み 0 にする）ためのものです（厳密な定義では $-0.1015$ ですが、閉合させるために調整されることが多いです）。</li>
+  <li>最後の係数 $-0.1036$ は、後縁を完全に閉じる（厚み 0 にする）ためのものです。
+厳密な定義では $-0.1015$ であり、後縁に少し隙間ができます。
+これは製作の都合上、後縁の薄さを 0 にできないことを考慮してのものです。
+解析上では、閉合させるために調整されることが多いようです。</li>
 </ul>
 
 <h3 id="3-キャンバーライン-y_c">3. キャンバーライン ($y_c$)</h3>
@@ -54,7 +57,7 @@
 
 <p><strong>後半 ($p \le x \le 1$):</strong></p>
 
-\[y_c = \frac{m}{(1-p)^2} ((1-2p) + 2px - x^2)\]
+\[y_c = \frac{m}{(1-p)^2} (1-2p + 2px - x^2)\]
 
 <h3 id="4-座標変換重ね合わせ">4. 座標変換（重ね合わせ）</h3>
 
@@ -62,6 +65,8 @@
 そのためには、キャンバーラインの角度 $\theta$ が必要です。</p>
 
 \[\theta = \arctan\left(\frac{dy_c}{dx}\right)\]
+
+<p>$dy_c/dx$は前節で定義された$y_c$を$x$で微分すれば求めることができます。</p>
 
 <p>この $\theta$ を使って、上面 $(x_u, y_u)$ と下面 $(x_l, y_l)$ を算出します。</p>
 
@@ -145,314 +150,4 @@ y_l &amp;= y_c - y_t \cos\theta
 <h2 id="まとめ">まとめ</h2>
 
 <p>NACA 翼型は NASA の前身組織であるアメリカ航空諮問委員会(National Advisory Committee for Aeronautics)が開発した一連の翼型のことをいいます。
-航空宇宙分野でよく使われる標準的な翼型ですので、馴染みのない人はこの際に覚えておきましょう。</p>]]></content><author><name></name></author><category term="airfoil" /><summary type="html"><![CDATA[先日公開したAirfoilAppに、NACA 4 桁系列（例: NACA 2412）を自動生成する機能を追加しました。 固定のデータファイルを読み込むのではなく、数学的な定義に基づいて動的に点群を生成しています。]]></summary></entry><entry><title type="html">javascriptを用いた無動力滑空機の計算</title><link href="http://localhost:4000/posts/2025-10-08-plane-simu-javascript/" rel="alternate" type="text/html" title="javascriptを用いた無動力滑空機の計算" /><published>2025-10-21T00:00:00+09:00</published><updated>2025-10-21T00:00:00+09:00</updated><id>http://localhost:4000/posts/plane_simu_javascript</id><content type="html" xml:base="http://localhost:4000/posts/2025-10-08-plane-simu-javascript/"><![CDATA[<p>javascript を用いてフリーフライト機（無動力滑空機）の運動を数値積分で解き、姿勢と位置の時間変化を求めます。MathJax を有効にしているので、式は TeX で記します。</p>
-
-<h2 id="想定読者">想定読者</h2>
-
-<ul>
-  <li>航空工学の基礎（剛体の運動方程式、空気力係数、線形化）を理解している学部生</li>
-</ul>
-
-<h2 id="何をするか">何をするか</h2>
-
-<ul>
-  <li>6DoF（剛体の 3 平行移動＋ 3 回転）の非線形方程式を <strong>機体固定座標系</strong> で定式化</li>
-  <li>縦（longitudinal）・横（lateral-directional）の<strong>小擾乱線形モデル</strong>を導出</li>
-  <li>これらを <strong>JavaScript（ブラウザ/Node 両対応）</strong> の簡易オイラー/Runge–Kutta 4 次で積分する最小実装を提示</li>
-</ul>
-
-<hr />
-
-<h1 id="前提と記号">前提と記号</h1>
-
-<ul>
-  <li>座標系
-    <ul>
-      <li>地表座標（慣性）: ( {X_N,Y_E,Z_D} )（北・東・下）</li>
-      <li>機体固定: ( {x_b,y_b,z_b} )（右手系、(x_b) 機首方向, (z_b) 下向き）</li>
-    </ul>
-  </li>
-  <li>状態量
-[
-\mathbf{x}=
-\begin{bmatrix}
-u&amp;v&amp;w&amp;p&amp;q&amp;r&amp;\phi&amp;\theta&amp;\psi&amp;X&amp;Y&amp;Z
-\end{bmatrix}^\top
-]
-速度 ((u,v,w))、角速度 ((p,q,r))、オイラー角 ((\phi,\theta,\psi))、位置 ((X,Y,Z))</li>
-  <li>慣性モーメント行列（対称機体仮定）
-[
-\mathbf{J}=\begin{bmatrix}
-J<em>x&amp;0&amp;-J</em>{xz}<br />
-0&amp;J<em>y&amp;0<br />
--J</em>{xz}&amp;0&amp;J_z
-\end{bmatrix}
-]</li>
-  <li>
-    <p>動圧 (q_\infty=\tfrac12\rho V^2)、翼面積 (S)、翼幅 (b)、翼弦 (c)、迎角 (\alpha=\arctan(w/u))、横滑り角 (\beta=\arcsin(v/V))、(V=\sqrt{u^2+v^2+w^2})</p>
-  </li>
-  <li>
-    <p>空気力・モーメント係数（例）
-[
-\begin{aligned}
-C<em>L &amp;= C</em>{L0}+C<em>{L\alpha}\alpha+C</em>{L<em>q}\frac{qc}{2V}+C</em>{L<em>{\delta_e}}\delta_e<br />
-C_D &amp;= C</em>{D0}+k C<em>L^2<br />
-C_Y &amp;= C</em>{Y<em>\beta}\beta+C</em>{Y<em>p}\frac{pb}{2V}+C</em>{Y<em>r}\frac{rb}{2V}+C</em>{Y<em>{\delta_r}}\delta_r<br />
-C_l &amp;= C</em>{l<em>\beta}\beta+C</em>{l<em>p}\frac{pb}{2V}+C</em>{l<em>r}\frac{rb}{2V}+C</em>{l<em>{\delta_a}}\delta_a<br />
-C_m &amp;= C</em>{m0}+C<em>{m</em>\alpha}\alpha+C<em>{m_q}\frac{qc}{2V}+C</em>{m<em>{\delta_e}}\delta_e<br />
-C_n &amp;= C</em>{n<em>\beta}\beta+C</em>{n<em>p}\frac{pb}{2V}+C</em>{n<em>r}\frac{rb}{2V}+C</em>{n_{\delta_r}}\delta_r
-\end{aligned}
-]</p>
-  </li>
-  <li>空力力（機体固定）<br />
-[
-\begin{aligned}
-L&amp;=q<em>\infty S C_L,\quad D=q</em>\infty S C<em>D,\quad Y=q</em>\infty S C_Y<br />
-\text{風軸}\to\text{機体軸変換より}\quad
-\mathbf{F}_a&amp;=
-\begin{bmatrix}
--D\cos\alpha+L\sin\alpha<br />
-Y<br />
--D\sin\alpha-L\cos\alpha
-\end{bmatrix}
-\end{aligned}
-]</li>
-  <li>重力（機体軸成分）
-[
-\mathbf{F}_g=m g
-\begin{bmatrix}
--\sin\theta<br />
-\sin\phi\cos\theta<br />
-\cos\phi\cos\theta
-\end{bmatrix}
-]</li>
-  <li>空力モーメント
-[
-\mathbf{M}<em>a=
-\begin{bmatrix}
-q</em>\infty S b\, C<em>l<br />
-q</em>\infty S c\, C<em>m<br />
-q</em>\infty S b\, C_n
-\end{bmatrix}
-]</li>
-</ul>
-
-<hr />
-
-<h1 id="非線形-6dof-運動方程式">非線形 6DoF 運動方程式</h1>
-
-<h2 id="並進機体軸">並進（機体軸）</h2>
-
-<p>[
-\begin{aligned}
-m(\dot{u}+qw-rv) &amp;= F<em>{ax}+F</em>{gx}<br />
-m(\dot{v}+ru-pw) &amp;= F<em>{ay}+F</em>{gy}<br />
-m(\dot{w}+pv-qu) &amp;= F<em>{az}+F</em>{gz}
-\end{aligned}
-]</p>
-
-<h2 id="回転機体軸">回転（機体軸）</h2>
-
-<p>[
-\mathbf{J}\dot{\boldsymbol{\omega}}+\boldsymbol{\omega}\times(\mathbf{J}\boldsymbol{\omega})=\mathbf{M}_a
-\quad(\boldsymbol{\omega}=[p,q,r]^\top)
-]</p>
-
-<h2 id="キネマティクスオイラー角">キネマティクス（オイラー角）</h2>
-
-<p>[
-\begin{bmatrix}
-\dot{\phi}\\dot{\theta}\\dot{\psi}
-\end{bmatrix}=
-\begin{bmatrix}
-1 &amp; \sin\phi\tan\theta &amp; \cos\phi\tan\theta<br />
-0 &amp; \cos\phi &amp; -\sin\phi<br />
-0 &amp; \sin\phi/\cos\theta &amp; \cos\phi/\cos\theta
-\end{bmatrix}
-\begin{bmatrix}
-p\q\r
-\end{bmatrix}
-]</p>
-
-<h2 id="位置">位置</h2>
-
-<p>[
-\begin{bmatrix}\dot{X}\\dot{Y}\\dot{Z}\end{bmatrix}
-=\mathbf{R}<em>{b\to n}(\phi,\theta,\psi)
-\begin{bmatrix}u\v\w\end{bmatrix}
-]
-（(\mathbf{R}</em>{b\to n}) は機体 → 慣性の回転行列）</p>
-
-<hr />
-
-<h1 id="縦の運動方程式longitudinal">縦の運動方程式（longitudinal）</h1>
-
-<p>小擾乱（定常滑空点 ((U<em>0,0,W_0,\dots)) まわり）で、横滑り・ロールを無視すると
-[
-\delta\mathbf{x}</em>\text{lon}=
-\begin{bmatrix}\delta u&amp;\delta w&amp;\delta q&amp;\delta\theta\end{bmatrix}^\top,\quad
-\delta\mathbf{u}<em>\text{lon}=\begin{bmatrix}\delta\delta_e\end{bmatrix}
-]
-線形化により
-[
-\dot{\delta\mathbf{x}}</em>\text{lon}=\mathbf{A}<em>\text{lon}\,\delta\mathbf{x}</em>\text{lon}+\mathbf{B}<em>\text{lon}\,\delta\mathbf{u}</em>\text{lon}
-]
-[
-\mathbf{A}<em>\text{lon}=
-\begin{bmatrix}
-X_u/m &amp; X_w/m &amp; 0 &amp; -g\cos\theta_0<br />
-Z_u/(m-U_0 Z</em>{\dot{w}}) &amp; Z<em>w/(m-U_0 Z</em>{\dot{w}}) &amp; (Z<em>q+mU_0)/(m-U_0 Z</em>{\dot{w}}) &amp; -mg\sin\theta<em>0/(m-U_0 Z</em>{\dot{w}})<br />
-M<em>u/J_y &amp; M_w/J_y &amp; M_q/J_y &amp; 0<br />
-0&amp;0&amp;1&amp;0
-\end{bmatrix},\quad
-\mathbf{B}</em>\text{lon}=
-\begin{bmatrix}
-X<em>{\delta_e}/m<br />
-Z</em>{\delta<em>e}/(m-U_0 Z</em>{\dot{w}})<br />
-M_{\delta_e}/J_y<br />
-0
-\end{bmatrix}
-]</p>
-
-<hr />
-
-<h1 id="横の運動方程式lateraldirectional">横の運動方程式（lateral–directional）</h1>
-
-<p>[
-\delta\mathbf{x}<em>\text{lat}=
-\begin{bmatrix}\delta v&amp;\delta p&amp;\delta r&amp;\delta\phi&amp;\delta\psi\end{bmatrix}^\top,\quad
-\delta\mathbf{u}</em>\text{lat}=\begin{bmatrix}\delta\delta<em>a&amp;\delta\delta_r\end{bmatrix}^\top
-]
-[
-\dot{\delta\mathbf{x}}</em>\text{lat}=\mathbf{A}<em>\text{lat}\,\delta\mathbf{x}</em>\text{lat}+\mathbf{B}<em>\text{lat}\,\delta\mathbf{u}</em>\text{lat}
-]</p>
-
-<hr />
-
-<h1 id="javascript-による数値積分最小実装">JavaScript による数値積分（最小実装）</h1>
-
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 6DoF glider simulator (minimal, browser/Node)</span>
-<span class="kd">const</span> <span class="nx">g</span> <span class="o">=</span> <span class="mf">9.80665</span><span class="p">;</span>
-
-<span class="kd">function</span> <span class="nf">skew</span><span class="p">(</span><span class="nx">w</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="nx">w</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nx">w</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">w</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="nx">w</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="nx">w</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">w</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">];</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nf">mul3</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="p">[</span>
-    <span class="nx">A</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nx">A</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nx">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nx">A</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="nx">b</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-    <span class="nx">A</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nx">A</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="nx">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nx">A</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="nx">b</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-    <span class="nx">A</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">*</span> <span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nx">A</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">*</span> <span class="nx">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nx">A</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">*</span> <span class="nx">b</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-  <span class="p">];</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nf">Rb2n</span><span class="p">(</span><span class="nx">phi</span><span class="p">,</span> <span class="nx">theta</span><span class="p">,</span> <span class="nx">psi</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">const</span> <span class="nx">cφ</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">phi</span><span class="p">),</span>
-    <span class="nx">sφ</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="nx">phi</span><span class="p">);</span>
-  <span class="kd">const</span> <span class="nx">cθ</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">theta</span><span class="p">),</span>
-    <span class="nx">sθ</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="nx">theta</span><span class="p">);</span>
-  <span class="kd">const</span> <span class="nx">cψ</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">psi</span><span class="p">),</span>
-    <span class="nx">sψ</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="nx">psi</span><span class="p">);</span>
-  <span class="c1">// Z(psi)Y(theta)X(phi)</span>
-  <span class="k">return</span> <span class="p">[</span>
-    <span class="nx">cθ</span> <span class="o">*</span> <span class="nx">cψ</span><span class="p">,</span>
-    <span class="nx">sφ</span> <span class="o">*</span> <span class="nx">sθ</span> <span class="o">*</span> <span class="nx">cψ</span> <span class="o">-</span> <span class="nx">cφ</span> <span class="o">*</span> <span class="nx">sψ</span><span class="p">,</span>
-    <span class="nx">cφ</span> <span class="o">*</span> <span class="nx">sθ</span> <span class="o">*</span> <span class="nx">cψ</span> <span class="o">+</span> <span class="nx">sφ</span> <span class="o">*</span> <span class="nx">sψ</span><span class="p">,</span>
-    <span class="nx">cθ</span> <span class="o">*</span> <span class="nx">sψ</span><span class="p">,</span>
-    <span class="nx">sφ</span> <span class="o">*</span> <span class="nx">sθ</span> <span class="o">*</span> <span class="nx">sψ</span> <span class="o">+</span> <span class="nx">cφ</span> <span class="o">*</span> <span class="nx">cψ</span><span class="p">,</span>
-    <span class="nx">cφ</span> <span class="o">*</span> <span class="nx">sθ</span> <span class="o">*</span> <span class="nx">sψ</span> <span class="o">-</span> <span class="nx">sφ</span> <span class="o">*</span> <span class="nx">cψ</span><span class="p">,</span>
-    <span class="o">-</span><span class="nx">sθ</span><span class="p">,</span>
-    <span class="nx">sφ</span> <span class="o">*</span> <span class="nx">cθ</span><span class="p">,</span>
-    <span class="nx">cφ</span> <span class="o">*</span> <span class="nx">cθ</span><span class="p">,</span>
-  <span class="p">];</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nf">eulerRates</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">q</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">phi</span><span class="p">,</span> <span class="nx">theta</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">const</span> <span class="nx">cφ</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">phi</span><span class="p">),</span>
-    <span class="nx">sφ</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="nx">phi</span><span class="p">);</span>
-  <span class="kd">const</span> <span class="nx">cθ</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">theta</span><span class="p">),</span>
-    <span class="nx">sθ</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="nx">theta</span><span class="p">);</span>
-  <span class="kd">const</span> <span class="nx">tθ</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">tan</span><span class="p">(</span><span class="nx">theta</span><span class="p">);</span>
-  <span class="k">return</span> <span class="p">[</span><span class="nx">p</span> <span class="o">+</span> <span class="nx">sφ</span> <span class="o">*</span> <span class="nx">tθ</span> <span class="o">*</span> <span class="nx">q</span> <span class="o">+</span> <span class="nx">cφ</span> <span class="o">*</span> <span class="nx">tθ</span> <span class="o">*</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">cφ</span> <span class="o">*</span> <span class="nx">q</span> <span class="o">-</span> <span class="nx">sφ</span> <span class="o">*</span> <span class="nx">r</span><span class="p">,</span> <span class="p">(</span><span class="nx">sφ</span> <span class="o">/</span> <span class="nx">cθ</span><span class="p">)</span> <span class="o">*</span> <span class="nx">q</span> <span class="o">+</span> <span class="p">(</span><span class="nx">cφ</span> <span class="o">/</span> <span class="nx">cθ</span><span class="p">)</span> <span class="o">*</span> <span class="nx">r</span><span class="p">];</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nf">aeroForcesMoments</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">ctrl</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">const</span> <span class="p">{</span> <span class="nx">rho</span><span class="p">,</span> <span class="nx">S</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">geom</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="p">[</span><span class="nx">u</span><span class="p">,</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">w</span><span class="p">,</span> <span class="nx">p</span><span class="p">,</span> <span class="nx">q</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">phi</span><span class="p">,</span> <span class="nx">theta</span><span class="p">,</span> <span class="nx">psi</span><span class="p">]</span> <span class="o">=</span> <span class="nx">state</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">V</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">max</span><span class="p">(</span><span class="mi">1</span><span class="nx">e</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">hypot</span><span class="p">(</span><span class="nx">u</span><span class="p">,</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">w</span><span class="p">));</span>
-  <span class="kd">const</span> <span class="nx">qbar</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nx">rho</span> <span class="o">*</span> <span class="nx">V</span> <span class="o">*</span> <span class="nx">V</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">alpha</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">atan2</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">u</span><span class="p">);</span>
-  <span class="kd">const</span> <span class="nx">beta</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">asin</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nf">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">v</span> <span class="o">/</span> <span class="nx">V</span><span class="p">)));</span>
-
-  <span class="kd">const</span> <span class="p">{</span> <span class="nx">delta_e</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">delta_a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">delta_r</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">ctrl</span><span class="p">;</span>
-
-  <span class="kd">const</span> <span class="nx">C</span> <span class="o">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">coeffs</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">CL</span> <span class="o">=</span> <span class="nx">C</span><span class="p">.</span><span class="nx">CL0</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">CLa</span> <span class="o">*</span> <span class="nx">alpha</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">CLq</span> <span class="o">*</span> <span class="p">((</span><span class="nx">q</span> <span class="o">*</span> <span class="nx">c</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">V</span><span class="p">))</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">CLde</span> <span class="o">*</span> <span class="nx">delta_e</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">CD</span> <span class="o">=</span> <span class="nx">C</span><span class="p">.</span><span class="nx">CD0</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">k</span> <span class="o">*</span> <span class="nx">CL</span> <span class="o">*</span> <span class="nx">CL</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">CY</span> <span class="o">=</span>
-    <span class="nx">C</span><span class="p">.</span><span class="nx">CYb</span> <span class="o">*</span> <span class="nx">beta</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">CYp</span> <span class="o">*</span> <span class="p">((</span><span class="nx">p</span> <span class="o">*</span> <span class="nx">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">V</span><span class="p">))</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">CYr</span> <span class="o">*</span> <span class="p">((</span><span class="nx">r</span> <span class="o">*</span> <span class="nx">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">V</span><span class="p">))</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">CYdr</span> <span class="o">*</span> <span class="nx">delta_r</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Cl</span> <span class="o">=</span>
-    <span class="nx">C</span><span class="p">.</span><span class="nx">Clb</span> <span class="o">*</span> <span class="nx">beta</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">Clp</span> <span class="o">*</span> <span class="p">((</span><span class="nx">p</span> <span class="o">*</span> <span class="nx">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">V</span><span class="p">))</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">Clr</span> <span class="o">*</span> <span class="p">((</span><span class="nx">r</span> <span class="o">*</span> <span class="nx">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">V</span><span class="p">))</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">Clda</span> <span class="o">*</span> <span class="nx">delta_a</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Cm</span> <span class="o">=</span> <span class="nx">C</span><span class="p">.</span><span class="nx">Cm0</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">Cma</span> <span class="o">*</span> <span class="nx">alpha</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">Cmq</span> <span class="o">*</span> <span class="p">((</span><span class="nx">q</span> <span class="o">*</span> <span class="nx">c</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">V</span><span class="p">))</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">Cmde</span> <span class="o">*</span> <span class="nx">delta_e</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Cn</span> <span class="o">=</span>
-    <span class="nx">C</span><span class="p">.</span><span class="nx">Cnb</span> <span class="o">*</span> <span class="nx">beta</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">Cnp</span> <span class="o">*</span> <span class="p">((</span><span class="nx">p</span> <span class="o">*</span> <span class="nx">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">V</span><span class="p">))</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">Cnr</span> <span class="o">*</span> <span class="p">((</span><span class="nx">r</span> <span class="o">*</span> <span class="nx">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">V</span><span class="p">))</span> <span class="o">+</span> <span class="nx">C</span><span class="p">.</span><span class="nx">Cndr</span> <span class="o">*</span> <span class="nx">delta_r</span><span class="p">;</span>
-
-  <span class="kd">const</span> <span class="nx">L</span> <span class="o">=</span> <span class="nx">qbar</span> <span class="o">*</span> <span class="nx">S</span> <span class="o">*</span> <span class="nx">CL</span><span class="p">,</span>
-    <span class="nx">D</span> <span class="o">=</span> <span class="nx">qbar</span> <span class="o">*</span> <span class="nx">S</span> <span class="o">*</span> <span class="nx">CD</span><span class="p">,</span>
-    <span class="nx">Y</span> <span class="o">=</span> <span class="nx">qbar</span> <span class="o">*</span> <span class="nx">S</span> <span class="o">*</span> <span class="nx">CY</span><span class="p">;</span>
-
-  <span class="kd">const</span> <span class="nx">sa</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="nx">alpha</span><span class="p">),</span>
-    <span class="nx">ca</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">alpha</span><span class="p">);</span>
-  <span class="kd">const</span> <span class="nx">Fax</span> <span class="o">=</span> <span class="o">-</span><span class="nx">D</span> <span class="o">*</span> <span class="nx">ca</span> <span class="o">+</span> <span class="nx">L</span> <span class="o">*</span> <span class="nx">sa</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Fay</span> <span class="o">=</span> <span class="nx">Y</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Faz</span> <span class="o">=</span> <span class="o">-</span><span class="nx">D</span> <span class="o">*</span> <span class="nx">sa</span> <span class="o">-</span> <span class="nx">L</span> <span class="o">*</span> <span class="nx">ca</span><span class="p">;</span>
-
-  <span class="kd">const</span> <span class="nx">Lm</span> <span class="o">=</span> <span class="nx">qbar</span> <span class="o">*</span> <span class="nx">S</span> <span class="o">*</span> <span class="nx">b</span> <span class="o">*</span> <span class="nx">Cl</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Mm</span> <span class="o">=</span> <span class="nx">qbar</span> <span class="o">*</span> <span class="nx">S</span> <span class="o">*</span> <span class="nx">c</span> <span class="o">*</span> <span class="nx">Cm</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Nm</span> <span class="o">=</span> <span class="nx">qbar</span> <span class="o">*</span> <span class="nx">S</span> <span class="o">*</span> <span class="nx">b</span> <span class="o">*</span> <span class="nx">Cn</span><span class="p">;</span>
-
-  <span class="k">return</span> <span class="p">{</span> <span class="na">F</span><span class="p">:</span> <span class="p">[</span><span class="nx">Fax</span><span class="p">,</span> <span class="nx">Fay</span><span class="p">,</span> <span class="nx">Faz</span><span class="p">],</span> <span class="na">M</span><span class="p">:</span> <span class="p">[</span><span class="nx">Lm</span><span class="p">,</span> <span class="nx">Mm</span><span class="p">,</span> <span class="nx">Nm</span><span class="p">],</span> <span class="nx">V</span><span class="p">,</span> <span class="nx">alpha</span><span class="p">,</span> <span class="nx">beta</span> <span class="p">};</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nf">derivs</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">ctrlFunc</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">const</span> <span class="p">[</span><span class="nx">u</span><span class="p">,</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">w</span><span class="p">,</span> <span class="nx">p</span><span class="p">,</span> <span class="nx">q</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">phi</span><span class="p">,</span> <span class="nx">theta</span><span class="p">,</span> <span class="nx">psi</span><span class="p">,</span> <span class="nx">X</span><span class="p">,</span> <span class="nx">Y</span><span class="p">,</span> <span class="nx">Z</span><span class="p">]</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="p">{</span> <span class="nx">m</span><span class="p">,</span> <span class="nx">J</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">mass</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">ctrl</span> <span class="o">=</span> <span class="nf">ctrlFunc</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">x</span><span class="p">);</span>
-  <span class="kd">const</span> <span class="p">{</span> <span class="nx">F</span><span class="p">,</span> <span class="nx">M</span> <span class="p">}</span> <span class="o">=</span> <span class="nf">aeroForcesMoments</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">ctrl</span><span class="p">);</span>
-
-  <span class="kd">const</span> <span class="nx">fg</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="o">-</span><span class="nx">m</span> <span class="o">*</span> <span class="nx">g</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="nx">theta</span><span class="p">),</span>
-    <span class="nx">m</span> <span class="o">*</span> <span class="nx">g</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="nx">phi</span><span class="p">)</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">theta</span><span class="p">),</span>
-    <span class="nx">m</span> <span class="o">*</span> <span class="nx">g</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">phi</span><span class="p">)</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">theta</span><span class="p">),</span>
-  <span class="p">];</span>
-
-  <span class="kd">const</span> <span class="nx">du</span> <span class="o">=</span> <span class="p">(</span><span class="nx">F</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nx">fg</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="nx">m</span> <span class="o">+</span> <span class="nx">r</span> <span class="o">*</span> <span class="nx">v</span> <span class="o">-</span> <span class="nx">q</span> <span class="o">*</span> <span class="nx">w</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">dv</span> <span class="o">=</span> <span class="p">(</span><span class="nx">F</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nx">fg</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="nx">m</span> <span class="o">+</span> <span class="nx">p</span> <span class="o">*</span> <span class="nx">w</span> <span class="o">-</span> <span class="nx">r</span> <span class="o">*</span> <span class="nx">u</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">dw</span> <span class="o">=</span> <span class="p">(</span><span class="nx">F</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="nx">fg</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="nx">m</span> <span class="o">+</span> <span class="nx">q</span> <span class="o">*</span> <span class="nx">u</span> <span class="o">-</span> <span class="nx">p</span> <span class="o">*</span> <span class="nx">v</span><span class="p">;</span>
-
-  <span class="kd">const</span> <span class="nx">Jx</span> <span class="o">=</span> <span class="nx">J</span><span class="p">.</span><span class="nx">Jx</span><span class="p">,</span>
-    <span class="nx">Jy</span> <span class="o">=</span> <span class="nx">J</span><span class="p">.</span><span class="nx">Jy</span><span class="p">,</span>
-    <span class="nx">Jz</span> <span class="o">=</span> <span class="nx">J</span><span class="p">.</span><span class="nx">Jz</span><span class="p">,</span>
-    <span class="nx">Jxz</span> <span class="o">=</span> <span class="nx">J</span><span class="p">.</span><span class="nx">Jxz</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Gamma</span> <span class="o">=</span> <span class="nx">Jx</span> <span class="o">*</span> <span class="nx">Jz</span> <span class="o">-</span> <span class="nx">Jxz</span> <span class="o">*</span> <span class="nx">Jxz</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Gamma1</span> <span class="o">=</span> <span class="p">(</span><span class="nx">Jxz</span> <span class="o">*</span> <span class="p">(</span><span class="nx">Jx</span> <span class="o">-</span> <span class="nx">Jz</span> <span class="o">+</span> <span class="nx">Jy</span><span class="p">))</span> <span class="o">/</span> <span class="nx">Gamma</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Gamma2</span> <span class="o">=</span> <span class="p">(</span><span class="nx">Jz</span> <span class="o">*</span> <span class="p">(</span><span class="nx">Jz</span> <span class="o">-</span> <span class="nx">Jy</span><span class="p">)</span> <span class="o">+</span> <span class="nx">Jxz</span> <span class="o">*</span> <span class="nx">Jxz</span><span class="p">)</span> <span class="o">/</span> <span class="nx">Gamma</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Gamma3</span> <span class="o">=</span> <span class="nx">Jz</span> <span class="o">/</span> <span class="nx">Gamma</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Gamma4</span> <span class="o">=</span> <span class="nx">Jxz</span> <span class="o">/</span> <span class="nx">Gamma</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Gamma5</span> <span class="o">=</span> <span class="p">(</span><span class="nx">Jz</span> <span class="o">-</span> <span class="nx">Jx</span><span class="p">)</span> <span class="o">/</span> <span class="nx">Jy</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Gamma6</span> <span class="o">=</span> <span class="nx">Jxz</span> <span class="o">/</span> <span class="nx">Jy</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Gamma7</span> <span class="o">=</span> <span class="p">((</span><span class="nx">Jx</span> <span class="o">-</span> <span class="nx">Jy</span><span class="p">)</span> <span class="o">*</span> <span class="nx">Jx</span> <span class="o">+</span> <span class="nx">Jxz</span> <span class="o">*</span> <span class="nx">Jxz</span><span class="p">)</span> <span class="o">/</span> <span class="nx">Gamma</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">Gamma8</span> <span class="o">=</span> <span class="nx">Jx</span> <span class="o">/</span> <span class="nx">Gamma</span><span class="p">;</span>
-
-  <span class="kd">const</span> <span class="nx">pdot</span> <span class="o">=</span> <span class="nx">Gamma3</span> <span class="o">*</span> <span class="nx">M</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nx">Gamma4</span> <span class="o">*</span> <span class="nx">M</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="nx">Gamma1</span> <span class="o">*</span> <span class="nx">p</span> <span class="o">*</span> <span class="nx">q</span> <span class="o">+</span> <span class="nx">Gamma2</span> <span class="o">*</span> <span class="nx">q</span> <span class="o">*</span> <span class="nx">r</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">qdot</span> <span class="o">=</span> <span class="p">(</span><span class="nx">M</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nx">Gamma5</span> <span class="o">*</span> <span class="nx">p</span> <span class="o">*</span> <span class="nx">r</span> <span class="o">+</span> <span class="nx">Gamma6</span> <span class="o">*</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span> <span class="nx">p</span> <span class="o">-</span> <span class="nx">r</span> <span class="o">*</span> <span class="nx">r</span><span class="p">))</span> <span class="o">/</span> <span class="nx">Jy</span><span class="p">;</span>
-  <span class="kd">const</span> <span class="nx">rdot</span> <span class="o">=</span> <span class="nx">Gamma4</span> <span class="o">*</span> <span class="nx">M</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nx">Gamma8</span> <span class="o">*</span> <span class="nx">M</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="nx">Gamma7</span> <span class="o">*</span> <span class="nx">p</span> <span class="o">*</span> <span class="nx">q</span> <span class="o">+</span> <span class="nx">Gamma1</span> <span class="o">*</span> <span class="nx">q</span> <span class="o">*</span> <span class="nx">r</span><span class="p">;</span>
-
-  <span class="kd">const</span> <span class="p">[</span><span class="nx">phidot</span><span class="p">,</span> <span class="nx">thetadot</span><span class="p">,</span> <span class="nx">psidot</span><span class="p">]</span> <span class="o">=</span> <span class="nf">eulerRates</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">q</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">phi</span><span class="p">,</span> <span class="nx">theta</span><span class="p">);</span>
-
-  <span class="kd">const</span> <span class="nx">R</span> <span class="o">=</span> <span class="nc">Rb2n</span><span class="p">(</span><span class="nx">phi</span><span class="p">,</span> <span class="nx">theta</span><span class="p">,</span> <span class="nx">psi</span><span class="p">);</span>
-  <span class="kd">const</span> <span class="nx">Vn</span> <span class="o">=</span> <span class="nf">mul3</span><span class="p">(</span><span class="nx">R</span><span class="p">,</span> <span class="p">[</span><span class="nx">u</span><span class="p">,</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">w</span><span class="p">]);</span> <span class="c1">// [Xdot,Ydot,Zdot]</span>
-
-  <span class="k">return</span> <span class="p">[</span><span class="nx">du</span><span class="p">,</span> <span class="nx">dv</span><span class="p">,</span> <span class="nx">dw</span><span class="p">,</span> <span class="nx">pdot</span><span class="p">,</span> <span class="nx">qdot</span><span class="p">,</span> <span class="nx">rdot</span><span class="p">,</span> <span class="nx">phidot</span><span class="p">,</span> <span class="nx">thetadot</span><span class="p">,</span> <span class="nx">psidot</span><span class="p">,</span> <span class="nx">Vn</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">Vn</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">Vn</span><span class="p">[</span><span class="mi">2</span><span class="p">]];</span>
-<span class="p">}</span>
-</code></pre></div></div>]]></content><author><name></name></author><category term="aerodynamics" /><summary type="html"><![CDATA[javascript を用いてフリーフライト機（無動力滑空機）の運動を数値積分で解き、姿勢と位置の時間変化を求めます。MathJax を有効にしているので、式は TeX で記します。]]></summary></entry></feed>
+航空宇宙分野でよく使われる標準的な翼型ですので、馴染みのない人はこの際に覚えておきましょう。</p>]]></content><author><name></name></author><category term="airfoil" /><summary type="html"><![CDATA[先日公開したAirfoilAppに、NACA 4 桁系列（例: NACA 2412）を自動生成する機能を追加しました。 固定のデータファイルを読み込むのではなく、数学的な定義に基づいて動的に点群を生成しています。]]></summary></entry></feed>

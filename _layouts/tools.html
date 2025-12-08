@@ -1,0 +1,49 @@
+---
+layout: default
+---
+
+  <main class="min-h-screen pb-20">
+    
+    <div class="relative z-10">
+      <div class="max-w-7xl mx-auto px-4 py-10 md:px-6 lg:px-8">
+        <div class="max-w-4xl">
+          
+          <nav class="flex text-xs font-medium text-gray-500 mb-4 uppercase tracking-wider">
+            <a href="/" class="hover:text-[var(--color-brand)] transition-colors">Home</a>
+            <span class="mx-2">/</span>
+            <a href="/tools/" class="hover:text-[var(--color-brand)] transition-colors">Tools</a>
+          </nav>
+
+          <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 mb-4 font-[family-name:var(--font-sans)]">
+            {{ page.ToolName }}
+          </h1>
+
+          {% if page.Description %}
+          <p class="text-sm text-gray-600">
+            {{ page.Description }}
+          </p>
+          {% endif %}
+
+          {% if page.HowtoUse %}
+          <div class="mt-8">
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">
+              How to Use
+            </h3>
+            
+            <div class="rounded-lg bg-[var(--color-bg-callout)] p-5 border border-gray-200">
+              <div class="text-sm text-gray-600 prose prose-sm max-w-none [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:marker:text-[var(--color-brand)] [&_li]:pl-1">
+                {{ page.HowtoUse | markdownify }}
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="relative z-0">
+      {{ content }}
+    </div>
+
+  </main>
