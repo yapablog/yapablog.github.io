@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Airfoil Calculator
-permalink: /airfoilcalculator/
+permalink: /airfoilapp/
 ---
 
 {::nomarkdown}
