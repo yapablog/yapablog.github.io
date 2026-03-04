@@ -31,12 +31,18 @@ plugins:
   - jekyll-toc
 
 collections:
+  policy:
+    output: true
+    permalink: /policy/:name/
   posts:
     output: true
-    permalink: /posts/:name/
-  others:
+    permalink: /paper_review/:name/
+  tool_docs:
     output: true
-    permalink: /others/:name/
+    permalink: /tool_docs/:name/
+  tools:
+    output: true
+    permalink: /tools/:name/
 
 markdown: kramdown
 kramdown:

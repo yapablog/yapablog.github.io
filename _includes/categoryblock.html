@@ -3,10 +3,21 @@
     {{ include.title }}
 </div>
 {% assign collections = include.collections %}
-{% include post_list.html collections=collections limit=include.limit %}
+{% assign collection = include.collection %}
 
-{% if include.limit %}
-    {% assign href = '/' | append: collections | append: '/' %}
-    {% include button.html href="/articles/" label="View All Articles" %}
+
+{% if include.collections %}
+    {% include post_list.html collections=include.collections limit=include.limit %}
+{% elsif include.collection %}
+    {% include post_list.html collection=include.collection limit=include.limit %}
+{% endif %}
+
+{% if include.showbutton %}
+    {% if include.collections %}
+        {% assign href = '/articles/' %}
+    {% elsif include.collection %}
+        {% assign href = '/' | append: collection | append: '/' %}
+    {% endif %}
+    {% include button.html href=href label="View All Articles" %}
 {% endif %}
 </div>

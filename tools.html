@@ -9,8 +9,8 @@ permalink: /tools/
     <h1 class="text-3xl font-bold tracking-tight text-[var(--color-primary)] sm:text-4xl mb-4 font-[family-name:var(--font-sans)]">
       Developed Tools
     </h1>
-    <p class="text-lg text-gray-600 max-w-2xl font-bold">
-      自作したツールを公開しています。<br>
+    <p class="text-lg text-gray-600 max-w-2xl font-bold leading-relaxed">
+      自作したツールを公開しています。<br class="hidden sm:block">
       ブラウザ上で動作するため、インストール不要ですぐに使えます。
     </p>
   </div>
@@ -20,21 +20,29 @@ permalink: /tools/
   
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-    {% capture desc_airfoil %}
-    <ul>
-      <li>翼型の幾何プロパティ(面積、重心、Ixx等)を計算</li>
-      <li>NACA 4桁系列の翼型を自動生成</li>
-      <li>CSV/点群データのインポート対応</li>
-      <li>正規化・回転機能付き</li>
-    </ul>
-    {% endcapture %}
+    {% comment %}
+      日付順（新しい順）に並べ替えてループ処理
+    {% endcomment %}
+    {% assign sorted_tools = site.tools | sort: 'date' %}
 
-    {% include tool_card.html
-      title="Airfoil Calculator"
-      url="/airfoilapp/"
-      image="/assets/images/tools/airfoilapp_thumb.png"
-      description=desc_airfoil
-    %}
+    {% for tool in sorted_tools %}
+      
+      {% comment %}
+        Front Matterの 'Description' をMarkdownとしてレンダリングし、HTMLにします。
+        これにより、md側で箇条書きや太字を使っても正しく表示されます。
+      {% endcomment %}
+      {% capture desc_content %}
+        {{ tool.Description | markdownify }}
+      {% endcapture %}
+
+      {% include tool_card.html
+        title=tool.ToolName
+        url=tool.url
+        image=tool.image
+        description=desc_content
+      %}
+      
+    {% endfor %}
 
   </div>
 </div>

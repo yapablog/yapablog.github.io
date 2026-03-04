@@ -1,0 +1,823 @@
+---
+layout: tools
+title: 楕円管展開図生成
+ToolName: 交差する楕円円筒の展開図生成ツール
+permalink: /ellipsecalc/
+Description: それぞれの楕円寸法と回転角、交差角を入力として、展開図をdxfおよびpdfで出力するWebツールです。
+HowtoUse: |
+  1. 左側パネルで **母管 (Main Pipe)** と **枝管 (Branch Pipe)** の寸法（長半径 `Rz` / 短半径 `Rx`）と回転角 `θ`、**接合条件 (Joint)** の交差角 `α` と芯ズレ `Offset` を入力します。
+  2. 入力値を変更すると交差計算は自動で再実行されます。必要に応じて `Top` / `Bottom` のチェックで表示する交差線を切り替えてください。
+  3. 上部タブで `3D Model` と `Pattern (展開図)` を切り替えられます。
+  4. 図面を保存する場合は `Export Format` で `DXF` または `PDF` を選び、`Download` を押してください。
+  5. 初期値に戻したい場合は左下の「デフォルト設定に戻す」を押してください。
+---
+
+{::nomarkdown}
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elliptical Pipe Modeler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --c-main: #2563eb;   /* Blue-600 */
+            --c-branch: #d97706; /* Amber-600 */
+            --c-bg-side: #f8fafc;
+            --c-border: #e2e8f0;
+        }
+        
+        body { font-family: 'Inter', sans-serif; }
+
+        /* カスタムスライダー */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+            margin: 8px 0;
+        }
+        input[type=range]::-webkit-slider-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #64748b;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transition: all 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            border-color: var(--c-main);
+        }
+
+        /* 数値入力の矢印を消す */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none; margin: 0;
+        }
+
+        /* タブのアニメーション */
+        .tab-pill {
+            transition: all 0.2s ease;
+        }
+        .tab-pill.active {
+            background-color: white;
+            color: var(--c-main);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+
+        .section-icon { width: 18px; height: 18px; margin-right: 8px; }
+    </style>
+
+</head>
+<body class="bg-white min-h-screen flex flex-col overflow-hidden text-slate-700">
+
+    <header class="bg-white border-b border-slate-200 px-4 py-2 md:h-14 md:px-6 flex-none z-10 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-2">
+            <h1 class="text-base md:text-lg font-bold text-slate-800 leading-tight">Elliptical Intersection <span class="text-slate-400 font-normal text-xs md:text-sm ml-2">楕円円筒展開図シミュレーター</span></h1>
+        </div>
+
+        <div class="bg-slate-100 p-1 rounded-lg flex text-sm font-medium self-start md:self-auto">
+            <button onclick="switchTab('3d')" id="tab-3d" class="tab-pill active px-4 py-1.5 rounded-md text-slate-600">3D Model</button>
+            <button onclick="switchTab('2d')" id="tab-2d" class="tab-pill px-4 py-1.5 rounded-md text-slate-600">Pattern (展開図)</button>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden flex-col lg:flex-row">
+
+        <aside class="w-full lg:w-80 bg-slate-50 border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col overflow-y-auto custom-scrollbar flex-none max-h-[46vh] lg:max-h-none">
+
+            <div class="p-5 border-b border-slate-200 " >
+                <div class="flex items-center mb-4 text-slate-700">
+                    <svg class="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                    <h2 class="text-sm font-bold uppercase tracking-wider">母管 (Main Pipe)</h2>
+                </div>
+
+                <div class="space-y-5">
+                    <div class="control-group">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-medium text-slate-500">長半径 Rz (mm)</label>
+                            <input type="number" id="m_Rz" min="10" max="300" step="1" value="100" class="w-16 text-right bg-white border border-slate-300 rounded px-1 py-0.5 text-sm font-mono focus:border-blue-500 outline-none param-input" data-sync="m_Rz_range">
+                        </div>
+                        <input type="range" id="m_Rz_range" min="10" max="300" step="1" value="100" class="param-slider" data-sync="m_Rz">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-medium text-slate-500">短半径 Rx (mm)</label>
+                            <input type="number" id="m_Rx" min="10" max="300" step="1" value="100" class="w-16 text-right bg-white border border-slate-300 rounded px-1 py-0.5 text-sm font-mono focus:border-blue-500 outline-none param-input" data-sync="m_Rx_range">
+                        </div>
+                        <input type="range" id="m_Rx_range" min="10" max="300" step="1" value="100" class="param-slider" data-sync="m_Rx">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-medium text-slate-500">回転角 θ (deg)</label>
+                            <input type="number" id="m_Theta" min="-180" max="180" step="1" value="0" class="w-16 text-right bg-white border border-slate-300 rounded px-1 py-0.5 text-sm font-mono focus:border-blue-500 outline-none param-input" data-sync="m_Theta_range">
+                        </div>
+                        <input type="range" id="m_Theta_range" min="-180" max="180" step="1" value="0" class="param-slider" data-sync="m_Theta">
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5 border-b border-slate-200">
+                <div class="flex items-center mb-4 text-amber-600">
+                    <svg class="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    <h2 class="text-sm font-bold uppercase tracking-wider">枝管 (Branch Pipe)</h2>
+                </div>
+
+                <div class="space-y-5">
+                    <div class="control-group">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-medium text-slate-500">長半径 Rz (mm)</label>
+                            <input type="number" id="b_Rz" min="10" max="300" step="1" value="50" class="w-16 text-right bg-white border border-slate-300 rounded px-1 py-0.5 text-sm font-mono focus:border-amber-500 outline-none param-input" data-sync="b_Rz_range">
+                        </div>
+                        <input type="range" id="b_Rz_range" min="10" max="300" step="1" value="50" class="accent-amber-500 param-slider" data-sync="b_Rz">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-medium text-slate-500">短半径 Rx (mm)</label>
+                            <input type="number" id="b_Rx" min="10" max="300" step="1" value="50" class="w-16 text-right bg-white border border-slate-300 rounded px-1 py-0.5 text-sm font-mono focus:border-amber-500 outline-none param-input" data-sync="b_Rx_range">
+                        </div>
+                        <input type="range" id="b_Rx_range" min="10" max="300" step="1" value="50" class="accent-amber-500 param-slider" data-sync="b_Rx">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-medium text-slate-500">回転角 θ (deg)</label>
+                            <input type="number" id="b_Theta" min="-180" max="180" step="1" value="0" class="w-16 text-right bg-white border border-slate-300 rounded px-1 py-0.5 text-sm font-mono focus:border-amber-500 outline-none param-input" data-sync="b_Theta_range">
+                        </div>
+                        <input type="range" id="b_Theta_range" min="-180" max="180" step="1" value="0" class="accent-amber-500 param-slider" data-sync="b_Theta">
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5 border-b border-slate-200">
+                <div class="flex items-center mb-4 text-slate-700">
+                    <svg class="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                    <h2 class="text-sm font-bold uppercase tracking-wider">接合・交差 (Joint)</h2>
+                </div>
+
+                <div class="space-y-5">
+                    <div class="control-group">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-medium text-slate-500">交差角 α (deg)</label>
+                            <input type="number" id="alpha" value="90" min="1" max="179" class="w-16 text-right bg-white border border-slate-300 rounded px-1 py-0.5 text-sm font-mono focus:border-slate-500 outline-none param-input" data-sync="alpha_range">
+                        </div>
+                        <input type="range" id="alpha_range" min="1" max="179" step="1" value="90" class="accent-slate-500 param-slider" data-sync="alpha">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-medium text-slate-500">芯ズレ Offset (mm)</label>
+                            <input type="number" id="offset" min="-150" max="150" step="1" value="0" class="w-16 text-right bg-white border border-slate-300 rounded px-1 py-0.5 text-sm font-mono focus:border-slate-500 outline-none param-input" data-sync="offset_range">
+                        </div>
+                        <input type="range" id="offset_range" min="-150" max="150" step="1" value="0" class="accent-slate-500 param-slider" data-sync="offset">
+                    </div>
+
+                    <div class="flex gap-4 pt-2">
+                         <label class="flex items-center cursor-pointer text-xs">
+                            <input type="checkbox" id="showTop" checked class="rounded text-blue-600 focus:ring-blue-500 param-check mr-2">
+                            上面 (Top)
+                        </label>
+                        <label class="flex items-center cursor-pointer text-xs">
+                            <input type="checkbox" id="showBottom" checked class="rounded text-amber-600 focus:ring-amber-500 param-check mr-2">
+                            下面 (Bottom)
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5 mt-auto">
+                <button onclick="resetParams()" class="w-full py-2 text-xs font-medium text-slate-500 hover:text-slate-700 bg-white border border-slate-200 hover:border-slate-300 rounded transition-colors">
+                  デフォルト設定に戻す
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col bg-white relative min-h-[54vh] lg:min-h-0">
+
+            <div class="flex-1 relative bg-slate-50/50">
+                <div id="plotArea" class="absolute inset-0 w-full h-full"></div>
+            </div>
+
+            <div class="bg-white border-t border-slate-200 px-4 md:px-6 py-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between flex-none z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+
+                <div class="flex flex-wrap gap-x-6 gap-y-2 md:gap-8">
+                    <div>
+                        <span class="block text-[10px] uppercase text-slate-400 font-bold tracking-wider">Branch Arc (Max)</span>
+                        <span class="text-lg font-mono font-semibold text-blue-600" id="res-circ">---</span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] uppercase text-slate-400 font-bold tracking-wider">Axial Height (Max)</span>
+                        <span class="text-lg font-mono font-semibold text-amber-600" id="res-height">---</span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] uppercase text-slate-400 font-bold tracking-wider">Intersection Status</span>
+                        <span class="text-sm font-bold flex items-center h-7" id="res-status">---</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-end gap-3">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Export Format</label>
+                        <div class="flex bg-slate-100 rounded p-0.5">
+                            <select id="exportFormat" onchange="togglePaperSize()" class="bg-transparent text-xs font-medium px-2 py-1 outline-none text-slate-600 cursor-pointer">
+                                <option value="dxf">DXF (CAD)</option>
+                                <option value="pdf">PDF (Print)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="paperSizeContainer" class="hidden flex-col gap-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Size</label>
+                        <div class="flex bg-slate-100 rounded p-0.5">
+                            <select id="paperSize" class="bg-transparent text-xs font-medium px-2 py-1 outline-none text-slate-600 cursor-pointer">
+                                <option value="a4">A4</option>
+                                <option value="a3">A3</option>
+                                <option value="b3">B3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-1 w-24">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Scale</label>
+                        <input type="number" id="exportScale" min="0.1" max="100" value="1.0" step="0.1" class="bg-slate-50 border border-slate-200 rounded px-2 py-1 text-xs text-right outline-none focus:border-blue-500">
+                    </div>
+
+                    <div id="lineWidthContainer" class="hidden flex-col gap-1 w-24">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Line Width</label>
+                        <input type="number" id="lineWidth" min="0.05" max="5.0" value="0.1" step="0.05" class="bg-slate-50 border border-slate-200 rounded px-2 py-1 text-xs text-right outline-none focus:border-blue-500">
+                    </div>
+
+                    <button onclick="exportFile()" class="h-9 px-4 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded shadow flex items-center gap-2 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Download
+                    </button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+<script>
+// --- Global State ---
+let currentView = '3d'; 
+let calculatedData = null;
+let isCalculating = false;
+
+const COLOR_PRIMARY = '#2563eb';
+const COLOR_BRAND = '#d97706'; 
+const COLOR_GRAY = '#cbd5e1';
+const PARAM_RULES = {
+    m_Rz: { min: 10, max: 300, defaultValue: 100, syncId: 'm_Rz_range', integer: true },
+    m_Rx: { min: 10, max: 300, defaultValue: 100, syncId: 'm_Rx_range', integer: true },
+    m_Theta: { min: -180, max: 180, defaultValue: 0, syncId: 'm_Theta_range', integer: true },
+    b_Rz: { min: 10, max: 300, defaultValue: 50, syncId: 'b_Rz_range', integer: true },
+    b_Rx: { min: 10, max: 300, defaultValue: 50, syncId: 'b_Rx_range', integer: true },
+    b_Theta: { min: -180, max: 180, defaultValue: 0, syncId: 'b_Theta_range', integer: true },
+    alpha: { min: 1, max: 179, defaultValue: 90, syncId: 'alpha_range', integer: true },
+    offset: { min: -150, max: 150, defaultValue: 0, syncId: 'offset_range', integer: true },
+    exportScale: { min: 0.1, max: 100, defaultValue: 1.0, decimals: 2 },
+    lineWidth: { min: 0.05, max: 5.0, defaultValue: 0.1, decimals: 2 }
+};
+
+function clampValue(value, min, max) {
+    let out = value;
+    if (typeof min === 'number') out = Math.max(min, out);
+    if (typeof max === 'number') out = Math.min(max, out);
+    return out;
+}
+
+function normalizeNumericInput(id, rule) {
+    if (!rule) return 0;
+    const el = document.getElementById(id);
+    if (!el) return rule.defaultValue;
+
+    const parsed = parseFloat(el.value);
+    let value = Number.isFinite(parsed) ? parsed : rule.defaultValue;
+    value = clampValue(value, rule.min, rule.max);
+    if (rule.integer) value = Math.round(value);
+    if (typeof rule.decimals === 'number') value = parseFloat(value.toFixed(rule.decimals));
+
+    el.value = String(value);
+
+    if (rule.syncId) {
+        const syncEl = document.getElementById(rule.syncId);
+        if (syncEl) syncEl.value = String(value);
+    }
+    return value;
+}
+
+function normalizeAllInputs() {
+    const values = {};
+    Object.entries(PARAM_RULES).forEach(([id, rule]) => {
+        values[id] = normalizeNumericInput(id, rule);
+    });
+    return values;
+}
+
+function setStatusDisplay(text, tone = 'info') {
+    const statusEl = document.getElementById('res-status');
+    if (!statusEl) return;
+
+    const classByTone = {
+        ok: "text-sm font-bold flex items-center h-7 text-emerald-600",
+        warn: "text-sm font-bold flex items-center h-7 text-rose-500",
+        info: "text-sm font-bold flex items-center h-7 text-amber-600"
+    };
+    statusEl.textContent = text;
+    statusEl.className = classByTone[tone] || classByTone.info;
+}
+
+// --- Initialization ---
+document.addEventListener('DOMContentLoaded', () => {
+    bindInputs();
+    normalizeAllInputs();
+    runCalculation();
+    window.addEventListener('resize', () => Plotly.Plots.resize('plotArea'));
+    togglePaperSize();
+});
+
+function togglePaperSize() {
+    const format = document.getElementById('exportFormat').value;
+    const paperSizeContainer = document.getElementById('paperSizeContainer');
+    const lineWidthContainer = document.getElementById('lineWidthContainer');
+    if (format === 'pdf') {
+        paperSizeContainer.style.display = 'flex';
+        lineWidthContainer.style.display = 'flex';
+    } else {
+        paperSizeContainer.style.display = 'none';
+        lineWidthContainer.style.display = 'none';
+    }
+}
+
+// --- UI Binding ---
+function bindInputs() {
+    const sliders = document.querySelectorAll('.param-slider');
+    const inputs = document.querySelectorAll('.param-input');
+    const checks = document.querySelectorAll('.param-check');
+
+    sliders.forEach(slider => {
+        slider.addEventListener('input', (e) => {
+            const target = document.getElementById(e.target.getAttribute('data-sync'));
+            if(target) { target.value = e.target.value; runCalculation(); }
+        });
+    });
+
+    inputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+            const target = document.getElementById(e.target.getAttribute('data-sync'));
+            if(target) { target.value = e.target.value; runCalculation(); }
+        });
+    });
+
+    checks.forEach(check => {
+        check.addEventListener('change', runCalculation);
+    });
+}
+
+function switchTab(view) {
+    if (currentView === view) return;
+    currentView = view;
+    document.getElementById('tab-3d').classList.remove('active');
+    document.getElementById('tab-2d').classList.remove('active');
+    document.getElementById(`tab-${view}`).classList.add('active');
+    
+    requestAnimationFrame(() => {
+        renderPlot();
+        setTimeout(() => Plotly.Plots.resize('plotArea'), 50);
+    });
+}
+
+function resetParams() {
+    Object.entries(PARAM_RULES).forEach(([id, rule]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = String(rule.defaultValue);
+        if (rule.syncId) {
+            const syncEl = document.getElementById(rule.syncId);
+            if (syncEl) syncEl.value = String(rule.defaultValue);
+        }
+    });
+    document.getElementById('exportFormat').value = 'dxf';
+    document.getElementById('showTop').checked = true;
+    document.getElementById('showBottom').checked = true;
+    togglePaperSize();
+    runCalculation();
+}
+
+// --- Calculation Logic ---
+function runCalculation() {
+    if(isCalculating) return;
+    isCalculating = true;
+    requestAnimationFrame(() => {
+        performCalculation();
+        isCalculating = false;
+    });
+}
+
+function performCalculation() {
+    const values = normalizeAllInputs();
+    const m_Rz = values.m_Rz;
+    const m_Rx = values.m_Rx;
+    const m_Theta = values.m_Theta * Math.PI / 180;
+    const b_Rz = values.b_Rz;
+    const b_Rx = values.b_Rx;
+    const b_Theta = values.b_Theta * Math.PI / 180;
+    const alphaDeg = values.alpha;
+    const alpha = alphaDeg * Math.PI / 180;
+    const offset = values.offset;
+
+    const showTop = document.getElementById('showTop').checked;
+    const showBottom = document.getElementById('showBottom').checked;
+
+    const steps = 360; 
+    const traceTop3D = { x: [], y: [], z: [] };
+    const traceBottom3D = { x: [], y: [], z: [] };
+    const traceTop2D = { x: [], y: [] };
+    const traceBottom2D = { x: [], y: [] };
+
+    let currentArcLength = 0;
+    let maxV = 0;
+    let hasIntersection = true;
+
+    const cosAlpha = Math.cos(alpha), sinAlpha = Math.sin(alpha);
+    const cosMTheta = Math.cos(m_Theta), sinMTheta = Math.sin(m_Theta);
+    
+    const axisLinesX = [];
+
+    for (let i = 0; i <= steps; i++) {
+        const phi = (i / steps) * 2 * Math.PI;
+        const u0 = b_Rx * Math.cos(phi);
+        const w0 = b_Rz * Math.sin(phi);
+        const u = u0 * Math.cos(b_Theta) - w0 * Math.sin(b_Theta);
+        const w = u0 * Math.sin(b_Theta) + w0 * Math.cos(b_Theta);
+        
+        const u_shifted = u + offset;
+
+        if (i > 0) {
+            const phiPrev = ((i - 1) / steps) * 2 * Math.PI;
+            const u0p = b_Rx * Math.cos(phiPrev);
+            const w0p = b_Rz * Math.sin(phiPrev);
+            const dx = u0 - u0p;
+            const dy = w0 - w0p;
+            currentArcLength += Math.sqrt(dx*dx + dy*dy);
+        }
+
+        if (i % 90 === 0) {
+            axisLinesX.push(currentArcLength);
+        }
+
+        const K1 = u_shifted * cosMTheta + w * cosAlpha * sinMTheta;
+        const K2 = sinAlpha * sinMTheta;
+        const K3 = -u_shifted * sinMTheta + w * cosAlpha * cosMTheta;
+        const K4 = sinAlpha * cosMTheta;
+
+        const A_coef = (K2*K2)/(m_Rx*m_Rx) + (K4*K4)/(m_Rz*m_Rz);
+        const B_coef = 2*K1*K2/(m_Rx*m_Rx) + 2*K3*K4/(m_Rz*m_Rz);
+        const C_coef = (K1*K1)/(m_Rx*m_Rx) + (K3*K3)/(m_Rz*m_Rz) - 1;
+
+        const disc = B_coef*B_coef - 4*A_coef*C_coef;
+        const invalidQuadratic = !Number.isFinite(A_coef) || !Number.isFinite(disc) || Math.abs(A_coef) < 1e-12;
+
+        if (!invalidQuadratic && disc >= 0) {
+            const v1 = (-B_coef + Math.sqrt(disc)) / (2*A_coef);
+            const v2 = (-B_coef - Math.sqrt(disc)) / (2*A_coef);
+            const vTop = Math.max(v1, v2);
+            const vBottom = Math.min(v1, v2);
+            maxV = Math.max(maxV, Math.abs(vTop), Math.abs(vBottom));
+            
+            if (showTop) {
+                const y_t = vTop*cosAlpha - w*sinAlpha;
+                const z_t = vTop*sinAlpha + w*cosAlpha;
+                traceTop3D.x.push(u_shifted); traceTop3D.y.push(y_t); traceTop3D.z.push(z_t);
+                traceTop2D.x.push(currentArcLength); traceTop2D.y.push(vTop);
+            }
+            if (showBottom) {
+                const y_b = vBottom*cosAlpha - w*sinAlpha;
+                const z_b = vBottom*sinAlpha + w*cosAlpha;
+                traceBottom3D.x.push(u_shifted); traceBottom3D.y.push(y_b); traceBottom3D.z.push(z_b);
+                traceBottom2D.x.push(currentArcLength); traceBottom2D.y.push(vBottom);
+            }
+        } else {
+            const nullPt = (arr) => { arr.x.push(null); arr.y.push(null); if(arr.z) arr.z.push(null); };
+            if (showTop) {
+                nullPt(traceTop3D);
+                traceTop2D.x.push(currentArcLength); traceTop2D.y.push(null);
+            }
+            if (showBottom) {
+                nullPt(traceBottom3D);
+                traceBottom2D.x.push(currentArcLength); traceBottom2D.y.push(null);
+            }
+            hasIntersection = false;
+        }
+    }
+
+    const wf = generateWireframes(m_Rx, m_Rz, m_Theta, b_Rx, b_Rz, b_Theta, alpha, maxV, offset);
+
+    const axisTrace2D = { x: [], y: [] };
+    const lineH = (maxV || 100) * 1.1; 
+    axisLinesX.forEach(x => {
+        axisTrace2D.x.push(x, x, null); 
+        axisTrace2D.y.push(-lineH, lineH, null);
+    });
+
+    const traces3D = [...wf];
+    if (showTop) {
+        traces3D.push({ type: 'scatter3d', mode: 'lines', name: '交差(Top)', x: traceTop3D.x, y: traceTop3D.y, z: traceTop3D.z, line: { width: 6, color: COLOR_PRIMARY } });
+    }
+    if (showBottom) {
+        traces3D.push({ type: 'scatter3d', mode: 'lines', name: '交差(Bottom)', x: traceBottom3D.x, y: traceBottom3D.y, z: traceBottom3D.z, line: { width: 6, color: COLOR_BRAND } });
+    }
+
+    const plot2D = [
+        { 
+            type: 'scatter', mode: 'lines', name: '軸ライン', 
+            x: axisTrace2D.x, y: axisTrace2D.y, 
+            line: { width: 1, color: '#94a3b8', dash: 'dash' }, hoverinfo: 'skip'
+        }
+    ];
+    if (showTop) {
+        plot2D.push({ type: 'scatter', mode: 'lines', name: 'Top', x: traceTop2D.x, y: traceTop2D.y, line: { width: 3, color: COLOR_PRIMARY } });
+    }
+    if (showBottom) {
+        plot2D.push({ type: 'scatter', mode: 'lines', name: 'Bottom', x: traceBottom2D.x, y: traceBottom2D.y, line: { width: 3, color: COLOR_BRAND } });
+    }
+
+    let statusText = "OK (Valid)";
+    let statusTone = "ok";
+    if (!showTop && !showBottom) {
+        statusText = "INFO (Top/Bottom Hidden)";
+        statusTone = "info";
+    } else if (!hasIntersection) {
+        statusText = "WARNING (Partial/No Intersection)";
+        statusTone = "warn";
+    }
+
+    calculatedData = {
+        traces3D,
+        traces2D: {
+            top: traceTop2D,
+            bottom: traceBottom2D,
+            axis: axisTrace2D
+        },
+        plot2D,
+        stats: {
+            circumference: currentArcLength.toFixed(1) + " mm",
+            maxHeight: maxV.toFixed(1) + " mm",
+            statusText,
+            statusTone
+        }
+    };
+
+    updateResults();
+    renderPlot();
+}
+
+function generateWireframes(mRx, mRz, mTheta, bRx, bRz, bTheta, alpha, maxV, offset) {
+    const traces = [];
+    const cosM = Math.cos(mTheta), sinM = Math.sin(mTheta);
+    const mLen = Math.max(mRx, mRz, maxV || 100) * 2.0;
+    const mYs = [-mLen, 0, mLen];
+    
+    mYs.forEach(y => {
+        let xArr=[], zArr=[];
+        for(let i=0; i<=36; i++){
+            const t = i/36 * 2 * Math.PI;
+            const xl = mRx*Math.cos(t), zl = mRz*Math.sin(t);
+            xArr.push(xl*cosM - zl*sinM);
+            zArr.push(xl*sinM + zl*cosM);
+        }
+        traces.push({type:'scatter3d', mode:'lines', x:xArr, y:Array(xArr.length).fill(y), z:zArr, line:{color: COLOR_GRAY, width:2}, showlegend:false, hoverinfo:'skip'});
+    });
+    for(let i=0; i<8; i++){
+        const t = i/8 * 2 * Math.PI;
+        const xl = mRx*Math.cos(t), zl = mRz*Math.sin(t);
+        const x = xl*cosM - zl*sinM;
+        const z = xl*sinM + zl*cosM;
+        traces.push({type:'scatter3d', mode:'lines', x:[x,x], y:[-mLen,mLen], z:[z,z], line:{color: COLOR_GRAY, width:2}, showlegend:false, hoverinfo:'skip'});
+    }
+
+    const v_start = (maxV || 100) * 1.5 + 50;
+    const v_end = 0; 
+    const bRings = [v_start, (v_start+v_end)*0.6, v_end];
+    
+    bRings.forEach(v => {
+        let xArr=[], yArr=[], zArr=[];
+        for(let i=0; i<=36; i++){
+            const phi = i/36 * 2 * Math.PI;
+            const u0 = bRx*Math.cos(phi);
+            const w0 = bRz*Math.sin(phi);
+            const u = u0 * Math.cos(bTheta) - w0 * Math.sin(bTheta);
+            const w = u0 * Math.sin(bTheta) + w0 * Math.cos(bTheta);
+            
+            const x = u + offset; 
+            const y = v*Math.cos(alpha) - w*Math.sin(alpha);
+            const z = v*Math.sin(alpha) + w*Math.cos(alpha);
+            xArr.push(x); yArr.push(y); zArr.push(z);
+        }
+        traces.push({type:'scatter3d', mode:'lines', x:xArr, y:yArr, z:zArr, line:{color: '#94a3b8', width:2}, showlegend:false, hoverinfo:'skip'});
+    });
+
+    for(let i=0; i<8; i++){
+        const phi = i/8 * 2 * Math.PI;
+        const u0 = bRx*Math.cos(phi);
+        const w0 = bRz*Math.sin(phi);
+        const u = u0 * Math.cos(bTheta) - w0 * Math.sin(bTheta);
+        const w = u0 * Math.sin(bTheta) + w0 * Math.cos(bTheta);
+        
+        const x_s = u + offset;
+        const y_s = v_start*Math.cos(alpha) - w*Math.sin(alpha);
+        const z_s = v_start*Math.sin(alpha) + w*Math.cos(alpha);
+        const x_e = u + offset;
+        const y_e = v_end*Math.cos(alpha) - w*Math.sin(alpha);
+        const z_e = v_end*Math.sin(alpha) + w*Math.cos(alpha);
+        traces.push({type:'scatter3d', mode:'lines', x:[x_s,x_e], y:[y_s,y_e], z:[z_s,z_e], line:{color: '#94a3b8', width:2}, showlegend:false, hoverinfo:'skip'});
+    }
+
+    return traces;
+}
+
+function updateResults() {
+    if(!calculatedData) return;
+    document.getElementById('res-circ').textContent = calculatedData.stats.circumference;
+    document.getElementById('res-height').textContent = calculatedData.stats.maxHeight;
+    setStatusDisplay(calculatedData.stats.statusText, calculatedData.stats.statusTone);
+}
+
+function renderPlot() {
+    if (!calculatedData) return;
+    const config = { displayModeBar: false, responsive: true }; // Hide plotly toolbar for cleaner look
+    const layoutCommon = {
+        margin: { t: 0, b: 0, l: 0, r: 0 },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        autosize: true,
+        font: { family: 'Inter, sans-serif' },
+        uirevision: 'constant_id' 
+    };
+
+    if (currentView === '3d') {
+        const layout3D = {
+            ...layoutCommon,
+            margin: { t: 20, b: 20, l: 20, r: 20 },
+            scene: {
+                aspectmode: 'data',
+                xaxis: { title: '', showgrid: false, zeroline: false, showticklabels: false }, 
+                yaxis: { title: '', showgrid: false, zeroline: false, showticklabels: false }, 
+                zaxis: { title: '', showgrid: false, zeroline: false, showticklabels: false },
+                camera: { eye: {x: 1.5, y: 1.5, z: 1.5} },
+                bgcolor: 'rgba(0,0,0,0)'
+            },
+            showlegend: false
+        };
+        Plotly.react('plotArea', calculatedData.traces3D, layout3D, config);
+    } else {
+        const layout2D = {
+            ...layoutCommon,
+            margin: { t: 40, b: 60, l: 60, r: 40 },
+            xaxis: { title: 'Circumference Length (mm)', gridcolor: '#e2e8f0' },
+            yaxis: { title: 'Axial Height (mm)', scaleanchor: "x", scaleratio: 1, gridcolor: '#e2e8f0' },
+            showlegend: true,
+            legend: { x: 1, y: 1, bgcolor: 'rgba(255,255,255,0.8)' }
+        };
+        Plotly.react('plotArea', calculatedData.plot2D, layout2D, config);
+    }
+}
+
+function exportFile() {
+    if(!calculatedData) return;
+    const values = normalizeAllInputs();
+    const format = document.getElementById('exportFormat').value;
+    const scale = values.exportScale;
+    const lineWidth = values.lineWidth;
+    const includeTop = document.getElementById('showTop').checked;
+    const includeBottom = document.getElementById('showBottom').checked;
+
+    if (!includeTop && !includeBottom) {
+        setStatusDisplay("INFO (Select Top or Bottom to export)", "info");
+        return;
+    }
+    
+    const datasets = [];
+    if(calculatedData.traces2D.axis) datasets.push({ data: calculatedData.traces2D.axis, name: 'Axis', isAxis: true });
+    if(includeTop) datasets.push({ data: calculatedData.traces2D.top, name: 'Top' });
+    if(includeBottom) datasets.push({ data: calculatedData.traces2D.bottom, name: 'Bottom' });
+
+    if(format === 'dxf') {
+        generateDXF(datasets, scale);
+    } else {
+        const size = document.getElementById('paperSize').value;
+        generatePDF(datasets, scale, lineWidth, size);
+    }
+}
+
+function generateDXF(datasets, scale) {
+    let dxf = "0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n";
+    datasets.forEach(ds => {
+        const xArr = ds.data.x;
+        const yArr = ds.data.y;
+        let currentPath = [];
+        for(let i=0; i<xArr.length; i++) {
+            if(xArr[i] !== null && yArr[i] !== null) {
+                currentPath.push({x: xArr[i] * scale, y: yArr[i] * scale});
+            } else {
+                if(currentPath.length > 1) writePolyline(currentPath, ds.name, ds.isAxis);
+                currentPath = [];
+            }
+        }
+        if(currentPath.length > 1) writePolyline(currentPath, ds.name, ds.isAxis);
+    });
+    function writePolyline(path, layer, isDash) {
+        dxf += "0\nPOLYLINE\n8\n" + layer + "\n66\n1\n";
+        path.forEach(p => {
+            dxf += "0\nVERTEX\n8\n" + layer + "\n10\n" + p.x.toFixed(3) + "\n20\n" + p.y.toFixed(3) + "\n30\n0.0\n";
+        });
+        dxf += "0\nSEQEND\n";
+    }
+    dxf += "0\nENDSEC\n0\nEOF\n";
+    downloadBlob(dxf, "pattern.dxf", "application/dxf");
+}
+
+function generatePDF(datasets, scale, lineWidth, paperSize) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: paperSize });
+    
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    let hasData = false;
+    datasets.forEach(ds => {
+        ds.data.x.forEach((x, i) => {
+            const y = ds.data.y[i];
+            if(x !== null && y !== null) {
+                hasData = true;
+                const sx = x * scale; const sy = y * scale;
+                if(sx < minX) minX = sx; if(sx > maxX) maxX = sx;
+                if(sy < minY) minY = sy; if(sy > maxY) maxY = sy;
+            }
+        });
+    });
+
+    if(!hasData) return;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const contentW = maxX - minX;
+    const contentH = maxY - minY;
+    const offsetX = (pageWidth - contentW) / 2 - minX;
+    const offsetY = (pageHeight - contentH) / 2 - minY;
+    
+    datasets.forEach(ds => {
+        if (ds.isAxis) { doc.setLineDash([4, 2], 0); doc.setLineWidth(lineWidth * 0.5); }
+        else { doc.setLineDash([], 0); doc.setLineWidth(lineWidth); }
+
+        const xArr = ds.data.x; const yArr = ds.data.y;
+        for(let i=0; i<xArr.length - 1; i++) {
+            if(xArr[i] !== null && yArr[i] !== null && xArr[i+1] !== null && yArr[i+1] !== null) {
+                const x1 = xArr[i] * scale + offsetX;
+                const y1 = pageHeight - (yArr[i] * scale + offsetY);
+                const x2 = xArr[i+1] * scale + offsetX;
+                const y2 = pageHeight - (yArr[i+1] * scale + offsetY);
+                doc.line(x1, y1, x2, y2);
+            }
+        }
+    });
+    
+    doc.setFontSize(10);
+    doc.text(`Scale: ${scale.toFixed(2)}, Sheet: ${paperSize.toUpperCase()}`, 10, 10);
+    doc.save("pattern.pdf");
+}
+
+function downloadBlob(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
+
+{:/}

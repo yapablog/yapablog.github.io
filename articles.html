@@ -18,21 +18,20 @@ permalink: /articles/
 <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
   
   <div class="grid grid-cols-1 lg:grid-cols-8 gap-10">
+
+    <div class="lg:col-span-4">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-2">
+        ツール解説
+      </h2>
+      {% include categoryblock.html collections="tool_docs" limit=3 %}
+    </div>
     
     <div class="lg:col-span-4">
       <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-2">
-        最近の投稿
+        その他の記事
       </h2>
-      {% include categoryblock.html collections="posts, others" limit=nil %}
+      {% include categoryblock.html collections="posts" limit=nil %}
     </div>
-
-    <!-- <div class="lg:col-span-4">
-      <h2 class="text-xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-2">
-        その他
-      </h2>
-      {% include categoryblock.html collections="others" limit=3 %}
-    </div> -->
-
   </div>
 
 </div>

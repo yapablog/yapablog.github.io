@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2BSLJEKTVJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2BSLJEKTVJ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScriptツールの利用・著作権・プライバシーに関する方針 | やぱのブログ</title>
+    <meta name="description" content="航空工学・生物模倣など" />
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/assets/css/tailwind-output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=Zen+Kaku+Gothic+New&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=WDXL+Lubrifont+TC&family=Zen+Kaku+Gothic+New&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+  </head>
+
+
+  <body class="flex flex-col min-h-screen">
+    <!--
+  開発用ブレイクポイント
+  all(mobile):
+  sm(min-width: 640px):スマホ横～
+  md(min-width: 768px):タブレット
+  lg(min-width: 1024px):ノートPC
+  xl(min-width: 1280px):大型ディスプレイ
+  2xl(min-width: 1536px):超ワイド画面
+-->
+
+<header
+  class=" top-0 z-50 w-full border-b-2 border-[#624ba1ee] divide-gray-400 py-2 bg-white"
+>
+  <div
+  class="flex flex-col md:flex-row md:items-center md:justify-between w-full"
+>
+  <a
+    href="/"
+    class="flex px-2 items-center justify-center md:justify-start mb-2 md:mb-0"
+  >
+    <img
+      class="h-6 md:h-10 w-auto ml-2"
+      src="/assets/images/logo.png"
+      alt="ロゴ"
+    />
+    <div class="flex flex-col leading-tigh ">
+      <div class="ml-2 text-[1.0rem] md:text-[1.4rem] text-center text-gray-800 font-black">
+        やぱのブログ
+      </div>
+      <div class="ml-2 text-[0.3rem] md:text-[0.6rem] text-center text-gray-600 font-medium leading-none hidden md:block">
+        航空工学・生物模倣など
+      </div>
+    </div>
+  </a>
+  <nav
+    class="flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
+  >
+    <a href="/" class="nav-link">Home</a>
+    <a href="/tools/" class="nav-link">Tools</a>
+    <a href="/articles/" class="nav-link">Articles</a>
+    <a href="/contact/" class="nav-link">Contact</a>
+  </nav>
+</div>
+</header>
+
+    <main class="mx-auto flex-grow w-full">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          // 数式の区切り文字を設定
+          delimiters: [
+              {left: '$$', right: '$$', display: true},  // ブロック数式
+              {left: '$', right: '$', display: false},   // インライン数式
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          // エラーが出ても無視してそのまま表示する設定
+          throwOnError : false
+        });
+    });
+</script>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <header class="mb-6 border-b border-gray-200 pb-2">
+    <div class="text-3xl font-bold text-gray-800 mb-1">JavaScriptツールの利用・著作権・プライバシーに関する方針</div>
+    <p class="text-sm text-gray-500">2025/12/15</p>
+  </header>
+  <div class="container mx-auto px-4">
+  
+    <div class="lg:grid lg:grid-cols-12 lg:gap-10">
+      
+      <main class="lg:col-span-9">  
+        <div class="note-toc-inline">
+          <p class="toc-title">目次</p>
+          <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#はじめに">はじめに</a></li>
+<li class="toc-entry toc-h2"><a href="#著作権の所在について">著作権の所在について</a></li>
+<li class="toc-entry toc-h2"><a href="#利用条件ライセンスの考え方">利用条件（ライセンスの考え方）</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#基本方針">基本方針</a></li>
+<li class="toc-entry toc-h3"><a href="#クレジット表記について">クレジット表記について</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#保証および責任の範囲">保証および責任の範囲</a></li>
+<li class="toc-entry toc-h2"><a href="#データ取得プライバシーについて">データ取得・プライバシーについて</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#入力データの扱い">入力データの扱い</a></li>
+<li class="toc-entry toc-h3"><a href="#クッキートラッキングについて">クッキー・トラッキングについて</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#外部ライブラリについて">外部ライブラリについて</a></li>
+<li class="toc-entry toc-h2"><a href="#方針の変更について">方針の変更について</a></li>
+<li class="toc-entry toc-h2"><a href="#まとめ">まとめ</a></li>
+</ul>
+        </div>
+  
+        <div class="article">
+          <h2 id="はじめに">はじめに</h2>
+
+<p>本ブログでは、論文解説記事に加えて、<br />
+<strong>筆者が独自に開発した JavaScript ベースの技術ツール</strong>を公開しています。</p>
+
+<p>本ページでは、これらツールについて、</p>
+
+<ul>
+  <li>著作権の所在</li>
+  <li>利用・改変の可否</li>
+  <li>再配布や商用利用の扱い</li>
+  <li>データ・プライバシーに関する考え方</li>
+</ul>
+
+<p>を明確にします。</p>
+
+<hr />
+
+<h2 id="著作権の所在について">著作権の所在について</h2>
+
+<p>本ブログ上で公開している JavaScript ツールの<strong>ソースコードおよびロジック</strong>は、<br />
+特に明示がない限り、<strong>すべて本ブログ運営者（筆者）に帰属</strong>します。</p>
+
+<p>ただし、これは「利用を制限する」ためではなく、<br />
+<strong>利用条件を明確にするための形式的な記述</strong>です。</p>
+
+<hr />
+
+<h2 id="利用条件ライセンスの考え方">利用条件（ライセンスの考え方）</h2>
+
+<h3 id="基本方針">基本方針</h3>
+
+<p>本ブログで公開している JavaScript ツールは、<strong>原則として自由に利用可能</strong>です。</p>
+
+<p>以下の行為をすべて許可します。</p>
+
+<ul>
+  <li>個人利用・研究利用・教育利用</li>
+  <li>商用・非商用を問わない利用</li>
+  <li>ソースコードの改変</li>
+  <li>自作ツールや別プロジェクトへの組み込み</li>
+  <li>再配布（そのまま／改変後を問わない）</li>
+</ul>
+
+<p>いわゆる <strong>MIT License に近い考え方</strong>を採っています。</p>
+
+<h3 id="クレジット表記について">クレジット表記について</h3>
+
+<p>クレジット表記は<strong>必須ではありません</strong>が、<br />
+もし言及いただける場合は以下のような形を推奨します。</p>
+
+<blockquote>
+  <p>Based on a web-based tool originally published at https://yapablog.github.io/</p>
+</blockquote>
+
+<p>これは義務ではなく、あくまで任意です。</p>
+
+<hr />
+
+<h2 id="保証および責任の範囲">保証および責任の範囲</h2>
+
+<p>これらのツールは、</p>
+
+<ul>
+  <li>教育目的</li>
+  <li>概念理解</li>
+  <li>初期設計検討</li>
+  <li>思考実験・可視化</li>
+</ul>
+
+<p>を主目的として提供されています。</p>
+
+<p>そのため、</p>
+
+<ul>
+  <li>計算結果の正確性</li>
+  <li>特定用途への適合性</li>
+  <li>実運用・実設計への適用</li>
+</ul>
+
+<p>について、<strong>いかなる保証も行いません</strong>。</p>
+
+<p>本ツールの利用によって生じたいかなる損害についても、<br />
+筆者は責任を負いません。</p>
+
+<hr />
+
+<h2 id="データ取得プライバシーについて">データ取得・プライバシーについて</h2>
+
+<p>本ブログは <strong>静的サイト</strong> として運営されています。</p>
+
+<h3 id="入力データの扱い">入力データの扱い</h3>
+
+<ul>
+  <li>ツールに入力された数値やパラメータは<br />
+<strong>すべて閲覧者のブラウザ内でのみ処理</strong>されます。</li>
+  <li>サーバー側に送信・保存されることはありません。</li>
+  <li>そもそも、技術的に取得する仕組みを持っていません。</li>
+</ul>
+
+<p>したがって、</p>
+
+<ul>
+  <li>入力内容が記録されること</li>
+  <li>個人情報が収集されること</li>
+</ul>
+
+<p>はありません。</p>
+
+<h3 id="クッキートラッキングについて">クッキー・トラッキングについて</h3>
+
+<ul>
+  <li>独自のクッキーやトラッキングスクリプトは使用していません。</li>
+  <li>アクセス解析を行う場合でも、一般的な静的解析に限定されます。</li>
+</ul>
+
+<hr />
+
+<h2 id="外部ライブラリについて">外部ライブラリについて</h2>
+
+<p>ツール内で外部ライブラリ（例：数値計算・描画ライブラリ）を使用している場合があります。</p>
+
+<p>それらについては、</p>
+
+<ul>
+  <li>各ライブラリのライセンスに従って利用しています</li>
+  <li>ライブラリ自体の著作権は、各開発者に帰属します</li>
+</ul>
+
+<p>詳細は、各ツールのソースコード内コメントまたは公式サイトをご確認ください。</p>
+
+<hr />
+
+<h2 id="方針の変更について">方針の変更について</h2>
+
+<p>本ページの内容は、<br />
+ツールの拡充やブログ運営方針の変更に伴い、予告なく更新されることがあります。</p>
+
+<p>ただし、<strong>既に公開されているツールの利用を遡って制限することはありません</strong>。</p>
+
+<hr />
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>本ブログの JavaScript ツールについての考え方を、一言でまとめると以下の通りです。</p>
+
+<blockquote>
+  <p><strong>自由に使って、自由に改変して構いません。<br />
+入力データは取得しておらず、こちらに届くこともありません。<br />
+ただし、結果の利用は自己責任でお願いします。</strong></p>
+</blockquote>
+
+<p>安心して、学習・研究・開発に役立てていただければ幸いです。</p>
+
+        
+        </div>   
+      </main>
+  
+      <aside class="lg:col-span-3 relative">
+        
+        <div class="note-toc-sidebar">
+          <p class="toc-title">目次</p>
+          <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#はじめに">はじめに</a></li>
+<li class="toc-entry toc-h2"><a href="#著作権の所在について">著作権の所在について</a></li>
+<li class="toc-entry toc-h2"><a href="#利用条件ライセンスの考え方">利用条件（ライセンスの考え方）</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#基本方針">基本方針</a></li>
+<li class="toc-entry toc-h3"><a href="#クレジット表記について">クレジット表記について</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#保証および責任の範囲">保証および責任の範囲</a></li>
+<li class="toc-entry toc-h2"><a href="#データ取得プライバシーについて">データ取得・プライバシーについて</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#入力データの扱い">入力データの扱い</a></li>
+<li class="toc-entry toc-h3"><a href="#クッキートラッキングについて">クッキー・トラッキングについて</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#外部ライブラリについて">外部ライブラリについて</a></li>
+<li class="toc-entry toc-h2"><a href="#方針の変更について">方針の変更について</a></li>
+<li class="toc-entry toc-h2"><a href="#まとめ">まとめ</a></li>
+</ul>
+        </div>
+  
+      </aside>
+  
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. 監視する見出し要素を取得 (記事内の h1, h2, h3)
+    const headers = document.querySelectorAll('.article h1, .article h2, .article h3');
+    // 2. サイドバーのリンクを取得
+    const tocLinks = document.querySelectorAll('.note-toc-sidebar a');
+  
+    // IntersectionObserver の設定
+    const observerOptions = {
+      root: null, // ビューポートを基準
+      // rootMargin: 上端から-100pxの位置〜画面の残り60%までを「アクティブ判定エリア」とする
+      // これにより、見出しが画面上部に来たタイミングでハイライトが切り替わります
+      rootMargin: '-100px 0px -60% 0px', 
+      threshold: 0
+    };
+  
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        // 画面内に入った（または出た）場合
+        if (entry.isIntersecting) {
+          // 現在のアクティブクラスを全削除
+          tocLinks.forEach(link => link.classList.remove('active'));
+          
+          // 対応するIDを持つリンクを探してアクティブ化
+          const id = entry.target.getAttribute('id');
+          if (id) {
+            const activeLink = document.querySelector(`.note-toc-sidebar a[href="#${id}"]`);
+            if (activeLink) {
+              activeLink.classList.add('active');
+            }
+          }
+        }
+      });
+    }, observerOptions);
+  
+    // 各見出しを監視対象に登録
+    headers.forEach(header => observer.observe(header));
+  });
+  </script>
+
+    </main>
+
+    <footer class="bg-[#9191a7] mt-4">
+  <div class="mx-auto p-3 text-center text-xs" >
+
+    <p class="space-x-2 my-3">
+      <a href="/policy/paper-review/" class="underline hover:opacity-80">
+        論文解説に関するポリシー
+      </a>
+      <span>|</span>
+      <a href="/policy/tools/" class="underline hover:opacity-80">
+        ツール利用に関するポリシー
+      </a>
+    </p>
+
+    <p class="text-xs leading-relaxed opacity-90 max-w-2xl mx-auto">
+      本ブログでは執筆補助としてAIを使用する場合がありますが、内容の技術的妥当性および最終判断は筆者が行っています。
+    </p>
+
+    <div class="text-xs opacity-75 border-tpt-4">
+      <p>© 2026 やぱのブログ</p>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>

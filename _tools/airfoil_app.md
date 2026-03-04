@@ -1,3 +1,19 @@
+---
+layout: tools
+title: 翼型計算
+permalink: /airfoilapp/
+image: '/assets/images/tools/airfoilapp_thumb.png'
+ToolName: 翼型プロパティ計算ツール
+Description: コード長と点群データから、面積や重心、断面二次モーメントなどの幾何パラメータを計算するWebツールです。
+HowtoUse: |
+  1. まず **コード長** と **点群データ** を入力してください。
+  2. NACA4桁翼型であれば、コードを入力して「生成」ボタンから自動生成することが可能です。
+  3. もし正規化されていない場合は、正規化ボタンを押してください。
+  4. 「計算・描画実行」ボタンを押すと、右側（スマホの場合は下側）に形状と解析結果が表示されます。
+---
+
+{::nomarkdown}
+
 <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
 
 <div class="w-full max-w-7xl mx-auto px-4 py-8">
@@ -28,9 +44,9 @@
               後縁(x=1) → 上面 → 前縁(x=0) → 下面 → 後縁(x=1)<br>
               後縁の隙間可<br>
             </div>
-            <textarea 
-              id="pointCloud" 
-              rows="8" 
+            <textarea
+              id="pointCloud"
+              rows="8"
               class="w-full font-mono text-sm p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[var(--color-brand)] focus:outline-none"
               placeholder="生成ボタンを押すか、データを貼り付けてください &#10;例&#10;1.0000 0.0000&#10;0.9500 0.0123&#10;..."
             ></textarea>
@@ -43,30 +59,30 @@
                 アルゴリズム解説
               </a>
             </div>
-          
+
             <div class="flex gap-4 mb-2">
               <div class="flex-1">
                 <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">4桁コード</label>
                 <input type="text" id="nacaCode" maxlength="4" value="4412" class="w-full p-2 bg-white border border-gray-300 rounded text-center font-mono text-sm focus:ring-2 focus:ring-[var(--color-brand)] focus:border-[var(--color-brand)] focus:outline-none transition-shadow" placeholder="4412">
               </div>
-              
+
               <div class="flex-1">
                 <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">点数</label>
                 <input type="number" id="numPoints" value="100" min="20" max="500" class="w-full p-2 bg-white border border-gray-300 rounded text-center font-mono text-sm focus:ring-2 focus:ring-[var(--color-brand)] focus:border-[var(--color-brand)] focus:outline-none transition-shadow">
               </div>
             </div>
-          
+
             <p class="text-[10px] text-gray-400 mb-4 pl-1">例: 0012 (対称), 2412, 4412 (非対称)</p>
-          
+
             <div class="flex items-center justify-evenly pt-3 border-t border-gray-200">
 
               <div class="flex items-center gap-2">
                 <label class="relative inline-block w-11 h-6">
-                  <input 
-                    type="checkbox" 
-                    id="closeTE" 
-                    class="peer sr-only" 
-                    checked 
+                  <input
+                    type="checkbox"
+                    id="closeTE"
+                    class="peer sr-only"
+                    checked
                   >
                   <span class="block w-11 h-6 bg-gray-300 rounded-full cursor-pointer transition-colors duration-300 peer-checked:bg-[var(--color-brand)]"></span>
                   <span class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 cursor-pointer shadow-sm toggle-knob"></span>
@@ -75,12 +91,12 @@
                   後縁を閉じる
                 </label>
               </div>
-          
+
               <button onclick="generateNACA()" class="px-5 py-1.5 w-30 bg-gray-800 text-white text-xs font-bold rounded hover:bg-gray-700 active:scale-95 transition-all shadow-sm">
                 生成
               </button>
             </div>
-              
+
             <style>
               /* チェックされたらつまみを右に移動 (サイズに合わせて調整済み) */
               input:checked + span + .toggle-knob {
@@ -110,7 +126,7 @@
         </div>
         <div class="p-5 flex-1">
           <div id="airfoilPlot" class="w-full h-80 md:h-96 border border-gray-100 rounded mb-8"></div>
-          
+
           <h3 class="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2 mb-4">幾何特性</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-sm text-left border-collapse">
@@ -129,6 +145,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -354,3 +371,5 @@ function createRow(label, nV, rV, unit) {
     return `<tr class="border-b border-gray-100 hover:bg-gray-50"><td class="px-4 py-2 font-medium">${label}</td><td class="px-4 py-2 font-mono text-gray-600">${nV.toExponential(4)}</td><td class="px-4 py-2 font-mono font-bold text-[var(--color-brand)]">${dV} <span class="text-xs text-gray-400 font-normal ml-1">${unit}</span></td></tr>`;
 }
 </script>
+
+{:/}

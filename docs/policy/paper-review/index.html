@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2BSLJEKTVJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2BSLJEKTVJ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>論文解説と著作権に関する方針 | やぱのブログ</title>
+    <meta name="description" content="航空工学・生物模倣など" />
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/assets/css/tailwind-output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=Zen+Kaku+Gothic+New&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=WDXL+Lubrifont+TC&family=Zen+Kaku+Gothic+New&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+  </head>
+
+
+  <body class="flex flex-col min-h-screen">
+    <!--
+  開発用ブレイクポイント
+  all(mobile):
+  sm(min-width: 640px):スマホ横～
+  md(min-width: 768px):タブレット
+  lg(min-width: 1024px):ノートPC
+  xl(min-width: 1280px):大型ディスプレイ
+  2xl(min-width: 1536px):超ワイド画面
+-->
+
+<header
+  class=" top-0 z-50 w-full border-b-2 border-[#624ba1ee] divide-gray-400 py-2 bg-white"
+>
+  <div
+  class="flex flex-col md:flex-row md:items-center md:justify-between w-full"
+>
+  <a
+    href="/"
+    class="flex px-2 items-center justify-center md:justify-start mb-2 md:mb-0"
+  >
+    <img
+      class="h-6 md:h-10 w-auto ml-2"
+      src="/assets/images/logo.png"
+      alt="ロゴ"
+    />
+    <div class="flex flex-col leading-tigh ">
+      <div class="ml-2 text-[1.0rem] md:text-[1.4rem] text-center text-gray-800 font-black">
+        やぱのブログ
+      </div>
+      <div class="ml-2 text-[0.3rem] md:text-[0.6rem] text-center text-gray-600 font-medium leading-none hidden md:block">
+        航空工学・生物模倣など
+      </div>
+    </div>
+  </a>
+  <nav
+    class="flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
+  >
+    <a href="/" class="nav-link">Home</a>
+    <a href="/tools/" class="nav-link">Tools</a>
+    <a href="/articles/" class="nav-link">Articles</a>
+    <a href="/contact/" class="nav-link">Contact</a>
+  </nav>
+</div>
+</header>
+
+    <main class="mx-auto flex-grow w-full">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          // 数式の区切り文字を設定
+          delimiters: [
+              {left: '$$', right: '$$', display: true},  // ブロック数式
+              {left: '$', right: '$', display: false},   // インライン数式
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          // エラーが出ても無視してそのまま表示する設定
+          throwOnError : false
+        });
+    });
+</script>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <header class="mb-6 border-b border-gray-200 pb-2">
+    <div class="text-3xl font-bold text-gray-800 mb-1">論文解説と著作権に関する方針</div>
+    <p class="text-sm text-gray-500">2025/12/15</p>
+  </header>
+  <div class="container mx-auto px-4">
+  
+    <div class="lg:grid lg:grid-cols-12 lg:gap-10">
+      
+      <main class="lg:col-span-9">  
+        <div class="note-toc-inline">
+          <p class="toc-title">目次</p>
+          <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#はじめに">はじめに</a></li>
+<li class="toc-entry toc-h2"><a href="#結論を先に論文解説そのものは問題なし">結論を先に：論文解説そのものは問題なし</a></li>
+<li class="toc-entry toc-h2"><a href="#著作権が守っているもの守っていないもの">著作権が守っているもの・守っていないもの</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#著作権が保護するもの">著作権が保護するもの</a></li>
+<li class="toc-entry toc-h3"><a href="#著作権が保護しないもの">著作権が保護しないもの</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#非オープンアクセス論文通常の論文の場合">非オープンアクセス論文（通常の論文）の場合</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#問題ない行為">問題ない行為</a></li>
+<li class="toc-entry toc-h3"><a href="#注意が必要な行為">注意が必要な行為</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#オープンアクセス論文の場合">オープンアクセス論文の場合</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#cc-by-ライセンスの場合">CC-BY ライセンスの場合</a></li>
+<li class="toc-entry toc-h3"><a href="#cc-by-nc--cc-by-nd-の場合">CC-BY-NC / CC-BY-ND の場合</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#このブログでの基本方針">このブログでの基本方針</a></li>
+<li class="toc-entry toc-h2"><a href="#まとめ">まとめ</a></li>
+</ul>
+        </div>
+  
+        <div class="article">
+          <h2 id="はじめに">はじめに</h2>
+
+<p>このブログでは、学術論文（主に工学・物理・生体力学分野）の内容を、<br />
+エンジニアや理系学生向けに噛み砕いて解説する記事を公開しています。</p>
+
+<p>一方で、読者の方から次のような疑問を持たれることもあるかと思います。</p>
+
+<ul>
+  <li>「論文を解説して公開するのは問題ないのか？」</li>
+  <li>「図や数式を使っているが、著作権的に大丈夫なのか？」</li>
+  <li>「オープンアクセス論文と通常の論文で違いはあるのか？」</li>
+</ul>
+
+<p>このページでは、<strong>論文解説ブログと著作権の関係</strong>について、<br />
+専門知識がなくても理解できるよう、丁寧に説明します。</p>
+
+<hr />
+
+<h2 id="結論を先に論文解説そのものは問題なし">結論を先に：論文解説そのものは問題なし</h2>
+
+<p>まず最も重要な点から述べます。</p>
+
+<p><strong>論文の内容を理解し、自分の言葉で解説する行為そのものは、原則として問題ありません。</strong></p>
+
+<p>これは、</p>
+
+<ul>
+  <li>オープンアクセス論文かどうか</li>
+  <li>海外誌か国内誌か</li>
+</ul>
+
+<p>に関わらず共通です。</p>
+
+<p>理由は、著作権が保護する対象にあります。</p>
+
+<hr />
+
+<h2 id="著作権が守っているもの守っていないもの">著作権が守っているもの・守っていないもの</h2>
+
+<h3 id="著作権が保護するもの">著作権が保護するもの</h3>
+
+<p>著作権法が保護するのは、以下のような<strong>「表現」</strong>です。</p>
+
+<ul>
+  <li>論文の文章そのもの</li>
+  <li>図・写真・グラフ</li>
+  <li>図表のレイアウトや構成</li>
+</ul>
+
+<h3 id="著作権が保護しないもの">著作権が保護しないもの</h3>
+
+<p>一方で、以下は原則として保護対象ではありません。</p>
+
+<ul>
+  <li>研究アイデア</li>
+  <li>科学的事実・実験結果</li>
+  <li>数式そのもの（物理法則・数学的定義）</li>
+  <li>自然法則や理論の内容</li>
+</ul>
+
+<p>そのため、</p>
+
+<blockquote>
+  <p>論文を読んで理解し、<br />
+自分なりに整理し、<br />
+別の文章で説明する</p>
+</blockquote>
+
+<p>という行為は、<strong>著作権侵害には該当しません</strong>。</p>
+
+<p>これは、教科書・講義資料・レビュー論文・解説記事が成り立っていることからも明らかです。</p>
+
+<hr />
+
+<h2 id="非オープンアクセス論文通常の論文の場合">非オープンアクセス論文（通常の論文）の場合</h2>
+
+<h3 id="問題ない行為">問題ない行為</h3>
+
+<p>通常の出版社論文（Springer、Elsevier 等）の場合でも、次は問題ありません。</p>
+
+<ul>
+  <li>論文内容の要約・解説</li>
+  <li>実験結果や結論の説明</li>
+  <li>数式を打ち直して解説</li>
+  <li>図の内容を文章で説明</li>
+  <li>出典を明記したうえで論文を紹介</li>
+</ul>
+
+<p>このブログで行っている論文解説は、基本的にこの範囲に収まっています。</p>
+
+<h3 id="注意が必要な行為">注意が必要な行為</h3>
+
+<p>一方、以下は原則として避けています。</p>
+
+<ul>
+  <li>図表や写真をそのまま転載すること</li>
+  <li>論文本文を長文で引用すること</li>
+  <li>PDF やスクリーンショットの掲載</li>
+</ul>
+
+<p>これらは「二次利用・再配布」にあたり、<br />
+出版社の許諾が必要になるケースが多いためです。</p>
+
+<hr />
+
+<h2 id="オープンアクセス論文の場合">オープンアクセス論文の場合</h2>
+
+<p>「オープンアクセス（OA）」と聞くと、<br />
+「何でも自由に使える」と思われがちですが、実際には<strong>ライセンス次第</strong>です。</p>
+
+<h3 id="cc-by-ライセンスの場合">CC-BY ライセンスの場合</h3>
+
+<p>多くの OA 論文は <strong>CC-BY</strong> ライセンスです。</p>
+
+<p>この場合、</p>
+
+<ul>
+  <li>図表の転載：可能</li>
+  <li>文章の引用：可能</li>
+  <li>改変：可能</li>
+  <li>商用利用：可能</li>
+</ul>
+
+<p><strong>条件</strong>として、著者名・論文名・出典・ライセンス表記を明記する必要があります。</p>
+
+<h3 id="cc-by-nc--cc-by-nd-の場合">CC-BY-NC / CC-BY-ND の場合</h3>
+
+<ul>
+  <li><strong>NC（非営利限定）</strong><br />
+→ 広告付きブログでは注意が必要</li>
+  <li><strong>ND（改変禁止）</strong><br />
+→ トリミングや再構成は不可</li>
+</ul>
+
+<p>OA 論文であっても、必ずライセンス内容を確認する必要があります。</p>
+
+<hr />
+
+<h2 id="このブログでの基本方針">このブログでの基本方針</h2>
+
+<p>本ブログでは、論文の種類に関わらず、以下の方針を採っています。</p>
+
+<ul>
+  <li>論文の<strong>内容・考え方・結果</strong>を中心に解説する</li>
+  <li>図表は原則として転載しない</li>
+  <li>必要な場合は、筆者が作成した概念図で説明する</li>
+  <li>出典論文を明記し、原論文の参照を促す</li>
+</ul>
+
+<p>これは、著作権上の安全性だけでなく、<br />
+<strong>読者にとって理解しやすい解説を提供する</strong>という目的にも合致しています。</p>
+
+<hr />
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>最後に、本ページの要点を一言でまとめます。</p>
+
+<blockquote>
+  <p><strong>論文の「内容」を解説することは自由であり、<br />
+論文の「表現」を転載するには条件がある。</strong></p>
+</blockquote>
+
+<p>このブログは、</p>
+
+<ul>
+  <li>論文を尊重し</li>
+  <li>著作権を尊重し</li>
+  <li>読者の理解を最優先する</li>
+</ul>
+
+<p>という方針で運営しています。</p>
+
+        
+        </div>   
+      </main>
+  
+      <aside class="lg:col-span-3 relative">
+        
+        <div class="note-toc-sidebar">
+          <p class="toc-title">目次</p>
+          <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#はじめに">はじめに</a></li>
+<li class="toc-entry toc-h2"><a href="#結論を先に論文解説そのものは問題なし">結論を先に：論文解説そのものは問題なし</a></li>
+<li class="toc-entry toc-h2"><a href="#著作権が守っているもの守っていないもの">著作権が守っているもの・守っていないもの</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#著作権が保護するもの">著作権が保護するもの</a></li>
+<li class="toc-entry toc-h3"><a href="#著作権が保護しないもの">著作権が保護しないもの</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#非オープンアクセス論文通常の論文の場合">非オープンアクセス論文（通常の論文）の場合</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#問題ない行為">問題ない行為</a></li>
+<li class="toc-entry toc-h3"><a href="#注意が必要な行為">注意が必要な行為</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#オープンアクセス論文の場合">オープンアクセス論文の場合</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#cc-by-ライセンスの場合">CC-BY ライセンスの場合</a></li>
+<li class="toc-entry toc-h3"><a href="#cc-by-nc--cc-by-nd-の場合">CC-BY-NC / CC-BY-ND の場合</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#このブログでの基本方針">このブログでの基本方針</a></li>
+<li class="toc-entry toc-h2"><a href="#まとめ">まとめ</a></li>
+</ul>
+        </div>
+  
+      </aside>
+  
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. 監視する見出し要素を取得 (記事内の h1, h2, h3)
+    const headers = document.querySelectorAll('.article h1, .article h2, .article h3');
+    // 2. サイドバーのリンクを取得
+    const tocLinks = document.querySelectorAll('.note-toc-sidebar a');
+  
+    // IntersectionObserver の設定
+    const observerOptions = {
+      root: null, // ビューポートを基準
+      // rootMargin: 上端から-100pxの位置〜画面の残り60%までを「アクティブ判定エリア」とする
+      // これにより、見出しが画面上部に来たタイミングでハイライトが切り替わります
+      rootMargin: '-100px 0px -60% 0px', 
+      threshold: 0
+    };
+  
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        // 画面内に入った（または出た）場合
+        if (entry.isIntersecting) {
+          // 現在のアクティブクラスを全削除
+          tocLinks.forEach(link => link.classList.remove('active'));
+          
+          // 対応するIDを持つリンクを探してアクティブ化
+          const id = entry.target.getAttribute('id');
+          if (id) {
+            const activeLink = document.querySelector(`.note-toc-sidebar a[href="#${id}"]`);
+            if (activeLink) {
+              activeLink.classList.add('active');
+            }
+          }
+        }
+      });
+    }, observerOptions);
+  
+    // 各見出しを監視対象に登録
+    headers.forEach(header => observer.observe(header));
+  });
+  </script>
+
+    </main>
+
+    <footer class="bg-[#9191a7] mt-4">
+  <div class="mx-auto p-3 text-center text-xs" >
+
+    <p class="space-x-2 my-3">
+      <a href="/policy/paper-review/" class="underline hover:opacity-80">
+        論文解説に関するポリシー
+      </a>
+      <span>|</span>
+      <a href="/policy/tools/" class="underline hover:opacity-80">
+        ツール利用に関するポリシー
+      </a>
+    </p>
+
+    <p class="text-xs leading-relaxed opacity-90 max-w-2xl mx-auto">
+      本ブログでは執筆補助としてAIを使用する場合がありますが、内容の技術的妥当性および最終判断は筆者が行っています。
+    </p>
+
+    <div class="text-xs opacity-75 border-tpt-4">
+      <p>© 2026 やぱのブログ</p>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>

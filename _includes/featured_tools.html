@@ -1,0 +1,54 @@
+{% comment %}
+  引数:
+  - title: セクションのタイトル (デフォルト: Tools)
+  - url: "すべて見る"のリンク先 (デフォルト: /tools/)
+  - collection: ループするコレクション (必須。例: site.tools)
+  - limit: 表示件数 (オプション)
+{% endcomment %}
+
+{% assign section_title = include.title | default: "Tools" %}
+{% assign view_all_url = include.url | default: "/tools/" %}
+{% assign items = include.collection | sort: 'date' %}
+{% if include.limit %}
+  {% assign items = items | slice: 0, include.limit %}
+{% endif %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+
+    <div class="flex items-center justify-start mb-6">
+      <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+        {{ section_title }}
+      </h2>
+      <a href="{{ view_all_url }}" class="mx-4 pt-1 text-sm font-bold text-[var(--color-brand)] hover:underline hidden sm:block">
+        すべて見る &rarr;
+      </a>
+    </div>
+
+    <div class="flex overflow-x-auto gap-6 pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-thin">
+      
+      {% for tool in items %}
+        <div class="flex-none w-[300px] md:w-[350px] snap-center">
+          
+          {% comment %}
+             Front MatterのDescriptionは通常テキストですが、
+             もしMarkdown記法が含まれる場合は markdownify フィルタを通します。
+          {% endcomment %}
+          {% capture tool_desc %}
+            {{ tool.Description | markdownify }}
+          {% endcapture %}
+
+          {% include tool_card.html
+            title=tool.ToolName
+            url=tool.url
+            image=tool.image
+            description=tool_desc
+          %}
+        </div>
+      {% endfor %}
+
+      </div>
+
+    <div class="mt-2 text-center sm:hidden">
+      {% include button.html href=view_all_url label="View All Tools" %}
+    </div>
+</div>

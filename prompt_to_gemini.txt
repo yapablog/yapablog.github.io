@@ -1,0 +1,239 @@
+# ツール作成
+
+JekyllとTailwindCSSを使用した技術ブログ用の静的Webツールを作成してください。
+
+■ 作成したいツールの仕様
+
+目的: [ここにツールの目的を書く。例：片持ち梁のたわみ計算]
+
+入力: [入力項目を書く。例：長さ、ヤング率、荷重]
+
+出力: [出力項目を書く。例：たわみ曲線グラフ、最大たわみ量]
+
+機能: [その他の機能。例：CSVエクスポート機能]
+
+■ デザイン・実装要件 以下のHTML/CSS構造（デザインテンプレート）を厳密に守ってください。
+
+配色は var(--color-primary) (ヘッダー背景) や var(--color-brand) (アクセント/ボタン) を使用すること。
+
+ライブラリは Plotly.js を使用すること。
+
+計算ロジックはすべて単一の <script> 内に記述すること。
+
+▼ デザインテンプレート
+```html
+<script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+
+<div class="w-full max-w-7xl mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+    
+    <div class="md:col-span-5 space-y-6">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="bg-[var(--color-primary)] text-white px-5 py-3 border-b border-gray-100">
+          <h2 class="text-lg font-bold m-0 text-white">パラメータ設定</h2>
+        </div>
+        
+        <div class="p-5 space-y-4">
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1">数値入力 (単位あり)</label>
+            <div class="flex items-center">
+              <input type="number" id="input1" value="100" class="flex-1 p-2 border border-gray-300 rounded-l text-right focus:ring-2 focus:ring-[var(--color-brand)] focus:outline-none">
+              <span class="px-3 py-2 bg-gray-50 border border-l-0 border-gray-300 rounded-r text-sm text-gray-500">mm</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <button class="col-span-2 px-4 py-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded hover:bg-amber-100 transition-colors">
+              補助機能（リセットなど）
+            </button>
+          </div>
+
+          <button onclick="runCalculation()" class="w-full py-3 bg-[var(--color-brand)] text-white font-bold rounded shadow hover:opacity-90 transition-opacity">
+            計算・描画実行
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="md:col-span-7">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 h-full flex flex-col">
+        <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex justify-between items-center">
+          <h5 class="font-bold text-gray-700 m-0 text-base">視覚化 & 結果</h5>
+          <span class="text-xs text-gray-400">Plotly.js Viewer</span>
+        </div>
+        
+        <div class="p-5 flex-1">
+          <div id="plotArea" class="w-full h-80 md:h-96 border border-gray-100 rounded mb-6 bg-gray-50 flex items-center justify-center text-gray-400">
+            ここにグラフが描画されます
+          </div>
+          
+          <h3 class="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2 mb-4">計算結果</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+              <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+                <tr>
+                  <th class="px-4 py-3 border border-gray-200">項目</th>
+                  <th class="px-4 py-3 border border-gray-200">値</th>
+                </tr>
+              </thead>
+              <tbody id="resultBody" class="text-gray-700">
+                <tr class="border-b border-gray-100">
+                  <td class="px-4 py-2 font-medium">結果A</td>
+                  <td class="px-4 py-2 font-mono text-[var(--color-brand)]">---</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<script>
+// ここにロジックを実装
+function runCalculation() {
+    console.log("計算実行");
+    // Plotly.newPlot('plotArea', ...);
+}
+</script>
+```
+
+front matterは不要です．
+
+
+
+
+# 解説記事作成
+
+あなたは、高度な数学的知識とプログラミングスキルを持つ「技術ブロガー」です。
+以下の**入力情報（コードまたは仕様）**に基づき、その背後にあるアルゴリズムを解説する技術記事をMarkdown形式で執筆してください。
+
+**■ 入力情報**
+[ここに解説したいツールのコード、または数理モデルのメモを貼り付けてください]
+
+**■ 記事のターゲット読者**
+* エンジニア、学生、またはその技術に興味がある理系読者。
+* 数学的な厳密さと、実装への落とし込みの両方に興味がある層。
+
+**■ 執筆ルールと制約**
+1.  **フォーマット**: Jekyllのブログ記事としてそのまま使えるMarkdown形式。
+2.  **数式 (LaTeX)**:
+    * インライン数式は `$` で囲む（例: $y = ax + b$）。
+    * 独立した数式ブロックは `$$` で囲む（例: $$E = mc^2$$）。
+    * `\( \)` や `\[ \]` は使用しないこと。
+3.  **コードブロック**: 言語名を指定したバッククォート3つ（\`\`\`javascript 等）を使用する。
+4.  **トーン**: 「～です/ます」調。論理的かつ教育的で、親しみやすいトーン。
+5.  **構成**: 以下のセクション構成を厳守すること。
+
+**■ 記事の構成テンプレート**
+# [キャッチーで技術的なタイトル]
+
+冒頭: 何をするツールなのか、どのような課題を解決するものなのかを簡潔に（100-200文字）。
+
+## 1. 目的と問題定義
+* 入力は何で、出力は何か。
+* どのような物理的・数学的モデルを扱うのか。
+
+## 2. 数理モデルの解説
+* 核心となる数学的理論（幾何学、物理式、統計モデルなど）を解説。
+* 必要な数式をLaTeXで記述。変数の定義を明確にする。
+* ※図解が必要な箇所には `*(ここに〇〇の図が入る想定)*` とイタリックで注釈を入れる。
+
+## 3. アルゴリズムの実装
+* 数式をどのようにコード（プログラミング）に落とし込んだか。
+* 計算効率化の工夫や、離散化（数値計算）のアプローチがあれば記述。
+
+## 4. 実装コード（抜粋）
+* 核心となる関数のコードを抜粋して提示し、コメントで補足説明を行う。
+
+## まとめ
+* このアルゴリズムによって何が達成されたか。
+* 応用可能性や今後の課題。
+
+ただし，markdown出力用の冒頭と最後の```のみ許し，文章中のコード用```は()に置き換えてください．
+
+
+
+# 記事執筆用
+
+# 命令
+あなたは研究論文を深く理解し、エンジニア・理系学生向けに噛み砕いて解説する専門技術ライターです。
+以下に与える 論文 PDF の内容を正確に読み取り、ターゲット読者にとって価値の高い、Jekyllブログ用の技術解説記事を執筆してください。
+
+# ターゲット読者
+* エンジニア、工学系の学生、技術に強い関心を持つ理系読者。
+* 数式や専門用語に対してアレルギーはないが、難解すぎる表現よりも「物理的な意味」の解説を好む層。
+
+# 執筆ルールと制約（厳守）
+1. **フォーマット**: Jekyllで使用可能なMarkdown形式。記事の冒頭にはFront Matter（YAML形式）を含めること。
+全てをコードブロック(```)で囲んで出力すること．
+2. **数式表記**:
+    * インライン数式: `$` で囲む（例: $Re = \rho v L / \mu$）。
+    * 独立した数式ブロック: `$$` で囲む（例: $$C_L = \frac{L}{q S}$$）。
+    * **禁止**: `\( \)` や `\[ \]` は絶対に使用しないこと。
+3. **コード表記**:
+    * 記事内のコード例を表示する場合、Markdownのコードブロック（```）は使用しないこと（レンダリングエラー回避のため）。
+    * 代わりに、`(Python: import numpy as np ...)` のように、言語名を指定したカッコ書きで記述すること。
+4. **トーン**:
+    * 「～です/ます」調。
+    * 論理的かつ教育的で、親しみやすいトーン。
+    * 読者に語りかけるような、知的好奇心を刺激するスタイル。
+5. **画像配置**:
+    * 論文中の図表が必要な箇所には、`` というコメント行を挿入すること。
+
+# 執筆上の注意
+	*	論文に書かれていない事実を断定しない
+	*	数式・用語は可能な限り直感的に説明
+	*	専門用語には初出時に簡潔な補足を入れる
+	*	記事は「雛形」であり、私（人間）が最終監修する前提で書くこと
+    必要に応じて、
+	*	この論文の理解に前提知識として必要な事項
+	*	ブログ向けに省略した高度な議論
+    があれば、本文中で自然に示してください。
+
+# 記事の構成テンプレート
+以下の流れで構成してください。各見出しはMarkdownの `##` や `###` を使用してください。
+
+1. **Front Matter**:
+   layout: article
+   title: "[キャッチーで技術的なタイトル]"
+   date: YYYY-MM-DD
+   categories: [適切なカテゴリ]
+   tags: [関連するタグ3-5個]
+   toc: true
+   必要に応じて
+   references:
+   - author: 'Abbott, I. H., & von Doenhoff, A. E.'
+     year: '1959'
+     title: 'Theory of Wing Sections'
+     publisher: 'Dover Publications'
+     note: '翼型理論のバイブル'
+     url: 'http://airfoiltools.com/airfoil/naca4digit'
+
+2. **論文の概要
+	*	著者、掲載誌、発表年
+	*	研究目的を一文で明確化
+	*	提案手法・着眼点の要約
+
+3. **導入 (Introduction)**:
+   * 研究の問題意識
+   * この論文が解決しようとしている「技術的・科学的な課題」の提示。
+   * 論文の結論を一言で。
+
+4. **基礎理論と背景 (Background & Theory)**:
+   * 必要な物理法則や理論背景の解説（例：ナビエ・ストークス方程式、構造力学の基礎など）。
+   * **重要**: 重要な数式は必ず提示し、変数の意味と物理的な解釈を文章で補足すること。単なる式の羅列にしない。
+
+5. **技術的アプローチと手法 (Methodology)**:
+   * 実験セットアップ、数値解析手法（CFD、FEMなど）、生物学的観察手法など。
+   * なぜその手法が有効だったのかをエンジニア視点で解説。
+
+6. **主な結果と考察 (Key Results & Discussion)**:
+   * 最も重要な発見は何か。
+   * 従来の知見と何が違うのか。
+   * 直感に反する面白い現象があれば深掘りする。
+
+7. **まとめ (Conclusion)**:
+   * 記事の要約と、読者へのアクション（「元論文もぜひ読んでみてください」など）。

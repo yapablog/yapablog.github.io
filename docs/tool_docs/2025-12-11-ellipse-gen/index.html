@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2BSLJEKTVJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2BSLJEKTVJ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>楕円円柱同士の交差と展開図生成アルゴリズム | やぱのブログ</title>
+    <meta name="description" content="航空工学・生物模倣など" />
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/assets/css/tailwind-output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=Zen+Kaku+Gothic+New&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=WDXL+Lubrifont+TC&family=Zen+Kaku+Gothic+New&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+  </head>
+
+
+  <body class="flex flex-col min-h-screen">
+    <!--
+  開発用ブレイクポイント
+  all(mobile):
+  sm(min-width: 640px):スマホ横～
+  md(min-width: 768px):タブレット
+  lg(min-width: 1024px):ノートPC
+  xl(min-width: 1280px):大型ディスプレイ
+  2xl(min-width: 1536px):超ワイド画面
+-->
+
+<header
+  class=" top-0 z-50 w-full border-b-2 border-[#624ba1ee] divide-gray-400 py-2 bg-white"
+>
+  <div
+  class="flex flex-col md:flex-row md:items-center md:justify-between w-full"
+>
+  <a
+    href="/"
+    class="flex px-2 items-center justify-center md:justify-start mb-2 md:mb-0"
+  >
+    <img
+      class="h-6 md:h-10 w-auto ml-2"
+      src="/assets/images/logo.png"
+      alt="ロゴ"
+    />
+    <div class="flex flex-col leading-tigh ">
+      <div class="ml-2 text-[1.0rem] md:text-[1.4rem] text-center text-gray-800 font-black">
+        やぱのブログ
+      </div>
+      <div class="ml-2 text-[0.3rem] md:text-[0.6rem] text-center text-gray-600 font-medium leading-none hidden md:block">
+        航空工学・生物模倣など
+      </div>
+    </div>
+  </a>
+  <nav
+    class="flex flex-wrap divide-x divide-gray-400 text-center font-semibold text-sm md:text-base md:mr-2"
+  >
+    <a href="/" class="nav-link">Home</a>
+    <a href="/tools/" class="nav-link">Tools</a>
+    <a href="/articles/" class="nav-link">Articles</a>
+    <a href="/contact/" class="nav-link">Contact</a>
+  </nav>
+</div>
+</header>
+
+    <main class="mx-auto flex-grow w-full">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          // 数式の区切り文字を設定
+          delimiters: [
+              {left: '$$', right: '$$', display: true},  // ブロック数式
+              {left: '$', right: '$', display: false},   // インライン数式
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          // エラーが出ても無視してそのまま表示する設定
+          throwOnError : false
+        });
+    });
+</script>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <header class="mb-6 border-b border-gray-200 pb-2">
+    <div class="text-3xl font-bold text-gray-800 mb-1">楕円円柱同士の交差と展開図生成アルゴリズム</div>
+    <p class="text-sm text-gray-500">2025/12/11</p>
+  </header>
+  <div class="container mx-auto px-4">
+  
+    <div class="lg:grid lg:grid-cols-12 lg:gap-10">
+      
+      <main class="lg:col-span-9">  
+        <div class="note-toc-inline">
+          <p class="toc-title">目次</p>
+          <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#1-問題設定">1. 問題設定</a></li>
+<li class="toc-entry toc-h2"><a href="#2-幾何モデル">2. 幾何モデル</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#21-母管の陰関数">2.1 母管の陰関数</a></li>
+<li class="toc-entry toc-h3"><a href="#22-枝管の母線パラメータ化">2.2 枝管の母線パラメータ化</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#3-交差計算2-次方程式">3. 交差計算（2 次方程式）</a></li>
+<li class="toc-entry toc-h2"><a href="#4-展開図への変換">4. 展開図への変換</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#41-周長座標の作成">4.1 周長座標の作成</a></li>
+<li class="toc-entry toc-h3"><a href="#42-2d-プロットと出力">4.2 2D プロットと出力</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#5-実装例係数計算部">5. 実装例（係数計算部）</a></li>
+</ul>
+        </div>
+  
+        <div class="article">
+          <p>本記事では、公開中の「<a href="/ellipsecalc/">楕円円柱展開図ジェネレーター</a>」で使用している幾何計算アルゴリズムを解説します。<br />
+目的は、2 本の楕円円柱の交差線を計算し、枝管の展開図（型紙）として 2D 出力することです。</p>
+
+<h2 id="1-問題設定">1. 問題設定</h2>
+
+<p>このツールでは、以下の 2 つの無限楕円円柱を扱います。</p>
+
+<ol>
+  <li><strong>母管 (Main Pipe)</strong>: 軸方向を <strong>Y 軸</strong> とする固定円柱</li>
+  <li><strong>枝管 (Branch Pipe)</strong>: 母管と角度 $\alpha$ で交差する円柱</li>
+</ol>
+
+<p>入力パラメータは次の通りです。</p>
+
+<ul>
+  <li>断面半径: 短半径 $R_x$、長半径 $R_z$</li>
+  <li>断面回転角: $\theta$（断面内のねじれ）</li>
+  <li>交差条件: 交差角 $\alpha$、芯ズレ <code class="language-plaintext highlighter-rouge">offset</code></li>
+</ul>
+
+<h2 id="2-幾何モデル">2. 幾何モデル</h2>
+
+<h3 id="21-母管の陰関数">2.1 母管の陰関数</h3>
+
+<p>母管の断面は XZ 平面上の楕円で、軸方向は Y です。<br />
+母管回転角を $\theta_1$ とすると、グローバル座標 $(X, Y, Z)$ から断面ローカル座標 $(x’, z’)$ への変換は</p>
+
+\[\begin{pmatrix} x' \\ z' \end{pmatrix}
+=
+\begin{pmatrix}
+\cos \theta_1 &amp; \sin \theta_1 \\
+-\sin \theta_1 &amp; \cos \theta_1
+\end{pmatrix}
+\begin{pmatrix} X \\ Z \end{pmatrix}\]
+
+<p>です。楕円条件は</p>
+
+\[\left(\frac{x'}{R_{1x}}\right)^2 + \left(\frac{z'}{R_{1z}}\right)^2 = 1\]
+
+<p>となります。</p>
+
+<h3 id="22-枝管の母線パラメータ化">2.2 枝管の母線パラメータ化</h3>
+
+<p>枝管は、断面角 $\phi \in [0, 2\pi)$ ごとに 1 本の母線（直線）を持つと考えます。<br />
+この表現にすると、「各母線が母管とどこで交わるか」を解けばよくなり、展開に必要な高さを直接得られます。</p>
+
+<p>枝管断面（回転前）は</p>
+
+\[u_0 = R_{2x}\cos\phi,\qquad
+w_0 = R_{2z}\sin\phi\]
+
+<p>枝管の断面回転角 $\theta_2$ を反映すると</p>
+
+\[u = u_0\cos\theta_2 - w_0\sin\theta_2,\qquad
+w = u_0\sin\theta_2 + w_0\cos\theta_2\]
+
+<p>枝管軸方向パラメータを $v$ とし、交差角 $\alpha$（X 軸回り回転）と芯ズレ <code class="language-plaintext highlighter-rouge">offset</code> を適用すると、母線上の点は</p>
+
+\[\begin{aligned}
+X &amp;= u + \mathrm{offset} \\
+Y &amp;= v\cos\alpha - w\sin\alpha \\
+Z &amp;= v\sin\alpha + w\cos\alpha
+\end{aligned}\]
+
+<p>で表せます。</p>
+
+<h2 id="3-交差計算2-次方程式">3. 交差計算（2 次方程式）</h2>
+
+<p>上式を母管の楕円条件に代入すると、$v$ に関する 2 次方程式</p>
+
+\[Av^2 + Bv + C = 0\]
+
+<p>が得られます。実装では次の中間変数を使っています。</p>
+
+\[\begin{aligned}
+K_1 &amp;= (u+\mathrm{offset})\cos\theta_1 + w\cos\alpha\sin\theta_1 \\
+K_2 &amp;= \sin\alpha\sin\theta_1 \\
+K_3 &amp;= -(u+\mathrm{offset})\sin\theta_1 + w\cos\alpha\cos\theta_1 \\
+K_4 &amp;= \sin\alpha\cos\theta_1
+\end{aligned}\]
+
+\[\begin{aligned}
+A &amp;= \frac{K_2^2}{R_{1x}^2} + \frac{K_4^2}{R_{1z}^2},\quad
+B = \frac{2K_1K_2}{R_{1x}^2} + \frac{2K_3K_4}{R_{1z}^2},\\
+C &amp;= \frac{K_1^2}{R_{1x}^2} + \frac{K_3^2}{R_{1z}^2} - 1
+\end{aligned}\]
+
+<p>解は</p>
+
+\[v = \frac{-B \pm \sqrt{B^2 - 4AC}}{2A}\]
+
+<p>です。</p>
+
+<ul>
+  <li>判別式 $D = B^2 - 4AC &lt; 0$ なら、その断面角では交差しません。</li>
+  <li>$D \ge 0$ のときは 2 解のうち大きい方を <code class="language-plaintext highlighter-rouge">Top</code>、小さい方を <code class="language-plaintext highlighter-rouge">Bottom</code> として扱います。</li>
+</ul>
+
+<h2 id="4-展開図への変換">4. 展開図への変換</h2>
+
+<h3 id="41-周長座標の作成">4.1 周長座標の作成</h3>
+
+<p>展開図の横軸は「角度」ではなく「楕円周長の累積値」を使います。<br />
+これにより、型紙上の距離が実幾何に一致します。</p>
+
+<p>離散化点 $\phi_i$ に対し、回転前楕円点 $(u_{0,i}, w_{0,i})$ から</p>
+
+\[s_i = s_{i-1} + \sqrt{(u_{0,i}-u_{0,i-1})^2 + (w_{0,i}-w_{0,i-1})^2}\]
+
+<p>を積算して周長座標 $s_i$ を得ます。</p>
+
+<h3 id="42-2d-プロットと出力">4.2 2D プロットと出力</h3>
+
+<p>最終的な展開線は以下です。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Top</code>: $(s_i, v_{\text{top},i})$</li>
+  <li><code class="language-plaintext highlighter-rouge">Bottom</code>: $(s_i, v_{\text{bottom},i})$</li>
+</ul>
+
+<p>これをブラウザ上で可視化し、DXF/PDF に出力します。<br />
+判別式が負になる区間は <code class="language-plaintext highlighter-rouge">null</code> を挿入して線を分断し、非交差領域を明示します。</p>
+
+<h2 id="5-実装例係数計算部">5. 実装例（係数計算部）</h2>
+
+<p>以下は、1 つの $\phi$ に対して $A,B,C$ を組み立てる最小例です。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nf">solveIntersectionV</span><span class="p">(</span><span class="nx">u</span><span class="p">,</span> <span class="nx">w</span><span class="p">,</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">alpha</span><span class="p">,</span> <span class="nx">theta1</span><span class="p">,</span> <span class="nx">Rx1</span><span class="p">,</span> <span class="nx">Rz1</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">ca</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">alpha</span><span class="p">),</span> <span class="nx">sa</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="nx">alpha</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="nx">c1</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">cos</span><span class="p">(</span><span class="nx">theta1</span><span class="p">),</span> <span class="nx">s1</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="nx">theta1</span><span class="p">);</span>
+
+  <span class="kd">const</span> <span class="nx">us</span> <span class="o">=</span> <span class="nx">u</span> <span class="o">+</span> <span class="nx">offset</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">K1</span> <span class="o">=</span> <span class="nx">us</span> <span class="o">*</span> <span class="nx">c1</span> <span class="o">+</span> <span class="nx">w</span> <span class="o">*</span> <span class="nx">ca</span> <span class="o">*</span> <span class="nx">s1</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">K2</span> <span class="o">=</span> <span class="nx">sa</span> <span class="o">*</span> <span class="nx">s1</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">K3</span> <span class="o">=</span> <span class="o">-</span><span class="nx">us</span> <span class="o">*</span> <span class="nx">s1</span> <span class="o">+</span> <span class="nx">w</span> <span class="o">*</span> <span class="nx">ca</span> <span class="o">*</span> <span class="nx">c1</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">K4</span> <span class="o">=</span> <span class="nx">sa</span> <span class="o">*</span> <span class="nx">c1</span><span class="p">;</span>
+
+  <span class="kd">const</span> <span class="nx">A</span> <span class="o">=</span> <span class="p">(</span><span class="nx">K2</span> <span class="o">*</span> <span class="nx">K2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">Rx1</span> <span class="o">*</span> <span class="nx">Rx1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nx">K4</span> <span class="o">*</span> <span class="nx">K4</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">Rz1</span> <span class="o">*</span> <span class="nx">Rz1</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="nx">B</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">K1</span> <span class="o">*</span> <span class="nx">K2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">Rx1</span> <span class="o">*</span> <span class="nx">Rx1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">K3</span> <span class="o">*</span> <span class="nx">K4</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">Rz1</span> <span class="o">*</span> <span class="nx">Rz1</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="nx">C</span> <span class="o">=</span> <span class="p">(</span><span class="nx">K1</span> <span class="o">*</span> <span class="nx">K1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">Rx1</span> <span class="o">*</span> <span class="nx">Rx1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nx">K3</span> <span class="o">*</span> <span class="nx">K3</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">Rz1</span> <span class="o">*</span> <span class="nx">Rz1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="kd">const</span> <span class="nx">D</span> <span class="o">=</span> <span class="nx">B</span> <span class="o">*</span> <span class="nx">B</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="nx">A</span> <span class="o">*</span> <span class="nx">C</span><span class="p">;</span>
+  <span class="k">if </span><span class="p">(</span><span class="o">!</span><span class="nb">Number</span><span class="p">.</span><span class="nf">isFinite</span><span class="p">(</span><span class="nx">A</span><span class="p">)</span> <span class="o">||</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">abs</span><span class="p">(</span><span class="nx">A</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="nx">e</span><span class="o">-</span><span class="mi">12</span> <span class="o">||</span> <span class="nx">D</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+
+  <span class="kd">const</span> <span class="nx">root</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="nx">D</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="nx">v1</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="nx">B</span> <span class="o">+</span> <span class="nx">root</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">A</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="nx">v2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="nx">B</span> <span class="o">-</span> <span class="nx">root</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">A</span><span class="p">);</span>
+  <span class="k">return</span> <span class="p">{</span> <span class="na">top</span><span class="p">:</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">max</span><span class="p">(</span><span class="nx">v1</span><span class="p">,</span> <span class="nx">v2</span><span class="p">),</span> <span class="na">bottom</span><span class="p">:</span> <span class="nb">Math</span><span class="p">.</span><span class="nf">min</span><span class="p">(</span><span class="nx">v1</span><span class="p">,</span> <span class="nx">v2</span><span class="p">)</span> <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>このアプローチにより、楕円率・回転角・交差角・芯ズレが変わる任意ケースでも、ブラウザ上で安定して交差線と展開図を生成できます。</p>
+
+        
+        </div>   
+      </main>
+  
+      <aside class="lg:col-span-3 relative">
+        
+        <div class="note-toc-sidebar">
+          <p class="toc-title">目次</p>
+          <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#1-問題設定">1. 問題設定</a></li>
+<li class="toc-entry toc-h2"><a href="#2-幾何モデル">2. 幾何モデル</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#21-母管の陰関数">2.1 母管の陰関数</a></li>
+<li class="toc-entry toc-h3"><a href="#22-枝管の母線パラメータ化">2.2 枝管の母線パラメータ化</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#3-交差計算2-次方程式">3. 交差計算（2 次方程式）</a></li>
+<li class="toc-entry toc-h2"><a href="#4-展開図への変換">4. 展開図への変換</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#41-周長座標の作成">4.1 周長座標の作成</a></li>
+<li class="toc-entry toc-h3"><a href="#42-2d-プロットと出力">4.2 2D プロットと出力</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#5-実装例係数計算部">5. 実装例（係数計算部）</a></li>
+</ul>
+        </div>
+  
+      </aside>
+  
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. 監視する見出し要素を取得 (記事内の h1, h2, h3)
+    const headers = document.querySelectorAll('.article h1, .article h2, .article h3');
+    // 2. サイドバーのリンクを取得
+    const tocLinks = document.querySelectorAll('.note-toc-sidebar a');
+  
+    // IntersectionObserver の設定
+    const observerOptions = {
+      root: null, // ビューポートを基準
+      // rootMargin: 上端から-100pxの位置〜画面の残り60%までを「アクティブ判定エリア」とする
+      // これにより、見出しが画面上部に来たタイミングでハイライトが切り替わります
+      rootMargin: '-100px 0px -60% 0px', 
+      threshold: 0
+    };
+  
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        // 画面内に入った（または出た）場合
+        if (entry.isIntersecting) {
+          // 現在のアクティブクラスを全削除
+          tocLinks.forEach(link => link.classList.remove('active'));
+          
+          // 対応するIDを持つリンクを探してアクティブ化
+          const id = entry.target.getAttribute('id');
+          if (id) {
+            const activeLink = document.querySelector(`.note-toc-sidebar a[href="#${id}"]`);
+            if (activeLink) {
+              activeLink.classList.add('active');
+            }
+          }
+        }
+      });
+    }, observerOptions);
+  
+    // 各見出しを監視対象に登録
+    headers.forEach(header => observer.observe(header));
+  });
+  </script>
+
+    </main>
+
+    <footer class="bg-[#9191a7] mt-4">
+  <div class="mx-auto p-3 text-center text-xs" >
+
+    <p class="space-x-2 my-3">
+      <a href="/policy/paper-review/" class="underline hover:opacity-80">
+        論文解説に関するポリシー
+      </a>
+      <span>|</span>
+      <a href="/policy/tools/" class="underline hover:opacity-80">
+        ツール利用に関するポリシー
+      </a>
+    </p>
+
+    <p class="text-xs leading-relaxed opacity-90 max-w-2xl mx-auto">
+      本ブログでは執筆補助としてAIを使用する場合がありますが、内容の技術的妥当性および最終判断は筆者が行っています。
+    </p>
+
+    <div class="text-xs opacity-75 border-tpt-4">
+      <p>© 2026 やぱのブログ</p>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>

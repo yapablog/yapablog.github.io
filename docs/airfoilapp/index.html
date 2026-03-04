@@ -106,7 +106,8 @@
     </div>
 
     <div class="relative z-0">
-      <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+      
+<script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
 
 <div class="w-full max-w-7xl mx-auto px-4 py-8">
   <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
@@ -136,9 +137,9 @@
               後縁(x=1) → 上面 → 前縁(x=0) → 下面 → 後縁(x=1)<br>
               後縁の隙間可<br>
             </div>
-            <textarea 
-              id="pointCloud" 
-              rows="8" 
+            <textarea
+              id="pointCloud"
+              rows="8"
               class="w-full font-mono text-sm p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[var(--color-brand)] focus:outline-none"
               placeholder="生成ボタンを押すか、データを貼り付けてください &#10;例&#10;1.0000 0.0000&#10;0.9500 0.0123&#10;..."
             ></textarea>
@@ -151,30 +152,30 @@
                 アルゴリズム解説
               </a>
             </div>
-          
+
             <div class="flex gap-4 mb-2">
               <div class="flex-1">
                 <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">4桁コード</label>
                 <input type="text" id="nacaCode" maxlength="4" value="4412" class="w-full p-2 bg-white border border-gray-300 rounded text-center font-mono text-sm focus:ring-2 focus:ring-[var(--color-brand)] focus:border-[var(--color-brand)] focus:outline-none transition-shadow" placeholder="4412">
               </div>
-              
+
               <div class="flex-1">
                 <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">点数</label>
                 <input type="number" id="numPoints" value="100" min="20" max="500" class="w-full p-2 bg-white border border-gray-300 rounded text-center font-mono text-sm focus:ring-2 focus:ring-[var(--color-brand)] focus:border-[var(--color-brand)] focus:outline-none transition-shadow">
               </div>
             </div>
-          
+
             <p class="text-[10px] text-gray-400 mb-4 pl-1">例: 0012 (対称), 2412, 4412 (非対称)</p>
-          
+
             <div class="flex items-center justify-evenly pt-3 border-t border-gray-200">
 
               <div class="flex items-center gap-2">
                 <label class="relative inline-block w-11 h-6">
-                  <input 
-                    type="checkbox" 
-                    id="closeTE" 
-                    class="peer sr-only" 
-                    checked 
+                  <input
+                    type="checkbox"
+                    id="closeTE"
+                    class="peer sr-only"
+                    checked
                   >
                   <span class="block w-11 h-6 bg-gray-300 rounded-full cursor-pointer transition-colors duration-300 peer-checked:bg-[var(--color-brand)]"></span>
                   <span class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 cursor-pointer shadow-sm toggle-knob"></span>
@@ -183,12 +184,12 @@
                   後縁を閉じる
                 </label>
               </div>
-          
+
               <button onclick="generateNACA()" class="px-5 py-1.5 w-30 bg-gray-800 text-white text-xs font-bold rounded hover:bg-gray-700 active:scale-95 transition-all shadow-sm">
                 生成
               </button>
             </div>
-              
+
             <style>
               /* チェックされたらつまみを右に移動 (サイズに合わせて調整済み) */
               input:checked + span + .toggle-knob {
@@ -218,7 +219,7 @@
         </div>
         <div class="p-5 flex-1">
           <div id="airfoilPlot" class="w-full h-80 md:h-96 border border-gray-100 rounded mb-8"></div>
-          
+
           <h3 class="text-lg font-bold text-gray-800 border-b border-gray-200 pb-2 mb-4">幾何特性</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-sm text-left border-collapse">
@@ -237,6 +238,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -463,6 +465,7 @@ function createRow(label, nV, rV, unit) {
 }
 </script>
 
+
     </div>
 
     
@@ -492,17 +495,27 @@ function createRow(label, nV, rV, unit) {
 
     </main>
 
-    <!-- <footer>
-  <div class="footer">
-    <div class="copy">&copy;2024 九大ロボ技</div>
-  </div>
-</footer> -->
+    <footer class="bg-[#9191a7] mt-4">
+  <div class="mx-auto p-3 text-center text-xs" >
 
-<footer class="bg-[#9191a7] mt-4">
-  <div class="mx-auto p-2 text-center" style="font-family: var(--font-lubri)">
-    <p>© 2025 やぱのブログ</p>
+    <p class="space-x-2 my-3">
+      <a href="/policy/paper-review/" class="underline hover:opacity-80">
+        論文解説に関するポリシー
+      </a>
+      <span>|</span>
+      <a href="/policy/tools/" class="underline hover:opacity-80">
+        ツール利用に関するポリシー
+      </a>
+    </p>
+
+    <p class="text-xs leading-relaxed opacity-90 max-w-2xl mx-auto">
+      本ブログでは執筆補助としてAIを使用する場合がありますが、内容の技術的妥当性および最終判断は筆者が行っています。
+    </p>
+
+    <div class="text-xs opacity-75 border-tpt-4">
+      <p>© 2026 やぱのブログ</p>
+    </div>
   </div>
 </footer>
-
   </body>
 </html>
