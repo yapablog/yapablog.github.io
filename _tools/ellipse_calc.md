@@ -3,6 +3,7 @@ layout: tools
 title: 楕円管展開図生成
 ToolName: 交差する楕円円筒の展開図生成ツール
 permalink: /ellipsecalc/
+image: assets/images/tools/ellipsecalc_thumb.png
 Description: それぞれの楕円寸法と回転角、交差角を入力として、展開図をdxfおよびpdfで出力するWebツールです。
 HowtoUse: |
   1. 左側パネルで **母管 (Main Pipe)** と **枝管 (Branch Pipe)** の寸法（長半径 `Rz` / 短半径 `Rx`）と回転角 `θ`、**接合条件 (Joint)** の交差角 `α` と芯ズレ `Offset` を入力します。
